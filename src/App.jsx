@@ -6,7 +6,7 @@ import { ThemeProvider } from '@mui/material/styles';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import MyTheme from './themes/MyTheme';
-import { Person, AdminPanelSettings, Loyalty } from '@mui/icons-material';
+import { Person, AdminPanelSettings } from '@mui/icons-material';
 
 import Tutorials from './pages/Tutorials';
 import AddTutorial from './pages/AddTutorial';
@@ -69,19 +69,17 @@ function App() {
 
                 <Box sx={{ display: 'flex', gap: 2 }}>
                   {/* User navbar items */}
-                  {isNotAdminView && (
-                    <>
-                      <Link to="/tutorials">
-                        <Typography component="div">
-                          Tutorials
-                        </Typography>
-                      </Link><Link to="/addtutorial">
-                        <Typography component="div">
-                          AddTutorial
-                        </Typography>
-                      </Link>
-                    </>
-                  )}
+                  <>
+                    <Link to="/tutorials">
+                      <Typography component="div">
+                        Tutorials
+                      </Typography>
+                    </Link><Link to="/addtutorial">
+                      <Typography component="div">
+                        AddTutorial
+                      </Typography>
+                    </Link>
+                  </>
                 </Box>
 
                 <Box sx={{ flexGrow: 1 }}></Box>
@@ -176,19 +174,15 @@ function App() {
 
           <Container>
             <Routes>
-              {/* Pages ment for everybody*/}
-              {/* Admin will be unable to view user pages when his view is set to admin view*/}
-              {isNotAdminView && (
-                <>
-                  <Route path={"/tutorials"} element={<Tutorials />} />
-                  <Route path={"/addtutorial"} element={<AddTutorial />} />
-                  <Route path={"/edittutorial/:id"} element={<EditTutorial />} />
-                  <Route path={"/register"} element={<Register />} />
-                  <Route path={"/login"} element={<Login />} />
-                  <Route path={"/form"} element={<MyForm />} />
-                  <Route path={"/loyaltydiscount"} element={<LoyaltyDiscount />} />
-                </>
-              )}
+              <>
+                <Route path={"/tutorials"} element={<Tutorials />} />
+                <Route path={"/addtutorial"} element={<AddTutorial />} />
+                <Route path={"/edittutorial/:id"} element={<EditTutorial />} />
+                <Route path={"/register"} element={<Register />} />
+                <Route path={"/login"} element={<Login />} />
+                <Route path={"/form"} element={<MyForm />} />
+                <Route path={"/loyaltydiscount"} element={<LoyaltyDiscount />} />
+              </>
               {/* Admin only pages*/}
               {user && user.isAdmin && !isNotAdminView && (
                 <>
