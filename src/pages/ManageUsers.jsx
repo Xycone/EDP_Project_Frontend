@@ -128,7 +128,7 @@ function ManageUsers() {
   return (
     <Box>
       <Typography variant="h6" sx={{ mb: 2, mr: 1 }}>
-        ManageUsers
+        Manage Users
       </Typography>
 
       <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>

@@ -53,29 +53,6 @@ function ManageLoyaltyDiscount() {
   // (Search)
 
 
-  // (Delete confirmation)
-  const [open, setOpen] = useState(false);
-
-  const handleOpen = () => {
-    // Delete confirmation does not open unless there is something selected
-    if (selectedRows.length > 0) {
-      setOpen(true);
-    }
-  };
-  const handleClose = () => {
-    setOpen(false);
-  };
-  // (Delete confirmation)
-
-
-  // (Perk show more)
-  const [perkexpanded, setPerkExpanded] = useState(false);
-
-  const handleToggle = () => {
-    setPerkExpanded(!perkexpanded);
-  };
-  // (Perk show more)
-
   useEffect(() => {
     getTiers();
   }, []);
@@ -109,10 +86,6 @@ function ManageLoyaltyDiscount() {
           onClick={onClickClear}>
           <Clear />
         </IconButton>
-        <Box sx={{ flexGrow: 1 }} />
-        <Button color="error" onClick={handleOpen}>
-          <Delete />
-        </Button>
       </Box>
 
       <Grid container spacing={2}>
