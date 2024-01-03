@@ -102,7 +102,7 @@ function ManageLoyaltyDiscount() {
             >
               {/* Tier title */}
               <Box sx={{ textAlign: 'center', borderBottom: '2px solid grey', pb: 1, }}>
-                <Typography variant="h6" sx={{ flexGrow: 1 }}>
+                <Typography variant="h6" sx={{ flexGrow: 1, fontSize: '1rem' }}>
                   {tier.tierPosition}. {tier.tierName}
                 </Typography>
               </Box>
@@ -116,6 +116,9 @@ function ManageLoyaltyDiscount() {
                 </Typography>
                 <Typography variant="body2" sx={{ margin: 1, fontSize: '0.8rem' }}>
                   ${tier.tierSpendings.toFixed(2)} spent
+                </Typography>
+                <Typography variant="body1" sx={{ margin: 1, fontSize: '0.9rem' }}>
+                  Latest Changes:
                 </Typography>
                 <Box variant="body2" sx={{ margin: 1, fontSize: '0.5rem', display: 'flex', alignItems: 'center' }}>
                   <AccessTime sx={{ fontSize: '0.8rem', mr: 0.5 }} />
