@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Box, Typography, TextField, Button } from '@mui/material';
-import { Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, Select, MenuItem, FormControl, InputLabel, Grid } from '@mui/material';
+import { Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, Select, MenuItem, FormControl, InputLabel, Grid, Divider, Paper } from '@mui/material';
 import http from '../http';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
@@ -10,7 +10,6 @@ import * as yup from 'yup';
 function EditTier() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const [tierCount, setTierCount] = useState(0);
   // Array of possible tier positions
   const [tierPositions, setTierPositions] = useState([]);
 
@@ -29,7 +28,6 @@ function EditTier() {
     });
 
     http.get('/tier/get-tiers').then((res) => {
-      setTierCount(res.data);
       const newTierPositions = Array.from({ length: res.data }, (_, index) => index + 1);
       setTierPositions(newTierPositions);
     });
@@ -92,67 +90,86 @@ function EditTier() {
           <Box component="form" onSubmit={formik.handleSubmit}>
             <Grid container spacing={2}>
               <Grid item xs={12} md={6} lg={8}>
-                <TextField
-                  sx={{ my: 1 }}
-                  fullWidth
-                  margin="dense"
-                  autoComplete="off"
-                  label="Tier Name"
-                  name="tierName"
-                  value={formik.values.tierName}
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
-                  error={formik.touched.tierName && Boolean(formik.errors.tierName)}
-                  helperText={formik.touched.tierName && formik.errors.tierName}
-                />
-
-                <TextField
-                  sx={{ my: 1 }}
-                  fullWidth
-                  margin="dense"
-                  autoComplete="off"
-                  label="Tier Bookings"
-                  name="tierBookings"
-                  value={formik.values.tierBookings}
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
-                  error={formik.touched.tierBookings && Boolean(formik.errors.tierBookings)}
-                  helperText={formik.touched.tierBookings && formik.errors.tierBookings}
-                />
-
-                <TextField
-                  sx={{ my: 1 }}
-                  fullWidth
-                  margin="dense"
-                  autoComplete="off"
-                  label="Tier Spendings"
-                  name="tierSpendings"  // Use TierSpendings instead of description
-                  value={formik.values.tierSpendings}
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
-                  error={formik.touched.tierSpendings && Boolean(formik.errors.tierSpendings)}
-                  helperText={formik.touched.tierSpendings && formik.errors.tierSpendings}
-                />
-                <FormControl fullWidth sx={{ my: 1 }}>
-                  <InputLabel id="demo-simple-select-label">Listing Id:</InputLabel>
-                  <Select
+                <Box sx={{ border: '1px solid #ccc', borderRadius: '8px', padding: '16px', marginBottom: '16px', position: 'relative' }}>
+                  <InputLabel
+                    sx={{
+                      position: 'absolute',
+                      top: '0',
+                      left: '0',
+                      transform: 'translate(8px, -50%)',
+                      background: 'white',
+                      padding: '0 4px',
+                      fontSize: '0.8rem',
+                      color: '#555',
+                    }}
+                    htmlFor="tier-info-label"
+                  >
+                    Tier Information
+                  </InputLabel>
+                  <TextField
+                    sx={{ my: 1, mt: 2 }}
                     fullWidth
                     margin="dense"
-                    label="Tier Position"
-                    name="tierPosition"
-                    value={formik.values.tierPosition}
+                    autoComplete="off"
+                    label="Tier Name"
+                    name="tierName"
+                    value={formik.values.tierName}
                     onChange={formik.handleChange}
                     onBlur={formik.handleBlur}
-                    error={formik.touched.tierPosition && Boolean(formik.errors.tierPosition)}
-                    helperText={formik.touched.tierPosition && formik.errors.tierPosition}
-                  >
-                    {tierPositions.map((position) => (
-                      <MenuItem key={position} value={position}>
-                        {position}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
+                    error={formik.touched.tierName && Boolean(formik.errors.tierName)}
+                    helperText={formik.touched.tierName && formik.errors.tierName}
+                  />
+
+                  <TextField
+                    sx={{ my: 1 }}
+                    fullWidth
+                    margin="dense"
+                    autoComplete="off"
+                    label="Tier Bookings"
+                    name="tierBookings"
+                    value={formik.values.tierBookings}
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                    error={formik.touched.tierBookings && Boolean(formik.errors.tierBookings)}
+                    helperText={formik.touched.tierBookings && formik.errors.tierBookings}
+                  />
+
+                  <TextField
+                    sx={{ my: 1 }}
+                    fullWidth
+                    margin="dense"
+                    autoComplete="off"
+                    label="Tier Spendings"
+                    name="tierSpendings"  // Use TierSpendings instead of description
+                    value={formik.values.tierSpendings}
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                    error={formik.touched.tierSpendings && Boolean(formik.errors.tierSpendings)}
+                    helperText={formik.touched.tierSpendings && formik.errors.tierSpendings}
+                  />
+                  <FormControl fullWidth sx={{ my: 1 }}>
+                    <InputLabel id="demo-simple-select-label">Listing Id:</InputLabel>
+                    <Select
+                      fullWidth
+                      margin="dense"
+                      label="Tier Position"
+                      name="tierPosition"
+                      value={formik.values.tierPosition}
+                      onChange={formik.handleChange}
+                      onBlur={formik.handleBlur}
+                      error={formik.touched.tierPosition && Boolean(formik.errors.tierPosition)}
+                      helperText={formik.touched.tierPosition && formik.errors.tierPosition}
+                    >
+                      {tierPositions.map((position) => (
+                        <MenuItem key={position} value={position}>
+                          {position}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
+                </Box>
+
+
               </Grid>
             </Grid>
 
