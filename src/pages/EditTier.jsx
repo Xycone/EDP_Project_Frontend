@@ -90,7 +90,7 @@ function EditTier() {
           <Box component="form" onSubmit={formik.handleSubmit}>
             <Grid container spacing={2}>
               <Grid item xs={12} md={6} lg={8}>
-                <Box sx={{ border: '1px solid #ccc', borderRadius: '8px', padding: '16px', marginBottom: '16px', position: 'relative' }}>
+                <Box sx={{ mt: 1, border: '1px solid #ccc', borderRadius: '8px', padding: '16px', marginBottom: '16px', position: 'relative' }}>
                   <InputLabel
                     sx={{
                       position: 'absolute',
