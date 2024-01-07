@@ -217,7 +217,7 @@ function ManageUsers() {
             border: '1px solid #ddd',
             boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
             padding: '16px',
-            fontSize: '0.6rem',
+            fontSize: '0.8rem',
           }}
         />
       </Box>

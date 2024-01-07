@@ -120,7 +120,7 @@ function ManageLoyaltyDiscount() {
                   <Typography variant="body1" sx={{ margin: 1, fontSize: '0.9rem' }}>
                     Latest Changes:
                   </Typography>
-                  <Box variant="body2" sx={{ margin: 1, fontSize: '0.5rem', display: 'flex', alignItems: 'center' }}>
+                  <Box variant="body2" sx={{ margin: 1, fontSize: '0.8rem', display: 'flex', alignItems: 'center' }}>
                     <AccessTime sx={{ fontSize: '0.8rem', mr: 0.5 }} />
                     <Typography sx={{ fontSize: '0.8rem' }}>
                       {dayjs(tier.updatedAt && tier.updatedAt > tier.createdAt ? tier.updatedAt : tier.createdAt).format(global.datetimeFormat)}
