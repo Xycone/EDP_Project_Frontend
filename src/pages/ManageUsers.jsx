@@ -126,8 +126,8 @@ function ManageUsers() {
   }, [page, pageSize, search]);
 
   return (
-    <Box>
-      <Typography variant="h6" sx={{ mb: 2, mr: 1 }}>
+    <Box sx={{ my: 2}}>
+      <Typography variant="h6" sx={{ mb: 2, mr: 1}}>
         Manage Users
       </Typography>
 
