@@ -231,10 +231,10 @@ function App() {
 
               {/* Admin sidebar links*/}
               <List>
-                <ListItem button component={Link} to="/manageusers" onClick={handleDrawerClose}>
+                <ListItem button component={Link} to="/manageusers" onClick={handleDrawerClose} sx={{fontSize: '1rem'}}>
                   <ListItemText primary="Manage Users" />
                 </ListItem>
-                <ListItem button component={Link} to="/manageloyalty" onClick={handleDrawerClose}>
+                <ListItem button component={Link} to="/manageloyalty" onClick={handleDrawerClose} sx={{fontSize: '1rem'}}>
                   <ListItemText primary="Manage Loyalty Discount" />
                 </ListItem>
               </List>
