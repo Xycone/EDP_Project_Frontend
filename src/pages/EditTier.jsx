@@ -104,7 +104,7 @@ function EditTier() {
                     }}
                     htmlFor="tier-info-label"
                   >
-                    Tier Information
+                    Tier Info
                   </InputLabel>
                   <TextField
                     sx={{ my: 1, mt: 2 }}
@@ -148,7 +148,7 @@ function EditTier() {
                     helperText={formik.touched.tierSpendings && formik.errors.tierSpendings}
                   />
                   <FormControl fullWidth sx={{ my: 1 }}>
-                    <InputLabel id="demo-simple-select-label">Listing Id:</InputLabel>
+                    <InputLabel id="demo-simple-select-label">Tier Position:</InputLabel>
                     <Select
                       fullWidth
                       margin="dense"
