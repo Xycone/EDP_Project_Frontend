@@ -127,6 +127,7 @@ function EditTier() {
                     autoComplete="off"
                     label="Tier Bookings"
                     name="tierBookings"
+                    type="number"
                     value={formik.values.tierBookings}
                     onChange={formik.handleChange}
                     onBlur={formik.handleBlur}
@@ -140,7 +141,8 @@ function EditTier() {
                     margin="dense"
                     autoComplete="off"
                     label="Tier Spendings"
-                    name="tierSpendings"  // Use TierSpendings instead of description
+                    name="tierSpendings"
+                    type="number"
                     value={formik.values.tierSpendings}
                     onChange={formik.handleChange}
                     onBlur={formik.handleBlur}
