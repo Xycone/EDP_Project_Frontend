@@ -63,7 +63,7 @@ function AddTier() {
                 Tier Info
               </InputLabel>
               <TextField
-                sx={{ my: 1 }}
+                sx={{ my: 1, mt: 2, fontSize: '1rem' }}
                 fullWidth margin="dense" autoComplete="off"
                 label="Tier Name"
                 name="tierName"
@@ -74,7 +74,7 @@ function AddTier() {
                 helperText={formik.touched.tierName && formik.errors.tierName}
               />
               <TextField
-                sx={{ my: 1 }}
+                sx={{ my: 1, fontSize: '1rem' }}
                 fullWidth margin="dense" autoComplete="off"
                 label="Tier Bookings"
                 name="tierBookings"
@@ -86,7 +86,7 @@ function AddTier() {
                 helperText={formik.touched.tierBookings && formik.errors.tierBookings}
               />
               <TextField
-                sx={{ my: 1 }}
+                sx={{ my: 1, fontSize: '1rem' }}
                 fullWidth margin="dense" autoComplete="off"
                 label="Tier Spendings"
                 name="tierSpendings"

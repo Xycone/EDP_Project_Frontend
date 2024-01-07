@@ -82,7 +82,7 @@ function EditTier() {
 
   return (
     <Box sx={{ my: 2 }}>
-      <Typography variant="h5" sx={{ my: 2 }}>
+      <Typography variant="h6" sx={{ my: 2 }}>
         Edit Tier
       </Typography>
       {
@@ -107,7 +107,7 @@ function EditTier() {
                     Tier Info
                   </InputLabel>
                   <TextField
-                    sx={{ my: 1, mt: 2 }}
+                    sx={{ my: 1, mt: 2, fontSize: '1rem' }}
                     fullWidth
                     margin="dense"
                     autoComplete="off"
@@ -121,7 +121,7 @@ function EditTier() {
                   />
 
                   <TextField
-                    sx={{ my: 1 }}
+                    sx={{ my: 1, fontSize: '1rem' }}
                     fullWidth
                     margin="dense"
                     autoComplete="off"
@@ -135,7 +135,7 @@ function EditTier() {
                   />
 
                   <TextField
-                    sx={{ my: 1 }}
+                    sx={{ my: 1, fontSize: '1rem' }}
                     fullWidth
                     margin="dense"
                     autoComplete="off"
@@ -150,6 +150,7 @@ function EditTier() {
                   <FormControl fullWidth sx={{ my: 1 }}>
                     <InputLabel id="demo-simple-select-label">Tier Position:</InputLabel>
                     <Select
+                      sx={{ fontSize: '1rem' }}
                       fullWidth
                       margin="dense"
                       label="Tier Position"
