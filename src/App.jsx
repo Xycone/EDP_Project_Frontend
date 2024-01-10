@@ -1,12 +1,12 @@
 import './App.css';
 import { useState, useEffect } from 'react';
-import { Container, AppBar, Toolbar, Typography, Box, Button } from '@mui/material';
+import { Container, AppBar, Toolbar, Typography, Box, Button, Drawer, List, ListItem, ListItemText, IconButton } from '@mui/material';
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import { ThemeProvider } from '@mui/material/styles';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import MyTheme from './themes/MyTheme';
-import { Person, AdminPanelSettings } from '@mui/icons-material';
+import { Person, AdminPanelSettings, Menu as MenuIcon, ChevronLeft } from '@mui/icons-material';
 
 import Tutorials from './pages/Tutorials';
 import AddTutorial from './pages/AddTutorial';
@@ -21,6 +21,12 @@ import AdminMenu from './pages/AdminMenu';
 import Orders from './pages/Orders';
 import CreateOrders from './pages/CreateOrder';
 import EditOrder from './pages/EditOrder';
+import ManageUsers from './pages/ManageUsers';
+import ManageLoyaltyDiscount from './pages/ManageLoyaltyDiscount';
+import AddTier from './pages/AddTier';
+import EditTier from './pages/EditTier';
+
+const drawerWidth = 240;
 
 function App() {
   const [user, setUser] = useState(null);
@@ -28,6 +34,7 @@ function App() {
   const [isNotAdminView, setIsNotAdminView] = useState(
     localStorage.getItem('isAdminView') === 'true' // Read from local storage
   );
+  const [open, setOpen] = useState(false);
 
   useEffect(() => {
     if (localStorage.getItem('accessToken')) {
@@ -42,6 +49,7 @@ function App() {
     window.location = '/';
   };
 
+  // navbar dropdown
   const handleMenuOpen = (event) => {
     setAnchorEl(event.currentTarget);
   };
@@ -50,6 +58,7 @@ function App() {
     setAnchorEl(null);
   };
 
+  // view toggle
   const toggleAdminView = () => {
     setIsNotAdminView((prevIsNotAdminView) => {
       const newIsNotAdminView = !prevIsNotAdminView;
@@ -58,124 +67,183 @@ function App() {
     });
   };
 
+  // admin view sidebar
+  const handleDrawerOpen = () => {
+    setOpen(true);
+  };
+
+  const handleDrawerClose = () => {
+    setOpen(false);
+  };
+
   return (
     <UserContext.Provider value={{ user, setUser }}>
       <Router>
         <ThemeProvider theme={MyTheme}>
           <AppBar position="static" className="AppBar">
-            <Container>
-              <Toolbar disableGutters={true}>
-                <Typography variant="h6" component="div">
-                  UPlay
-                </Typography>
-                <Box sx={{ flexGrow: 1 }}></Box>
+            <Toolbar>
+              {user && user.isAdmin && !isNotAdminView && (
+                <>
+                  <IconButton
+                    color="inherit"
+                    onClick={handleDrawerOpen}
+                  >
+                    <MenuIcon />
+                  </IconButton>
+                  <Box sx={{ flexGrow: 0.1 }} />
+                </>
+              )}
+              <Typography variant="h6" noWrap component="div">
+                UPlay
+              </Typography>
+              <Box sx={{ flexGrow: 1 }} />
 
-                <Box sx={{ display: 'flex', gap: 2 }}>
-                  {/* User navbar items */}
-                  <>
-                    <Link to="/tutorials">
-                      <Typography component="div">
-                        Tutorials
-                      </Typography>
-                    </Link><Link to="/addtutorial">
-                      <Typography component="div">
-                        AddTutorial
-                      </Typography>
-                    </Link>
+              {/* User navbar items */}
+              <Box sx={{ display: 'flex', gap: 2 }}>
+                <>
+                  <Link to="/tutorials">
+                    <Typography component="div">
+                      Tutorials
+                    </Typography>
+                  </Link>
+                </>
+                <>
+                  <Link to="/addtutorial">
+                    <Typography component="div">
+                      AddTutorial
+                    </Typography>
+                  </Link>
+                </>
+              </Box>
 
+              <Box sx={{ flexGrow: 1 }} />
+              {/* User logged in */}
+              {user && (
+                <>
+                  <Button onClick={handleMenuOpen} style={{ color: 'white' }}>
+                    <Typography component="div">
+                      {user.userName}
+                    </Typography>
+                  </Button>
 
-                  </>
-                </Box>
+                  {/* Dropdown menu for the user's name */}
+                  <Menu
+                    anchorEl={anchorEl}
+                    open={Boolean(anchorEl)}
+                    onClose={handleMenuClose}
+                    anchorOrigin={{
+                      vertical: 'bottom',
+                      horizontal: 'right',
+                    }}
+                    transformOrigin={{
+                      vertical: 'top',
+                      horizontal: 'right',
+                    }}
+                  >
+                    {/* Admin view toggle */}
+                    {user.isAdmin && (
+                      <Link to={isNotAdminView ? "/manageusers" : "/tutorials"} style={{ textDecoration: 'none', color: 'inherit' }}>
+                        <MenuItem
+                          onClick={toggleAdminView}
+                          variant="contained"
+                          color="primary"
+                          sx={{ marginLeft: '4px' }}
+                        >
+                          <Typography variant="caption" sx={{ marginLeft: 1 }}>
+                            {isNotAdminView ? 'User View' : 'Admin View'}
+                          </Typography>
+                          {isNotAdminView ? <Person /> : <AdminPanelSettings />}
+                        </MenuItem>
+                      </Link>
+                    )}
 
-                <Box sx={{ flexGrow: 1 }}></Box>
-                {user && (
-                  <>
-                    <Button onClick={handleMenuOpen} style={{ color: 'white' }}>
-                      <Typography component="div">
-                        {user.userName}
-                      </Typography>
-                    </Button>
-
-                    {/* Dropdown menu for the user's name */}
-                    <Menu
-                      anchorEl={anchorEl}
-                      open={Boolean(anchorEl)}
-                      onClose={handleMenuClose}
-                      anchorOrigin={{
-                        vertical: 'bottom',
-                        horizontal: 'right',
-                      }}
-                      transformOrigin={{
-                        vertical: 'top',
-                        horizontal: 'right',
-                      }}
-                    >
-                      {/* Admin view toggle */}
-                      {user.isAdmin && (
-                        <Link to={isNotAdminView ? "/adminmenu" : "/tutorials"} style={{ textDecoration: 'none', color: 'inherit' }}>
+                    {/* User View menu items */}
+                    {(!user.isAdmin || isNotAdminView) && (
+                      <>
+                        <Link to={"/"} style={{ textDecoration: 'none', color: 'inherit' }}>
                           <MenuItem
-                            onClick={toggleAdminView}
                             variant="contained"
                             color="primary"
                             sx={{ marginLeft: '4px' }}
                           >
                             <Typography variant="caption" sx={{ marginLeft: 1 }}>
-                              {isNotAdminView ? 'User View' : 'Admin View'}
+                              My Account
                             </Typography>
-                            {isNotAdminView ? <Person /> : <AdminPanelSettings />}
                           </MenuItem>
                         </Link>
-                      )}
 
-                      {isNotAdminView && (
-                        <>
-                          <Link to={"/"} style={{ textDecoration: 'none', color: 'inherit' }}>
-                            <MenuItem
-                              variant="contained"
-                              color="primary"
-                              sx={{ marginLeft: '4px' }}
-                            >
-                              <Typography variant="caption" sx={{ marginLeft: 1 }}>
-                                My Account
-                              </Typography>
-                            </MenuItem>
-                          </Link>
+                        <Link to={"/"} style={{ textDecoration: 'none', color: 'inherit' }}>
+                          <MenuItem
+                            variant="contained"
+                            color="primary"
+                            sx={{ marginLeft: '4px' }}
+                          >
+                            <Typography variant="caption" sx={{ marginLeft: 1 }}>
+                              My Transactions
+                            </Typography>
+                          </MenuItem>
+                        </Link>
+                      </>
+                    )}
 
-                          <Link to={"/"} style={{ textDecoration: 'none', color: 'inherit' }}>
-                            <MenuItem
-                              variant="contained"
-                              color="primary"
-                              sx={{ marginLeft: '4px' }}
-                            >
-                              <Typography variant="caption" sx={{ marginLeft: 1 }}>
-                                My Transactions
-                              </Typography>
-                            </MenuItem>
-                          </Link>
-                        </>
-                      )}
+                    {/* Logout button */}
+                    <MenuItem
+                      onClick={logout}
+                      sx={{ marginLeft: '4px' }}
+                    >
+                      <Typography variant="caption" sx={{ marginLeft: 1 }}>
+                        Logout
+                      </Typography>
+                    </MenuItem>
+                  </Menu>
+                </>
+              )}
 
-                      <MenuItem
-                        onClick={logout}
-                        sx={{ marginLeft: '4px' }}
-                      >
-                        <Typography variant="caption" sx={{ marginLeft: 1 }}>
-                          Logout
-                        </Typography>
-                      </MenuItem>
-                    </Menu>
-                  </>
-                )
-                }
-                {!user && (
-                  <>
-                    <Link to="/register" ><Typography>Register</Typography></Link>
-                    <Link to="/login" ><Typography>Login</Typography></Link>
-                  </>
-                )}
-              </Toolbar>
-            </Container>
+              {/* User not logged in */}
+              {!user && (
+                <>
+                  <Link to="/register">Register</Link>
+                  <Link to="/login" ><Typography>Login</Typography></Link>
+                </>
+              )}
+            </Toolbar>
           </AppBar>
+
+          {/* Drawer */}
+          {!isNotAdminView && (
+            <Drawer
+              sx={{
+                width: drawerWidth,
+                flexShrink: 0,
+                '& .MuiDrawer-paper': {
+                  width: drawerWidth,
+                  boxSizing: 'border-box',
+                },
+              }}
+              variant="persistent"
+              anchor="left"
+              open={open}
+            >
+              <Box sx={{ display: 'flex', alignItems: 'center', textAlign: 'center', borderBottom: '2px solid grey', pb: 1 }}>
+                <IconButton onClick={handleDrawerClose}>
+                  <ChevronLeft />
+                </IconButton>
+                <Typography variant="h6" component="div" sx={{ textAlign: 'center', padding: 2 }}>
+                  Admin
+                </Typography>
+              </Box>
+
+              {/* Admin sidebar links*/}
+              <List>
+                <ListItem button component={Link} to="/manageusers" onClick={handleDrawerClose} sx={{ fontSize: '1rem' }}>
+                  <ListItemText primary="Manage Users" />
+                </ListItem>
+                <ListItem button component={Link} to="/manageloyalty" onClick={handleDrawerClose} sx={{ fontSize: '1rem' }}>
+                  <ListItemText primary="Manage Loyalty Discount" />
+                </ListItem>
+              </List>
+            </Drawer>
+          )}
 
           <Container>
             <Routes>
@@ -197,13 +265,17 @@ function App() {
                   <Route path="/adminmenu" element={<AdminMenu />} />
                   <Route path="/orders" element={<Orders />} />
                   <Route path="/create-order" element={<CreateOrders />} />
+                  <Route path={"/manageusers"} element={<ManageUsers />} />
+                  <Route path={"/manageloyalty"} element={<ManageLoyaltyDiscount />} />
+                  <Route path={"/addtier"} element={<AddTier />} />
+                  <Route path={"/edittier/:id"} element={<EditTier />} />
                 </>
               )}
             </Routes>
           </Container>
         </ThemeProvider>
       </Router>
-    </UserContext.Provider>
+    </UserContext.Provider >
   );
 }
 

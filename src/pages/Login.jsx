@@ -35,7 +35,7 @@ function Login() {
                     localStorage.setItem("accessToken", res.data.accessToken);
                     setUser(res.data.user);
                     if (res.data.user.isAdmin) {
-                        navigate("/adminmenu")
+                        navigate("/manageusers")
                     } else {
                         navigate("/tutorials")
                     }
