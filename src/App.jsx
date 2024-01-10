@@ -18,6 +18,9 @@ import http from './http';
 import UserContext from './contexts/UserContext';
 import LoyaltyDiscount from './pages/LoyaltyDiscount';
 import AdminMenu from './pages/AdminMenu';
+import Orders from './pages/Orders';
+import CreateOrders from './pages/CreateOrder';
+import EditOrder from './pages/EditOrder';
 
 function App() {
   const [user, setUser] = useState(null);
@@ -79,6 +82,8 @@ function App() {
                         AddTutorial
                       </Typography>
                     </Link>
+
+
                   </>
                 </Box>
 
@@ -182,11 +187,16 @@ function App() {
                 <Route path={"/login"} element={<Login />} />
                 <Route path={"/form"} element={<MyForm />} />
                 <Route path={"/loyaltydiscount"} element={<LoyaltyDiscount />} />
+                <Route path="/edit-order/:id" element={<EditOrder />} />
+
+
               </>
               {/* Admin only pages*/}
               {user && user.isAdmin && !isNotAdminView && (
                 <>
                   <Route path="/adminmenu" element={<AdminMenu />} />
+                  <Route path="/orders" element={<Orders />} />
+                  <Route path="/create-order" element={<CreateOrders />} />
                 </>
               )}
             </Routes>
