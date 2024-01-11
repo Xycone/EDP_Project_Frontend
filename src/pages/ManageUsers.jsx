@@ -119,7 +119,7 @@ function ManageUsers() {
   };
   // (Delete confirmation)
 
-  
+
   useEffect(() => {
     getUsers();
   }, [page, pageSize, search]);
