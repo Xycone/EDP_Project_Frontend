@@ -17,7 +17,6 @@ import Login from './pages/Login';
 import http from './http';
 import UserContext from './contexts/UserContext';
 import LoyaltyDiscount from './pages/LoyaltyDiscount';
-import AdminMenu from './pages/AdminMenu';
 import Orders from './pages/Orders';
 import CreateOrders from './pages/CreateOrder';
 import EditOrder from './pages/EditOrder';
