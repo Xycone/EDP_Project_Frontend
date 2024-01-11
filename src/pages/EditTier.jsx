@@ -42,6 +42,7 @@ function EditTier() {
         .max(15, 'Tier name must be at most 15 characters')
         .required('Tier name is required'),
       tierBookings: yup.number()
+        .integer('Value must be an integer')
         .min(1, 'Tier bookings must be at least 1')
         .required('Tier bookings is required'),
       tierSpendings: yup.number()
@@ -89,7 +90,7 @@ function EditTier() {
         !loading && (
           <Box component="form" onSubmit={formik.handleSubmit}>
             <Grid container spacing={2}>
-              <Grid item xs={12} md={6} lg={8}>
+              <Grid item xs={12} md={5} lg={5}>
                 <Box sx={{ mt: 1, border: '1px solid #ccc', borderRadius: '8px', padding: '16px', marginBottom: '16px', position: 'relative' }}>
                   <InputLabel
                     sx={{
@@ -148,7 +149,11 @@ function EditTier() {
                     onBlur={formik.handleBlur}
                     error={formik.touched.tierSpendings && Boolean(formik.errors.tierSpendings)}
                     helperText={formik.touched.tierSpendings && formik.errors.tierSpendings}
+                    InputProps={{
+                      startAdornment: "$",
+                    }}
                   />
+
                   <FormControl fullWidth sx={{ my: 1 }}>
                     <InputLabel id="demo-simple-select-label">Tier Position:</InputLabel>
                     <Select
