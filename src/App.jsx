@@ -261,7 +261,6 @@ function App() {
               {/* Admin only pages*/}
               {user && user.isAdmin && !isNotAdminView && (
                 <>
-                  <Route path="/adminmenu" element={<AdminMenu />} />
                   <Route path="/orders" element={<Orders />} />
                   <Route path="/create-order" element={<CreateOrders />} />
                   <Route path={"/manageusers"} element={<ManageUsers />} />
