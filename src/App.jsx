@@ -25,6 +25,7 @@ import ManageLoyaltyDiscount from './pages/ManageLoyaltyDiscount';
 import AddTier from './pages/AddTier';
 import EditTier from './pages/EditTier';
 import Listings from './pages/Listings';
+import Listing from './pages/Listing';
 import EditListing from './pages/EditListing';
 import AddListing from './pages/AddListing';
 import Activities from './pages/Activities';
@@ -121,7 +122,7 @@ function App() {
                 </>
                 <Link to="/Listings">
                     <Typography component="div">
-                      Listings
+                      All Activities
                     </Typography>
                   </Link>
               </Box>
@@ -269,11 +270,8 @@ function App() {
 
 
                 <Route path={"/listings"} element={<Listings />} />
-                <Route path={"/editlisting/:id"} element={<EditListing />} />
-                <Route path={"/addlisting"} element={<AddListing />} />
                 <Route path={"/activities/:id"} element={<Activities />} />
-                <Route path={"/editactivity/:id"} element={<EditActivity />} />
-                <Route path={"/addactivity/:id"} element={<AddActivity />} />
+                <Route path={"/listing/:id"} element={<Listing />} />
               </>
               {/* Admin only pages*/}
               {user && user.isAdmin && !isNotAdminView && (
@@ -284,6 +282,11 @@ function App() {
                   <Route path={"/manageloyalty"} element={<ManageLoyaltyDiscount />} />
                   <Route path={"/addtier"} element={<AddTier />} />
                   <Route path={"/edittier/:id"} element={<EditTier />} />
+                  <Route path={"/editactivity/:id"} element={<EditActivity />} />
+                  <Route path={"/addactivity/:id"} element={<AddActivity />} />
+                  <Route path={"/editlisting/:id"} element={<EditListing />} />
+                  <Route path={"/addlisting"} element={<AddListing />} />
+                  
                 </>
               )}
             </Routes>
