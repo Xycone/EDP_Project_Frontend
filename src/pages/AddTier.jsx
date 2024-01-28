@@ -1,6 +1,7 @@
-import React from 'react'
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Box, Typography, TextField, Button, Grid, FormControl, InputLabel } from '@mui/material';
+import { Box, Typography, TextField, Button, Grid, InputLabel, Card, CardContent, Select, MenuItem, FormControl, IconButton } from '@mui/material';
+import { Add } from '@mui/icons-material';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
 import http from '../http';
@@ -20,6 +21,7 @@ function AddTier() {
         .max(15, 'Tier name must be at most 15 characters')
         .required('Tier name is required'),
       tierBookings: yup.number()
+        .integer('Value must be an integer')
         .min(1, 'Tier bookings must be at least 1')
         .required('Tier bookings is required'),
       tierSpendings: yup.number()
@@ -32,7 +34,6 @@ function AddTier() {
       data.tierSpendings = Number(data.tierSpendings);
       http.post("/tier", data)
         .then((res) => {
-          console.log(res.data);
           navigate("/manageloyalty");
         });
     }
@@ -45,7 +46,7 @@ function AddTier() {
       </Typography>
       <Box component="form" onSubmit={formik.handleSubmit}>
         <Grid container spacing={2}>
-          <Grid item xs={12} md={6} lg={8}>
+          <Grid item xs={12} md={5} lg={5}>
             <Box sx={{ mt: 1, border: '1px solid #ccc', borderRadius: '8px', padding: '16px', marginBottom: '16px', position: 'relative' }}>
               <InputLabel
                 sx={{
@@ -64,7 +65,9 @@ function AddTier() {
               </InputLabel>
               <TextField
                 sx={{ my: 1, mt: 2, fontSize: '1rem' }}
-                fullWidth margin="dense" autoComplete="off"
+                fullWidth
+                margin="dense"
+                autoComplete="off"
                 label="Tier Name"
                 name="tierName"
                 value={formik.values.tierName}
@@ -73,9 +76,12 @@ function AddTier() {
                 error={formik.touched.tierName && Boolean(formik.errors.tierName)}
                 helperText={formik.touched.tierName && formik.errors.tierName}
               />
+
               <TextField
                 sx={{ my: 1, fontSize: '1rem' }}
-                fullWidth margin="dense" autoComplete="off"
+                fullWidth
+                margin="dense"
+                autoComplete="off"
                 label="Tier Bookings"
                 name="tierBookings"
                 type="number"
@@ -85,9 +91,12 @@ function AddTier() {
                 error={formik.touched.tierBookings && Boolean(formik.errors.tierBookings)}
                 helperText={formik.touched.tierBookings && formik.errors.tierBookings}
               />
+
               <TextField
                 sx={{ my: 1, fontSize: '1rem' }}
-                fullWidth margin="dense" autoComplete="off"
+                fullWidth
+                margin="dense"
+                autoComplete="off"
                 label="Tier Spendings"
                 name="tierSpendings"
                 type="number"
@@ -100,18 +109,18 @@ function AddTier() {
                   startAdornment: "$",
                 }}
               />
+              <Box sx={{ mt: 2 }}>
+                <Button variant="contained" type="submit" onClick={formik.handleSubmit}>
+                  Create Tier
+                </Button>
+              </Box>
             </Box>
 
           </Grid>
         </Grid>
 
-        <Box sx={{ mt: 2 }}>
-          <Button variant="contained" type="submit">
-            Add
-          </Button>
-        </Box>
       </Box>
-    </Box>
+    </Box >
   );
 }
 

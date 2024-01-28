@@ -17,7 +17,6 @@ import Login from './pages/Login';
 import http from './http';
 import UserContext from './contexts/UserContext';
 import LoyaltyDiscount from './pages/LoyaltyDiscount';
-import AdminMenu from './pages/AdminMenu';
 import Orders from './pages/Orders';
 import CreateOrders from './pages/CreateOrder';
 import EditOrder from './pages/EditOrder';
@@ -25,6 +24,8 @@ import ManageUsers from './pages/ManageUsers';
 import ManageLoyaltyDiscount from './pages/ManageLoyaltyDiscount';
 import AddTier from './pages/AddTier';
 import EditTier from './pages/EditTier';
+import TierPerks from './pages/TierPerks';
+import AccountPage from './pages/AccountPage';
 
 const drawerWidth = 240;
 
@@ -160,7 +161,7 @@ function App() {
                     {/* User View menu items */}
                     {(!user.isAdmin || isNotAdminView) && (
                       <>
-                        <Link to={"/"} style={{ textDecoration: 'none', color: 'inherit' }}>
+                        <Link to={"/myAccount"} style={{ textDecoration: 'none', color: 'inherit' }}>
                           <MenuItem
                             variant="contained"
                             color="primary"
@@ -172,14 +173,14 @@ function App() {
                           </MenuItem>
                         </Link>
 
-                        <Link to={"/"} style={{ textDecoration: 'none', color: 'inherit' }}>
+                        <Link to={"/loyaltydiscount"} style={{ textDecoration: 'none', color: 'inherit' }}>
                           <MenuItem
                             variant="contained"
                             color="primary"
                             sx={{ marginLeft: '4px' }}
                           >
                             <Typography variant="caption" sx={{ marginLeft: 1 }}>
-                              My Transactions
+                              Loyalty Program
                             </Typography>
                           </MenuItem>
                         </Link>
@@ -258,20 +259,21 @@ function App() {
                 <Route path={"/login"} element={<Login />} />
                 <Route path={"/form"} element={<MyForm />} />
                 <Route path={"/loyaltydiscount"} element={<LoyaltyDiscount />} />
-                <Route path="/edit-order/:id" element={<EditOrder />} />
+                <Route path={"/myAccount"} element={<AccountPage />} />
+                <Route path={"/edit-order/:id"} element={<EditOrder />} />
 
 
               </>
               {/* Admin only pages*/}
               {user && user.isAdmin && !isNotAdminView && (
                 <>
-                  <Route path="/adminmenu" element={<AdminMenu />} />
                   <Route path="/orders" element={<Orders />} />
                   <Route path="/create-order" element={<CreateOrders />} />
                   <Route path={"/manageusers"} element={<ManageUsers />} />
                   <Route path={"/manageloyalty"} element={<ManageLoyaltyDiscount />} />
                   <Route path={"/addtier"} element={<AddTier />} />
                   <Route path={"/edittier/:id"} element={<EditTier />} />
+                  <Route path={"/tierperks/:id"} element={<TierPerks />} />
                 </>
               )}
             </Routes>
