@@ -17,6 +17,9 @@ import Login from './pages/Login';
 import http from './http';
 import UserContext from './contexts/UserContext';
 import LoyaltyDiscount from './pages/LoyaltyDiscount';
+import Orders from './pages/Orders';
+import CreateOrders from './pages/CreateOrder';
+import EditOrder from './pages/EditOrder';
 import ManageUsers from './pages/ManageUsers';
 import ManageLoyaltyDiscount from './pages/ManageLoyaltyDiscount';
 import AddTier from './pages/AddTier';
@@ -242,10 +245,10 @@ function App() {
 
               {/* Admin sidebar links*/}
               <List>
-                <ListItem button component={Link} to="/manageusers" onClick={handleDrawerClose} sx={{fontSize: '1rem'}}>
+                <ListItem button component={Link} to="/manageusers" onClick={handleDrawerClose} sx={{ fontSize: '1rem' }}>
                   <ListItemText primary="Manage Users" />
                 </ListItem>
-                <ListItem button component={Link} to="/manageloyalty" onClick={handleDrawerClose} sx={{fontSize: '1rem'}}>
+                <ListItem button component={Link} to="/manageloyalty" onClick={handleDrawerClose} sx={{ fontSize: '1rem' }}>
                   <ListItemText primary="Manage Loyalty Discount" />
                 </ListItem>
               </List>
@@ -262,6 +265,9 @@ function App() {
                 <Route path={"/login"} element={<Login />} />
                 <Route path={"/form"} element={<MyForm />} />
                 <Route path={"/loyaltydiscount"} element={<LoyaltyDiscount />} />
+                <Route path="/edit-order/:id" element={<EditOrder />} />
+
+
                 <Route path={"/listings"} element={<Listings />} />
                 <Route path={"/editlisting/:id"} element={<EditListing />} />
                 <Route path={"/addlisting"} element={<AddListing />} />
@@ -272,6 +278,8 @@ function App() {
               {/* Admin only pages*/}
               {user && user.isAdmin && !isNotAdminView && (
                 <>
+                  <Route path="/orders" element={<Orders />} />
+                  <Route path="/create-order" element={<CreateOrders />} />
                   <Route path={"/manageusers"} element={<ManageUsers />} />
                   <Route path={"/manageloyalty"} element={<ManageLoyaltyDiscount />} />
                   <Route path={"/addtier"} element={<AddTier />} />

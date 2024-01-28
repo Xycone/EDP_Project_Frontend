@@ -30,7 +30,6 @@ function ManageUsers() {
   // (Datagrid)
   // Table column names used for datagrid
   const columns = [
-    { field: 'id', headerName: 'ID', flex: 0.3 }, // Adjust the flex property
     { field: 'userName', headerName: 'Name', flex: 0.6 },
     { field: 'userEmail', headerName: 'Email', flex: 1 },
     { field: 'userHp', headerName: 'HP', flex: 0.5 },
@@ -120,7 +119,7 @@ function ManageUsers() {
   };
   // (Delete confirmation)
 
-  
+
   useEffect(() => {
     getUsers();
   }, [page, pageSize, search]);
