@@ -24,6 +24,10 @@ import ManageUsers from './pages/ManageUsers';
 import ManageLoyaltyDiscount from './pages/ManageLoyaltyDiscount';
 import AddTier from './pages/AddTier';
 import EditTier from './pages/EditTier';
+import Cart from './pages/Cart';
+import AddCartItem from './pages/AddCartItem';
+import EditCartItem from './pages/EditCartItem';
+import Checkout from './pages/Checkout';
 
 const drawerWidth = 240;
 
@@ -100,16 +104,16 @@ function App() {
               {/* User navbar items */}
               <Box sx={{ display: 'flex', gap: 2 }}>
                 <>
-                  <Link to="/tutorials">
+                  <Link to="/cart">
                     <Typography component="div">
-                      Tutorials
+                      Cart
                     </Typography>
                   </Link>
                 </>
                 <>
-                  <Link to="/addtutorial">
+                  <Link to="/addcartitem">
                     <Typography component="div">
-                      AddTutorial
+                      Addcartitem
                     </Typography>
                   </Link>
                 </>
@@ -254,6 +258,10 @@ function App() {
                 <Route path={"/login"} element={<Login />} />
                 <Route path={"/form"} element={<MyForm />} />
                 <Route path={"/loyaltydiscount"} element={<LoyaltyDiscount />} />
+                <Route path={"/cart"} element={<Cart />}/>
+                <Route path={"/addcartitem"} element={<AddCartItem />}/>
+                <Route path={"/editcartitem/:id"} element={<EditCartItem/>}/>
+                <Route path={"/checkout"} element={<Checkout/>}/>
                 <Route path="/edit-order/:id" element={<EditOrder />} />
 
 
