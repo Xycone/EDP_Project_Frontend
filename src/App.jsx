@@ -21,6 +21,12 @@ import ManageUsers from './pages/ManageUsers';
 import ManageLoyaltyDiscount from './pages/ManageLoyaltyDiscount';
 import AddTier from './pages/AddTier';
 import EditTier from './pages/EditTier';
+import Listings from './pages/Listings';
+import EditListing from './pages/EditListing';
+import AddListing from './pages/AddListing';
+import Activities from './pages/Activities';
+import EditActivity from './pages/EditActivity';
+import AddActivity from './pages/AddActivity';
 
 const drawerWidth = 240;
 
@@ -110,6 +116,11 @@ function App() {
                     </Typography>
                   </Link>
                 </>
+                <Link to="/Listings">
+                    <Typography component="div">
+                      Listings
+                    </Typography>
+                  </Link>
               </Box>
 
               <Box sx={{ flexGrow: 1 }} />
@@ -251,6 +262,12 @@ function App() {
                 <Route path={"/login"} element={<Login />} />
                 <Route path={"/form"} element={<MyForm />} />
                 <Route path={"/loyaltydiscount"} element={<LoyaltyDiscount />} />
+                <Route path={"/listings"} element={<Listings />} />
+                <Route path={"/editlisting/:id"} element={<EditListing />} />
+                <Route path={"/addlisting"} element={<AddListing />} />
+                <Route path={"/activities/:id"} element={<Activities />} />
+                <Route path={"/editactivity/:id"} element={<EditActivity />} />
+                <Route path={"/addactivity/:id"} element={<AddActivity />} />
               </>
               {/* Admin only pages*/}
               {user && user.isAdmin && !isNotAdminView && (
