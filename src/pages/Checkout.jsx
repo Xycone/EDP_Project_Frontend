@@ -1,31 +1,31 @@
 // Checkout.js
 
-import React, { useEffect } from 'react';
-import { Box, Typography, Button } from '@mui/material';
-import { Link } from 'react-router-dom';
-import http from '../http';
+import React from 'react';
+import { CardElement, injectStripe } from 'react-stripe-elements';
 
-function Checkout() {
-    const clearCart = () => {
-        http.delete('/cartitem').then((res) => {
-        })
-    };
-    useEffect(() => {
-        clearCart();
-      }, []);
-  return (
-    <Box sx={{ my: 2 }}>
-      <Typography variant="h6" sx={{ mb: 2 }}>
-        Imagine this is after purchase
-        Thank you for your purchase crap
-      </Typography>
-      <Link to="/cart" style={{ textDecoration: 'none' }}>
-        <Button variant="contained" color="primary">
-          Back to Cart
-        </Button>
-      </Link>
-    </Box>
-  );
+class Checkout extends React.Component {
+  handleSubmit = async (e) => {
+    e.preventDefault();
+
+    const { token } = await this.props.stripe.createToken();
+
+    // Send the token to your server to create a charge
+    // You need to implement a server endpoint to handle the payment
+
+    console.log('Token:', token);
+  };
+
+  render() {
+    return (
+      <form onSubmit={this.handleSubmit}>
+        <label>
+          Card details
+          <CardElement />
+        </label>
+        <button type="submit">Pay</button>
+      </form>
+    );
+  }
 }
 
-export default Checkout;
+export default injectStripe(Checkout);

@@ -25,24 +25,20 @@ function EditCartItem() {
   }, []);
 
   const formik = useFormik({
-    initialValues: cartItem,
+    initialValues: {
+      quantity: cartItem.quantity,
+    },
     enableReinitialize: true,
     validationSchema: yup.object({
-      name: yup.string().trim()
-        .min(3, 'Item name must be at least 3 characters')
-        .max(128, 'Item name must be at most 128 characters')
-        .required('Item name is required'),
       quantity: yup.number()
         .min(1, 'Quantity must be at least 1')
         .required('Quantity is required'),
-      price: yup.number()
-        .min(0.01, 'Price must be at least 0.01')
-        .required('Price is required'),
     }),
     onSubmit: (data) => {
-      data.name = data.name.trim();
+      data.name = cartItem.name;
+      data.price = cartItem.price;
       data.quantity = Number(data.quantity);
-      data.price = Number(data.price);
+
       http.put(`/cartitem/${id}`, data)
         .then((res) => {
           console.log(res.data);
@@ -81,19 +77,9 @@ function EditCartItem() {
               <Typography variant="subtitle1" sx={{ mb: 2, fontWeight: 'bold' }}>
                 Cart Item Info
               </Typography>
-              <TextField
-                sx={{ my: 1, fontSize: '1rem' }}
-                fullWidth
-                margin="dense"
-                autoComplete="off"
-                label="name"
-                name="name"
-                value={formik.values.name}
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
-                error={formik.touched.name && Boolean(formik.errors.name)}
-                helperText={formik.touched.name && formik.errors.name}
-              />
+              <Typography variant="body1" sx={{ my: 1 }}>
+                Name: {cartItem.name}
+              </Typography>
 
               <TextField
                 sx={{ my: 1, fontSize: '1rem' }}
@@ -110,20 +96,9 @@ function EditCartItem() {
                 helperText={formik.touched.quantity && formik.errors.quantity}
               />
 
-              <TextField
-                sx={{ my: 1, fontSize: '1rem' }}
-                fullWidth
-                margin="dense"
-                autoComplete="off"
-                label="Price"
-                name="price"
-                type="number"
-                value={formik.values.price}
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
-                error={formik.touched.price && Boolean(formik.errors.price)}
-                helperText={formik.touched.price && formik.errors.price}
-              />
+              <Typography variant="body1" sx={{ my: 1 }}>
+                Price: ${cartItem.price.toFixed(2)}
+              </Typography>
             </Box>
 
             <Box sx={{ mt: 2 }}>
