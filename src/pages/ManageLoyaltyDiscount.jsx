@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import http from '../http';
-import { Box, Typography, IconButton, Input, Button, Grid } from '@mui/material';
-import { Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions } from '@mui/material';
-import { Delete, Search, Clear, AccessTime } from '@mui/icons-material';
+import { Box, Typography, IconButton, Input, Button } from '@mui/material';
+import { Search, Clear, AccessTime, Edit, ChevronRight } from '@mui/icons-material';
 import { DataGrid } from '@mui/x-data-grid';
 import dayjs from 'dayjs';
 import global from '../global';
@@ -18,6 +17,57 @@ function ManageLoyaltyDiscount() {
     })
   };
 
+
+  // (DataGrid)
+  const columns = [   
+    { field: 'tierName', headerName: 'Tier Name', flex: 0.7 },
+    { field: 'tierBookings', headerName: 'Bookings', flex: 0.6 },
+    { field: 'tierSpendings', headerName: 'Spendings', flex: 0.6 },
+    { field: 'tierPosition', headerName: 'Position', flex: 0.4 },
+    {
+      field: 'updatedAt',
+      headerName: 'Last Updated',
+      flex: 0.9,
+      valueGetter: (params) => dayjs(params.row.updatedAt && params.row.updatedAt > params.row.createdAt ? params.row.updatedAt : params.row.createdAt).format(global.datetimeFormat),
+      renderCell: (params) => (
+        <Box style={{ display: 'flex', alignItems: 'center' }}>
+          <AccessTime sx={{ mr: 1, fontSize: '0.8rem'  }} />
+          {dayjs(params.row.updatedAt && params.row.updatedAt > params.row.createdAt ? params.row.updatedAt : params.row.createdAt).format(global.datetimeFormat)}
+        </Box>
+      ),
+    },
+    {
+      field: 'Edit',
+      headerName: '',
+      flex: 0.4,
+      align: 'center',
+      headerAlign: 'center',
+      sortable: false,
+      renderCell: (params) => (
+        <Link to={`/edittier/${params.row.id}`} style={{ textDecoration: 'none' }}>
+          <IconButton size="small" variant="outlined" color="primary">
+            <Edit />
+          </IconButton>
+        </Link>
+      ),
+    },
+    {
+      field: 'TierPerks',
+      headerName: '',
+      flex: 0.4,
+      align: 'center',
+      headerAlign: 'center',
+      sortable: false,
+      renderCell: (params) => (
+        <Link to={`/tierperks/${params.row.id}`} style={{ textDecoration: 'none' }}>
+          <IconButton size="small" variant="outlined" color="primary">
+            <ChevronRight />
+          </IconButton>
+        </Link>
+      ),
+    },
+  ];
+  // (DataGrid)
 
 
   // (Search)
@@ -56,7 +106,7 @@ function ManageLoyaltyDiscount() {
         Manage Loyalty Program
       </Typography>
       <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-        <Input value={search} placeholder="Search by name"
+        <Input value={search} placeholder="Search by tier name"
           onChange={onSearchChange}
           onKeyDown={onSearchKeyDown}
           sx={{
@@ -75,64 +125,29 @@ function ManageLoyaltyDiscount() {
         </IconButton>
 
         <Box sx={{ flexGrow: 1 }} />
-        <Link to="/addtier" style={{ textDecoration: 'none' }}>
-          <Button variant='contained'>
-            Add
-          </Button>
-        </Link>
       </Box>
-
-      <Grid container spacing={2}>
-        {tierList.map((tier) => (
-          <Grid item key={tier.id} xs={12} md={6} lg={4}>
-            <Link to={`/edittier/${tier.id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
-              <Box
-                sx={{
-                  border: 1,
-                  borderColor: 'grey.300',
-                  borderRadius: 1,
-                  p: 2,
-                  flexGrow: 1,
-                  boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
-                  transition: 'box-shadow 0.3s ease', // Add transition for smooth effect
-                  '&:hover': {
-                    boxShadow: '0 12px 24px rgba(0, 0, 0, 0.3)', // Adjust the shadow on hover
-                  },
-                }}
-              >
-                {/* Tier title */}
-                <Box sx={{ textAlign: 'center', borderBottom: '2px solid grey', pb: 1, }}>
-                  <Typography variant="h6" sx={{ flexGrow: 1, fontSize: '1rem' }}>
-                    {tier.tierPosition}. {tier.tierName}
-                  </Typography>
-                </Box>
-                <Box sx={{ flexGrow: 1 }}>
-                  {/* Tier info */}
-                  <Typography variant="body1" sx={{ margin: 1, fontSize: '0.9rem' }}>
-                    Requirements:
-                  </Typography>
-                  <Typography variant="body2" sx={{ margin: 1, fontSize: '0.8rem' }}>
-                    {tier.tierBookings} booking(s)
-                  </Typography>
-                  <Typography variant="body2" sx={{ margin: 1, fontSize: '0.8rem' }}>
-                    ${tier.tierSpendings.toFixed(2)} spent
-                  </Typography>
-                  <Typography variant="body1" sx={{ margin: 1, fontSize: '0.9rem' }}>
-                    Latest Changes:
-                  </Typography>
-                  <Box variant="body2" sx={{ margin: 1, fontSize: '0.8rem', display: 'flex', alignItems: 'center' }}>
-                    <AccessTime sx={{ fontSize: '0.8rem', mr: 0.5 }} />
-                    <Typography sx={{ fontSize: '0.8rem' }}>
-                      {dayjs(tier.updatedAt && tier.updatedAt > tier.createdAt ? tier.updatedAt : tier.createdAt).format(global.datetimeFormat)}
-                    </Typography>
-                  </Box>
-                </Box>
-              </Box>
-            </Link>
-          </Grid>
-        ))}
-      </Grid>
+      <DataGrid
+        rows={tierList}
+        columns={columns}
+        disableColumnMenu
+        disableRowSelectionOnClick
+        hideFooter
+        // Affects the font size of the data items
+        sx={{
+          backgroundColor: 'white',
+          border: '1px solid #ddd',
+          boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
+          padding: '16px',
+          fontSize: '0.8rem',
+        }}
+      />
+      <Link to="/addtier" style={{ textDecoration: 'none', display: 'block', width: '100%' }}>
+        <Button variant='contained' style={{ width: '100%', marginTop: '16px' }}>
+          Create Tier
+        </Button>
+      </Link>
     </Box>
+
 
 
   )
