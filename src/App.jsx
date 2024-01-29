@@ -31,7 +31,13 @@ import Checkout from './pages/Checkout';
 import TierPerks from './pages/TierPerks';
 import AccountPage from './pages/AccountPage';
 import CheckoutForm from './pages/CheckoutForm';
-
+import UserContext from './contexts/UserContext';
+import TicketsPage from './pages/TicketsPage';
+import AddTickets from './pages/AddTickets';
+import DelTickets from './pages/DelTickets';import AddReviews from './pages/AddReviews';
+import Reviews from './pages/Reviews';
+import EditReviews from './pages/EditReviews';
+import DelReviews from './pages/DelReviews';
 
 const drawerWidth = 240;
 
@@ -272,7 +278,13 @@ function App() {
                 <Route path={"/myAccount"} element={<AccountPage />} />
                 <Route path={"/edit-order/:id"} element={<EditOrder />} />
                 <Route path={"/checkoutform"} element={<CheckoutForm />} />
-
+                <Route path={"/reviews"} element={<Reviews />} />
+                <Route path={"/addreviews"} element={<AddReviews />} />
+                <Route path={"/editreviews/:id"} element={<EditReviews />} />
+                <Route path={"/delreviews/:id"} element={<DelReviews />} />
+                <Route path = {"/ticketspage"} element = {<TicketsPage/>} />
+                <Route path={"/addtickets"} element={<AddTickets />} />
+               
 
               </>
               {/* Admin only pages*/}
@@ -285,6 +297,8 @@ function App() {
                   <Route path={"/addtier"} element={<AddTier />} />
                   <Route path={"/edittier/:id"} element={<EditTier />} />
                   <Route path={"/tierperks/:id"} element={<TierPerks />} />
+                  <Route path={"/deltickets/:id"} element={<DelTickets />} />
+
                 </>
               )}
             </Routes>
