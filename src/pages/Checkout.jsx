@@ -1,31 +1,29 @@
-// Checkout.js
-
 import React from 'react';
-import { CardElement, injectStripe } from 'react-stripe-elements';
+import { Box, Typography, Button } from '@mui/material';
+import { Link } from 'react-router-dom';
+import http from '../http';
+import { loadStripe } from '@stripe/stripe-js';
+import { Elements } from '@stripe/react-stripe-js';
+import CheckoutForm from './CheckoutForm';
 
-class Checkout extends React.Component {
-  handleSubmit = async (e) => {
-    e.preventDefault();
+const stripePromise = loadStripe('pk_test_51OdgVvEFMXlO8edaWWiNQmz7HT1mpULItw5vAF3BskfSB161pfYyHAm2WZ5rAqlCXKzUXFn7RbmNzpFOErGX0OZw00X9KvgJMJ');
 
-    const { token } = await this.props.stripe.createToken();
-
-    // Send the token to your server to create a charge
-    // You need to implement a server endpoint to handle the payment
-
-    console.log('Token:', token);
-  };
-
-  render() {
-    return (
-      <form onSubmit={this.handleSubmit}>
-        <label>
-          Card details
-          <CardElement />
-        </label>
-        <button type="submit">Pay</button>
-      </form>
-    );
-  }
+function Checkout() {
+  return (
+    <Box sx={{ my: 2, display: 'flex', flexDirection: 'column', width: '100%' }}>
+      <Typography variant="h6" sx={{ marginTop: '20px' }}>
+        Checkout
+      </Typography>
+      <Elements stripe={stripePromise}>
+        <CheckoutForm />
+      </Elements>
+      <Link to="/cart" style={{ textDecoration: 'none', marginTop: '20px' }}>
+        <Button color="primary">
+          Back to Cart
+        </Button>
+      </Link>
+    </Box>
+  );
 }
 
-export default injectStripe(Checkout);
+export default Checkout;

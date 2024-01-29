@@ -30,6 +30,8 @@ import EditCartItem from './pages/EditCartItem';
 import Checkout from './pages/Checkout';
 import TierPerks from './pages/TierPerks';
 import AccountPage from './pages/AccountPage';
+import CheckoutForm from './pages/CheckoutForm';
+
 
 const drawerWidth = 240;
 
@@ -269,6 +271,7 @@ function App() {
                 <Route path={"/checkout"} element={<Checkout/>}/>
                 <Route path={"/myAccount"} element={<AccountPage />} />
                 <Route path={"/edit-order/:id"} element={<EditOrder />} />
+                <Route path={"/checkoutform"} element={<CheckoutForm />} />
 
 
               </>
