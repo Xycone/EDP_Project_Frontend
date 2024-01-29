@@ -24,6 +24,14 @@ import ManageUsers from './pages/ManageUsers';
 import ManageLoyaltyDiscount from './pages/ManageLoyaltyDiscount';
 import AddTier from './pages/AddTier';
 import EditTier from './pages/EditTier';
+import Cart from './pages/Cart';
+import AddCartItem from './pages/AddCartItem';
+import EditCartItem from './pages/EditCartItem';
+import Checkout from './pages/Checkout';
+import TierPerks from './pages/TierPerks';
+import AccountPage from './pages/AccountPage';
+import CheckoutForm from './pages/CheckoutForm';
+
 import Listings from './pages/Listings';
 import Listing from './pages/Listing';
 import EditListing from './pages/EditListing';
@@ -107,16 +115,16 @@ function App() {
               {/* User navbar items */}
               <Box sx={{ display: 'flex', gap: 2 }}>
                 <>
-                  <Link to="/tutorials">
+                  <Link to="/cart">
                     <Typography component="div">
-                      Tutorials
+                      Cart
                     </Typography>
                   </Link>
                 </>
                 <>
-                  <Link to="/addtutorial">
+                  <Link to="/addcartitem">
                     <Typography component="div">
-                      AddTutorial
+                      Addcartitem
                     </Typography>
                   </Link>
                 </>
@@ -171,7 +179,7 @@ function App() {
                     {/* User View menu items */}
                     {(!user.isAdmin || isNotAdminView) && (
                       <>
-                        <Link to={"/"} style={{ textDecoration: 'none', color: 'inherit' }}>
+                        <Link to={"/myAccount"} style={{ textDecoration: 'none', color: 'inherit' }}>
                           <MenuItem
                             variant="contained"
                             color="primary"
@@ -183,14 +191,14 @@ function App() {
                           </MenuItem>
                         </Link>
 
-                        <Link to={"/"} style={{ textDecoration: 'none', color: 'inherit' }}>
+                        <Link to={"/loyaltydiscount"} style={{ textDecoration: 'none', color: 'inherit' }}>
                           <MenuItem
                             variant="contained"
                             color="primary"
                             sx={{ marginLeft: '4px' }}
                           >
                             <Typography variant="caption" sx={{ marginLeft: 1 }}>
-                              My Transactions
+                              Loyalty Program
                             </Typography>
                           </MenuItem>
                         </Link>
@@ -252,6 +260,9 @@ function App() {
                 <ListItem button component={Link} to="/manageloyalty" onClick={handleDrawerClose} sx={{ fontSize: '1rem' }}>
                   <ListItemText primary="Manage Loyalty Discount" />
                 </ListItem>
+                <ListItem button component={Link} to="/orders" onClick={handleDrawerClose} sx={{ fontSize: '1rem' }}>
+                  <ListItemText primary="Manage Orders" />
+                </ListItem>
               </List>
             </Drawer>
           )}
@@ -266,7 +277,13 @@ function App() {
                 <Route path={"/login"} element={<Login />} />
                 <Route path={"/form"} element={<MyForm />} />
                 <Route path={"/loyaltydiscount"} element={<LoyaltyDiscount />} />
-                <Route path="/edit-order/:id" element={<EditOrder />} />
+                <Route path={"/cart"} element={<Cart />}/>
+                <Route path={"/addcartitem"} element={<AddCartItem />}/>
+                <Route path={"/editcartitem/:id"} element={<EditCartItem/>}/>
+                <Route path={"/checkout"} element={<Checkout/>}/>
+                <Route path={"/myAccount"} element={<AccountPage />} />
+                <Route path={"/edit-order/:id"} element={<EditOrder />} />
+                <Route path={"/checkoutform"} element={<CheckoutForm />} />
 
 
                 <Route path={"/listings"} element={<Listings />} />
@@ -282,6 +299,7 @@ function App() {
                   <Route path={"/manageloyalty"} element={<ManageLoyaltyDiscount />} />
                   <Route path={"/addtier"} element={<AddTier />} />
                   <Route path={"/edittier/:id"} element={<EditTier />} />
+                  <Route path={"/tierperks/:id"} element={<TierPerks />} />
                   <Route path={"/editactivity/:id"} element={<EditActivity />} />
                   <Route path={"/addactivity/:id"} element={<AddActivity />} />
                   <Route path={"/editlisting/:id"} element={<EditListing />} />
