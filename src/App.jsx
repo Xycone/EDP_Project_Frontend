@@ -31,13 +31,14 @@ import Checkout from './pages/Checkout';
 import TierPerks from './pages/TierPerks';
 import AccountPage from './pages/AccountPage';
 import CheckoutForm from './pages/CheckoutForm';
-import UserContext from './contexts/UserContext';
-import TicketsPage from './pages/TicketsPage';
-import AddTickets from './pages/AddTickets';
-import DelTickets from './pages/DelTickets';import AddReviews from './pages/AddReviews';
+import AddReviews from './pages/AddReviews';
 import Reviews from './pages/Reviews';
 import EditReviews from './pages/EditReviews';
 import DelReviews from './pages/DelReviews';
+import TicketsPage from './pages/TicketsPage';
+import AddTickets from './pages/AddTickets';
+import DelTickets from './pages/DelTickets';
+
 
 const drawerWidth = 240;
 
@@ -127,6 +128,11 @@ function App() {
                     </Typography>
                   </Link>
                 </>
+                <Link to="/Listings">
+                    <Typography component="div">
+                      All Activities
+                    </Typography>
+                  </Link>
               </Box>
 
               <Box sx={{ flexGrow: 1 }} />
@@ -286,6 +292,9 @@ function App() {
                 <Route path={"/addtickets"} element={<AddTickets />} />
                
 
+                <Route path={"/listings"} element={<Listings />} />
+                <Route path={"/activities/:id"} element={<Activities />} />
+                <Route path={"/listing/:id"} element={<Listing />} />
               </>
               {/* Admin only pages*/}
               {user && user.isAdmin && !isNotAdminView && (
@@ -297,8 +306,6 @@ function App() {
                   <Route path={"/addtier"} element={<AddTier />} />
                   <Route path={"/edittier/:id"} element={<EditTier />} />
                   <Route path={"/tierperks/:id"} element={<TierPerks />} />
-                  <Route path={"/deltickets/:id"} element={<DelTickets />} />
-
                 </>
               )}
             </Routes>

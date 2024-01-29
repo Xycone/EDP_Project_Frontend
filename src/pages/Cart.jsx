@@ -108,6 +108,7 @@ function Cart() {
                     columns={columns}
                     cellClassName="center-align"
                     headerClassName="center-align"
+                    hideFooter
                 />
             </Box>
 
