@@ -51,8 +51,6 @@ function App() {
     localStorage.getItem('isAdminView') === 'true' // Read from local storage
   );
   const [open, setOpen] = useState(false);
-  const theme = useTheme();
-  const appBarHeight = theme.mixins.toolbar.minHeight;
 
   useEffect(() => {
     if (localStorage.getItem('accessToken')) {
@@ -98,7 +96,7 @@ function App() {
     <UserContext.Provider value={{ user, setUser }}>
       <Router>
         <ThemeProvider theme={MyTheme}>
-          <AppBar position="fixed" className="AppBar" sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}>
+          <AppBar position="static" className="AppBar">
             <Toolbar>
               {user && user.isAdmin && !isNotAdminView && (
                 <>
@@ -242,7 +240,7 @@ function App() {
                 '& .MuiDrawer-paper': {
                   width: drawerWidth,
                   boxSizing: 'border-box',
-                  paddingTop: `${appBarHeight}px`,
+                  marginTop: '64px',
                 },
               }}
               variant="persistent"
