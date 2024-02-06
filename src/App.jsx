@@ -2,7 +2,7 @@ import './App.css';
 import { useState, useEffect } from 'react';
 import { Container, AppBar, Toolbar, Typography, Box, Button, Drawer, List, ListItem, ListItemText, IconButton } from '@mui/material';
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
-import { ThemeProvider } from '@mui/material/styles';
+import { ThemeProvider, useTheme } from '@mui/material/styles';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import MyTheme from './themes/MyTheme';
@@ -51,6 +51,8 @@ function App() {
     localStorage.getItem('isAdminView') === 'true' // Read from local storage
   );
   const [open, setOpen] = useState(false);
+  const theme = useTheme();
+  const appBarHeight = theme.mixins.toolbar.minHeight;
 
   useEffect(() => {
     if (localStorage.getItem('accessToken')) {
@@ -84,8 +86,8 @@ function App() {
   };
 
   // admin view sidebar
-  const handleDrawerOpen = () => {
-    setOpen(true);
+  const handleDrawerToggle = () => {
+    setOpen(!open);
   };
 
   const handleDrawerClose = () => {
@@ -96,13 +98,14 @@ function App() {
     <UserContext.Provider value={{ user, setUser }}>
       <Router>
         <ThemeProvider theme={MyTheme}>
-          <AppBar position="static" className="AppBar">
+          <AppBar position="fixed" className="AppBar" sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}>
             <Toolbar>
               {user && user.isAdmin && !isNotAdminView && (
                 <>
+
                   <IconButton
                     color="inherit"
-                    onClick={handleDrawerOpen}
+                    onClick={handleDrawerToggle}
                   >
                     <MenuIcon />
                   </IconButton>
@@ -131,10 +134,10 @@ function App() {
                   </Link>
                 </>
                 <Link to="/Listings">
-                    <Typography component="div">
-                      All Activities
-                    </Typography>
-                  </Link>
+                  <Typography component="div">
+                    All Activities
+                  </Typography>
+                </Link>
               </Box>
 
               <Box sx={{ flexGrow: 1 }} />
@@ -239,6 +242,7 @@ function App() {
                 '& .MuiDrawer-paper': {
                   width: drawerWidth,
                   boxSizing: 'border-box',
+                  paddingTop: `${appBarHeight}px`,
                 },
               }}
               variant="persistent"
@@ -246,11 +250,8 @@ function App() {
               open={open}
             >
               <Box sx={{ display: 'flex', alignItems: 'center', textAlign: 'center', borderBottom: '2px solid grey', pb: 1 }}>
-                <IconButton onClick={handleDrawerClose}>
-                  <ChevronLeft />
-                </IconButton>
                 <Typography variant="h6" component="div" sx={{ textAlign: 'center', padding: 2 }}>
-                  Admin
+                  Admin Menu
                 </Typography>
               </Box>
 
@@ -279,10 +280,10 @@ function App() {
                 <Route path={"/login"} element={<Login />} />
                 <Route path={"/form"} element={<MyForm />} />
                 <Route path={"/loyaltydiscount"} element={<LoyaltyDiscount />} />
-                <Route path={"/cart"} element={<Cart />}/>
-                <Route path={"/addcartitem"} element={<AddCartItem />}/>
-                <Route path={"/editcartitem/:id"} element={<EditCartItem/>}/>
-                <Route path={"/checkout"} element={<Checkout/>}/>
+                <Route path={"/cart"} element={<Cart />} />
+                <Route path={"/addcartitem"} element={<AddCartItem />} />
+                <Route path={"/editcartitem/:id"} element={<EditCartItem />} />
+                <Route path={"/checkout"} element={<Checkout />} />
                 <Route path={"/myAccount"} element={<AccountPage />} />
                 <Route path={"/edit-order/:id"} element={<EditOrder />} />
                 <Route path={"/checkoutform"} element={<CheckoutForm />} />
@@ -290,9 +291,9 @@ function App() {
                 <Route path={"/addreviews"} element={<AddReviews />} />
                 <Route path={"/editreviews/:id"} element={<EditReviews />} />
                 <Route path={"/delreviews/:id"} element={<DelReviews />} />
-                <Route path = {"/ticketspage"} element = {<TicketsPage/>} />
+                <Route path={"/ticketspage"} element={<TicketsPage />} />
                 <Route path={"/addtickets"} element={<AddTickets />} />
-               
+
 
                 <Route path={"/listings"} element={<Listings />} />
                 <Route path={"/activities/:id"} element={<Activities />} />
