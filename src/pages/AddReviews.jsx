@@ -5,7 +5,7 @@ import { useFormik } from 'formik';
 import * as yup from 'yup';
 import http from '../http';
 import { format } from 'date-fns';
-import global from "C:/Users/wwwwa/Desktop/Edp/src/global.js"
+import global from '../global';
 
 function AddReviews() {
   const navigate = useNavigate();
