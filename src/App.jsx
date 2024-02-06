@@ -181,8 +181,8 @@ function App() {
 
                     {/* User View menu items */}
                     {(!user.isAdmin || isNotAdminView) && (
-                      <>
-                        <Link to={"/myAccount"} style={{ textDecoration: 'none', color: 'inherit' }}>
+                      <Box>
+                        <Link key="my-account-link" to={"/myAccount"} style={{ textDecoration: 'none', color: 'inherit' }}>
                           <MenuItem
                             variant="contained"
                             color="primary"
@@ -205,7 +205,7 @@ function App() {
                             </Typography>
                           </MenuItem>
                         </Link>
-                      </>
+                      </Box>
                     )}
 
                     {/* Logout button */}
