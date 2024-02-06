@@ -38,7 +38,9 @@ import DelReviews from './pages/DelReviews';
 import TicketsPage from './pages/TicketsPage';
 import AddTickets from './pages/AddTickets';
 import DelTickets from './pages/DelTickets';
-
+import Listings from './pages/Listings'
+import Listing from './pages/Listing'
+import Activities from './pages/Activities'
 
 const drawerWidth = 240;
 
