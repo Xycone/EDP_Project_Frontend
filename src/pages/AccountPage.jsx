@@ -3,9 +3,12 @@ import React, { useEffect, useState } from 'react'
 import http from '../http';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 
 function AccountPage() {
+    const [imageFile, setImageFile] = useState(null);
     const [user, setUser] = useState({
         userName: "",
         userEmail: "",
@@ -15,8 +18,32 @@ function AccountPage() {
     useEffect(() => {
         http.get(`/user/profile`).then((res) => {
             setUser(res.data);
+            setImageFile(res.data.imageFile);
         });
     }, []);
+
+    const onFileChange = (e) => {
+        let file = e.target.files[0];
+        if (file) {
+            if (file.size > 1024 * 1024) {
+                toast.error('Maximum file size is 1MB');
+                return;
+            }
+            let formData = new FormData();
+            formData.append('file', file);
+            http.post('/file/upload', formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
+            })
+                .then((res) => {
+                    setImageFile(res.data.filename);
+                })
+                .catch(function (error) {
+                    console.log(error.response);
+                });
+        }
+    };
 
     const formik = useFormik({
         initialValues: user,
@@ -43,6 +70,7 @@ function AccountPage() {
             data.userName = data.userName.trim();
             data.userEmail = data.userEmail.trim().toLowerCase();
             data.userHp = data.userHp.trim();
+            data.imageFile = imageFile
             http.put(`/user/update-profile`, data)
                 .then(() => {
                     console.log(data);
@@ -66,7 +94,7 @@ function AccountPage() {
                                 </Typography>
                             </CardContent>
                         </Grid>
-                        <Grid item xs={6} md={6} lg={6}>
+                        <Grid item xs={12} md={6} lg={6}>
                             <CardContent>
                                 <Grid container spacing={1} alignItems="center">
                                     <Grid item xs={12} md={3} lg={3}>
@@ -128,14 +156,69 @@ function AccountPage() {
                                 </Grid>
                             </CardContent>
                         </Grid>
-                        <Grid item xs={6} md={6} lg={6}>
+                        <Grid item xs={12} md={6} lg={6}>
                             <CardContent>
-                                
+                                <Box>
+                                    <Box
+                                        className="Profile"
+                                        sx={{
+                                            width: '200px',
+                                            height: '200px',
+                                            margin: '0 auto',
+                                            borderRadius: '50%',
+                                            overflow: 'hidden',
+                                        }}
+                                    >
+                                        {
+                                            // User set profile picture
+                                            imageFile && (
+                                                <img
+                                                    alt="ProfileImage"
+                                                    src={`${import.meta.env.VITE_FILE_BASE_URL}${imageFile}`}
+                                                    style={{
+                                                        width: '100%',
+                                                        height: '100%',
+                                                        objectFit: 'cover',
+                                                        display: 'block',
+                                                        borderRadius: '50%',
+                                                    }}
+                                                />
+                                            )
+
+                                        }
+                                        {
+                                            // Default profile picture if user did not set anything
+                                            (!imageFile) && (
+                                                <img
+                                                    alt="DefaultProfileImage"
+                                                    src={`${import.meta.env.VITE_DEFAULT_PROFILE_PICTURE_URL}`}
+                                                    style={{
+                                                        width: '100%',
+                                                        height: '100%',
+                                                        objectFit: 'cover',
+                                                        display: 'block',
+                                                        borderRadius: '50%',
+                                                    }}
+                                                />
+                                            )
+
+                                        }
+                                    </Box>
+                                    <Box sx={{ textAlign: 'center', mt: 3 }} >
+                                        <Button variant="contained" component="label">
+                                            Upload Image
+                                            <input hidden accept="image/*" multiple type="file"
+                                                onChange={onFileChange} />
+                                        </Button>
+                                    </Box>
+                                </Box>
                             </CardContent>
                         </Grid>
                     </Grid>
                 </Card>
             </Box >
+
+            <ToastContainer />
         </Box >
     )
 }
