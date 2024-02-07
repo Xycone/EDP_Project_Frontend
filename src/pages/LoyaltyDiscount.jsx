@@ -80,7 +80,7 @@ function LoyaltyDiscount() {
               <Grid container direction='row' spacing={2} alignItems="stretch">
                 <Grid item xs={12} lg={5}>
                   <Typography sx={{ my: 1, mt: 2, fontSize: '0.9rem' }}>Amount Spent:</Typography>
-                  <Typography sx={{ my: 1, mt: 2, fontSize: '0.9rem' }}>${info.totalSpent}/${tier.tierSpendings}</Typography>
+                  <Typography sx={{ my: 1, mt: 2, fontSize: '0.9rem' }}>${info.totalSpent} / ${tier.tierSpendings}</Typography>
                   <LinearProgress
                     variant="determinate"
                     value={spendingProgress}
@@ -89,7 +89,7 @@ function LoyaltyDiscount() {
                 </Grid>
                 <Grid item xs={12} lg={5}>
                   <Typography sx={{ my: 1, mt: 2, fontSize: '0.9rem' }}>Events Booked:</Typography>
-                  <Typography sx={{ my: 1, mt: 2, fontSize: '0.9rem' }}>{info.totalBookings}/{tier.tierBookings}</Typography>
+                  <Typography sx={{ my: 1, mt: 2, fontSize: '0.9rem' }}>{info.totalBookings} / {tier.tierBookings}</Typography>
                   <LinearProgress
                     variant="determinate"
                     value={bookingProgress}

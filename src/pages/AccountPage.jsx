@@ -162,8 +162,8 @@ function AccountPage() {
                                     <Box
                                         className="Profile"
                                         sx={{
-                                            width: '200px',
-                                            height: '200px',
+                                            width: '180px',
+                                            height: '180px',
                                             margin: '0 auto',
                                             borderRadius: '50%',
                                             overflow: 'hidden',
