@@ -77,8 +77,8 @@ function LoyaltyDiscount() {
             </CardContent>
             <CardContent sx={{ backgroundColor: 'white', color: 'black' }}>
               <Typography>To unlock next tier:</Typography>
-              <Grid container spacing={2}>
-                <Grid item xs={12} md={5} lg={5}>
+              <Grid container direction='row' spacing={2} alignItems="stretch">
+                <Grid item xs={12} lg={5}>
                   <Typography sx={{ my: 1, mt: 2, fontSize: '0.9rem' }}>Events Booked:</Typography>
                   <Typography sx={{ my: 1, mt: 2, fontSize: '0.9rem' }}>{info.totalSpent}/{tier.tierSpendings}</Typography>
                   <LinearProgress
@@ -87,7 +87,7 @@ function LoyaltyDiscount() {
                     sx={{ width: '100%', borderRadius: 5 }}
                   />
                 </Grid>
-                <Grid item xs={12} md={5} lg={5}>
+                <Grid item xs={12} lg={5}>
                   <Typography sx={{ my: 1, mt: 2, fontSize: '0.9rem' }}>Amount Spent:</Typography>
                   <Typography sx={{ my: 1, mt: 2, fontSize: '0.9rem' }}>{info.totalBookings}/{tier.tierBookings}</Typography>
                   <LinearProgress
