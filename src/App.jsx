@@ -46,6 +46,7 @@ const drawerWidth = 240;
 
 function App() {
   const [user, setUser] = useState(null);
+  const [imageFile, setImageFile] = useState(null);
   const [anchorEl, setAnchorEl] = useState(null);
   const [isNotAdminView, setIsNotAdminView] = useState(
     localStorage.getItem('isAdminView') === 'true' // Read from local storage
@@ -56,6 +57,11 @@ function App() {
     if (localStorage.getItem('accessToken')) {
       http.get('/user/auth').then((res) => {
         setUser(res.data.user);
+      });
+
+      http.get('/user/profile-picture').then((res) => {
+        console.log(res.data.imageFile)
+        setImageFile(res.data.imageFile);
       });
     }
   }, []);
@@ -110,9 +116,11 @@ function App() {
                   <Box sx={{ flexGrow: 0.1 }} />
                 </>
               )}
-              <Typography variant="h6" noWrap component="div">
-                UPlay
-              </Typography>
+              <Link to="/">
+                <Typography variant="h6" noWrap component="div">
+                  UPlay
+                </Typography>
+              </Link>
               <Box sx={{ flexGrow: 1 }} />
 
               {/* User navbar items */}
@@ -141,12 +149,58 @@ function App() {
               <Box sx={{ flexGrow: 1 }} />
               {/* User logged in */}
               {user && (
-                <>
+                <Box sx={{ display: 'flex', gap: 2 }}>
                   <Button onClick={handleMenuOpen} style={{ color: 'white' }}>
-                    <Typography component="div">
-                      {user.userName}
-                    </Typography>
+                    <Box
+                      className="Profile"
+                      sx={{
+                        width: '40px',
+                        height: '40px',
+                        minWidth: '40px',
+                        mHeight: '40px',
+                        borderRadius: '50%',
+                        overflow: 'hidden',
+                        mr: 2,
+                      }}
+                    >
+                      {
+                        // User set profile picture
+                        imageFile && (
+                          <img
+                            alt="ProfileImage"
+                            src={`${import.meta.env.VITE_FILE_BASE_URL}${imageFile}`}
+                            style={{
+                              width: '100%',
+                              height: '100%',
+                              objectFit: 'cover',
+                              display: 'block',
+                              borderRadius: '50%',
+                              overflow: 'hidden',
+                            }}
+                          />
+                        )
+
+                      }
+                      {
+                        // Default profile picture if user did not set anything
+                        (!imageFile) && (
+                          <img
+                            alt="DefaultProfileImage"
+                            src={`${import.meta.env.VITE_DEFAULT_PROFILE_PICTURE_URL}`}
+                            style={{
+                              width: '100%',
+                              height: '100%',
+                              objectFit: 'cover',
+                              display: 'block',
+                              borderRadius: '50%',
+                            }}
+                          />
+                        )
+
+                      }
+                    </Box>
                   </Button>
+
 
                   {/* Dropdown menu for the user's name */}
                   <Menu
@@ -218,7 +272,7 @@ function App() {
                       </Typography>
                     </MenuItem>
                   </Menu>
-                </>
+                </Box>
               )}
 
               {/* User not logged in */}

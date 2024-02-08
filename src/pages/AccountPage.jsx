@@ -1,5 +1,6 @@
-import { Box, Typography, TextField, Button, Grid, Card, CardContent, Link } from '@mui/material'
+import { Box, Typography, TextField, Button, Grid, Card, CardContent, Link, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions } from '@mui/material'
 import React, { useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom';
 import http from '../http';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
@@ -8,6 +9,7 @@ import 'react-toastify/dist/ReactToastify.css';
 
 
 function AccountPage() {
+    const navigate = useNavigate();
     const [imageFile, setImageFile] = useState(null);
     const [user, setUser] = useState({
         userName: "",
@@ -45,6 +47,30 @@ function AccountPage() {
         }
     };
 
+    // (Remove Account)
+    const [open, setOpen] = useState(false);
+
+    const handleOpen = () => {
+        setOpen(true);
+    };
+
+    const handleClose = () => {
+        setOpen(false);
+    };
+
+    const logout = () => {
+        localStorage.clear();
+        window.location = '/login';
+    };
+
+    const removeAccount = () => {
+        http.delete(`/user/remove-account`)
+            .then((res) => {
+                logout();
+            });
+    }
+    // (Remove Account)
+
     const formik = useFormik({
         initialValues: user,
         enableReinitialize: true,
@@ -74,6 +100,7 @@ function AccountPage() {
             http.put(`/user/update-profile`, data)
                 .then(() => {
                     console.log(data);
+                    navigate("/");
                     window.location.reload(true);
                 });
         }
@@ -149,8 +176,11 @@ function AccountPage() {
                                         />
                                     </Grid>
                                     <Grid item xs={12}>
-                                        <Button variant="contained" sx={{ mt: 7 }} type="submit" >
+                                        <Button variant="contained" sx={{ mt: 7, my: 1, mr: 2 }} type="submit">
                                             Save Changes
+                                        </Button>
+                                        <Button variant="contained" sx={{ mt: 7, my: 1 }} type="button" onClick={handleOpen} color='error' >
+                                            Delete Account
                                         </Button>
                                     </Grid>
                                 </Grid>
@@ -217,6 +247,27 @@ function AccountPage() {
                     </Grid>
                 </Card>
             </Box >
+
+            <Dialog open={open} onClose={handleClose}>
+                <DialogTitle>
+                    Delete Tier
+                </DialogTitle>
+                <DialogContent>
+                    <DialogContentText>
+                        Are you sure you want to permenantly delete this user account? It can no longer be retrieved after this.
+                    </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                    <Button variant="contained" color="inherit"
+                        onClick={handleClose}>
+                        Cancel
+                    </Button>
+                    <Button variant="contained" color="error"
+                        onClick={removeAccount}>
+                        Delete
+                    </Button>
+                </DialogActions>
+            </Dialog>
 
             <ToastContainer />
         </Box >
