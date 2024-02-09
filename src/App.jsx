@@ -211,7 +211,7 @@ function App() {
                   >
                     {/* Admin view toggle */}
                     {user.isAdmin && (
-                      <Link to={isNotAdminView ? "/manageusers" : "/tutorials"} style={{ textDecoration: 'none', color: 'inherit' }}>
+                      <Link to={isNotAdminView ? "/manageusers" : "/Listings"} style={{ textDecoration: 'none', color: 'inherit' }}>
                         <MenuItem
                           onClick={toggleAdminView}
                           variant="contained"
