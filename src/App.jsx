@@ -6,16 +6,15 @@ import { ThemeProvider, useTheme } from '@mui/material/styles';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import MyTheme from './themes/MyTheme';
-import { Person, AdminPanelSettings, Menu as MenuIcon, ChevronLeft } from '@mui/icons-material';
+import { Person, AdminPanelSettings, Menu as MenuIcon, ShoppingCart } from '@mui/icons-material';
 
-import Tutorials from './pages/Tutorials';
-import AddTutorial from './pages/AddTutorial';
-import EditTutorial from './pages/EditTutorial';
-import MyForm from './pages/MyForm';
-import Register from './pages/Register';
-import Login from './pages/Login';
 import http from './http';
 import UserContext from './contexts/UserContext';
+
+import MyForm from './pages/MyForm';
+
+import Register from './pages/Register';
+import Login from './pages/Login';
 import LoyaltyDiscount from './pages/LoyaltyDiscount';
 import Orders from './pages/Orders';
 import CreateOrders from './pages/CreateOrder';
@@ -117,7 +116,7 @@ function App() {
                   <Box sx={{ flexGrow: 0.1 }} />
                 </>
               )}
-              <Link to="/">
+              <Link to="/Listings">
                 <Typography variant="h6" noWrap component="div">
                   UPlay
                 </Typography>
@@ -125,32 +124,25 @@ function App() {
               <Box sx={{ flexGrow: 1 }} />
 
               {/* User navbar items */}
-              <Box sx={{ display: 'flex', gap: 2 }}>
-                <>
-                  <Link to="/cart">
+              {(user && !user.isAdmin || isNotAdminView) && (
+                <Box sx={{ display: 'flex', gap: 2 }}>
+                  <Link to="/Listings">
                     <Typography component="div">
-                      Cart
+                      Activities
                     </Typography>
                   </Link>
-                </>
-                <>
-                  <Link to="/addcartitem">
-                    <Typography component="div">
-                      Addcartitem
-                    </Typography>
-                  </Link>
-                </>
-                <Link to="/Listings">
-                  <Typography component="div">
-                    All Activities
-                  </Typography>
-                </Link>
-              </Box>
+                </Box>
+              )}
 
               <Box sx={{ flexGrow: 1 }} />
               {/* User logged in */}
               {user && (
-                <Box sx={{ display: 'flex', gap: 2 }}>
+                <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                  {!user.isAdmin || isNotAdminView && (
+                    <IconButton component={Link} to="/cart" style={{ color: 'inherit' }}>
+                      <ShoppingCart />
+                    </IconButton>
+                  )}
                   <Button onClick={handleMenuOpen} style={{ color: 'white' }}>
                     <Box
                       className="Profile"
@@ -326,38 +318,47 @@ function App() {
           <Container>
             <Routes>
               <>
-                <Route path={"/tutorials"} element={<Tutorials />} />
-                <Route path={"/addtutorial"} element={<AddTutorial />} />
-                <Route path={"/edittutorial/:id"} element={<EditTutorial />} />
+                {/* Idk who's routes */}
+                <Route path={"/form"} element={<MyForm />} />
+
+                {/* Sean's Routes */}
                 <Route path={"/register"} element={<Register />} />
                 <Route path={"/login"} element={<Login />} />
-                <Route path={"/form"} element={<MyForm />} />
                 <Route path={"/loyaltydiscount"} element={<LoyaltyDiscount />} />
                 <Route path={"/myAccount"} element={<AccountPage />} />
                 <Route path={"/changePassword"} element={<ChangePassword />} />
+
+                {/* Joseph's Routes */}
                 <Route path={"/cart"} element={<Cart />} />
                 <Route path={"/addcartitem"} element={<AddCartItem />} />
                 <Route path={"/editcartitem/:id"} element={<EditCartItem />} />
                 <Route path={"/checkout"} element={<Checkout />} />
                 <Route path={"/edit-order/:id"} element={<EditOrder />} />
                 <Route path={"/checkoutform"} element={<CheckoutForm />} />
+
+                {/* Raye's Routes */}
                 <Route path={"/reviews"} element={<Reviews />} />
                 <Route path={"/addreviews"} element={<AddReviews />} />
                 <Route path={"/editreviews/:id"} element={<EditReviews />} />
                 <Route path={"/delreviews/:id"} element={<DelReviews />} />
+
+                {/* Wayne's Routes */}
                 <Route path={"/ticketspage"} element={<TicketsPage />} />
                 <Route path={"/addtickets"} element={<AddTickets />} />
 
-
+                {/* An Qi's Routes */}
                 <Route path={"/listings"} element={<Listings />} />
                 <Route path={"/activities/:id"} element={<Activities />} />
                 <Route path={"/listing/:id"} element={<Listing />} />
               </>
+
               {/* Admin only pages*/}
               {user && user.isAdmin && !isNotAdminView && (
                 <>
                   <Route path="/orders" element={<Orders />} />
                   <Route path="/create-order" element={<CreateOrders />} />
+
+                  {/* Sean's Routes */}
                   <Route path={"/manageusers"} element={<ManageUsers />} />
                   <Route path={"/manageloyalty"} element={<ManageLoyaltyDiscount />} />
                   <Route path={"/addtier"} element={<AddTier />} />

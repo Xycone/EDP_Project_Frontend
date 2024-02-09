@@ -38,7 +38,7 @@ function Login() {
                         navigate("/manageusers")
                         window.location.reload(true);
                     } else {
-                        navigate("/tutorials")
+                        navigate("/Listings")
                         window.location.reload(true);
                     }
                 })
