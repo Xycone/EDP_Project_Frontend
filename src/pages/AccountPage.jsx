@@ -1,6 +1,6 @@
-import { Box, Typography, TextField, Button, Grid, Card, CardContent, Link, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions } from '@mui/material'
+import { Box, Typography, TextField, Button, Grid, Card, CardContent, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions } from '@mui/material'
 import React, { useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import http from '../http';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
@@ -99,7 +99,6 @@ function AccountPage() {
             data.imageFile = imageFile
             http.put(`/user/update-profile`, data)
                 .then(() => {
-                    console.log(data);
                     navigate("/");
                     window.location.reload(true);
                 });
@@ -117,7 +116,7 @@ function AccountPage() {
                         <Grid item xs={12} md={12} lg={12}>
                             <CardContent sx={{ backgroundColor: 'primary.main', color: 'primary.contrastText' }}>
                                 <Typography sx={{ my: 1, mt: 2, fontSize: '1rem' }}>
-                                    Manage and protect your account
+                                    Manage your account details
                                 </Typography>
                             </CardContent>
                         </Grid>
@@ -158,7 +157,7 @@ function AccountPage() {
                                         <Typography sx={{ margin: 1, mt: 2, fontSize: '1rem' }}>Password:</Typography>
                                     </Grid>
                                     <Grid item xs={12} md={9} lg={9}>
-                                        <Typography sx={{ margin: 1, mt: 2, fontSize: '1rem' }}><Link to="/change-password">Change Password</Link></Typography>
+                                        <Typography color="primary.main" sx={{ margin: 1, mt: 2, fontSize: '1rem' }}><Link to="/changePassword" style={{ color: 'inherit' }}>Change Password</Link></Typography>
                                     </Grid>
                                     <Grid item xs={12} md={3} lg={3}>
                                         <Typography sx={{ margin: 1, mt: 2, fontSize: '1rem' }}>Phone:</Typography>

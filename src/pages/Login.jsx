@@ -36,8 +36,10 @@ function Login() {
                     setUser(res.data.user);
                     if (res.data.user.isAdmin) {
                         navigate("/manageusers")
+                        window.location.reload(true);
                     } else {
                         navigate("/tutorials")
+                        window.location.reload(true);
                     }
                 })
                 .catch(function (err) {

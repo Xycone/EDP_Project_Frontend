@@ -41,6 +41,7 @@ import DelTickets from './pages/DelTickets';
 import Listings from './pages/Listings'
 import Listing from './pages/Listing'
 import Activities from './pages/Activities'
+import ChangePassword from './pages/ChangePassword';
 
 const drawerWidth = 240;
 
@@ -68,7 +69,7 @@ function App() {
 
   const logout = () => {
     localStorage.clear();
-    window.location = '/';
+    window.location = '/login';
   };
 
   // navbar dropdown
@@ -332,11 +333,12 @@ function App() {
                 <Route path={"/login"} element={<Login />} />
                 <Route path={"/form"} element={<MyForm />} />
                 <Route path={"/loyaltydiscount"} element={<LoyaltyDiscount />} />
+                <Route path={"/myAccount"} element={<AccountPage />} />
+                <Route path={"/changePassword"} element={<ChangePassword />} />
                 <Route path={"/cart"} element={<Cart />} />
                 <Route path={"/addcartitem"} element={<AddCartItem />} />
                 <Route path={"/editcartitem/:id"} element={<EditCartItem />} />
                 <Route path={"/checkout"} element={<Checkout />} />
-                <Route path={"/myAccount"} element={<AccountPage />} />
                 <Route path={"/edit-order/:id"} element={<EditOrder />} />
                 <Route path={"/checkoutform"} element={<CheckoutForm />} />
                 <Route path={"/reviews"} element={<Reviews />} />
