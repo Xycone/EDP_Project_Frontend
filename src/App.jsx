@@ -138,7 +138,7 @@ function App() {
               {/* User logged in */}
               {user && (
                 <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                  {!user.isAdmin || isNotAdminView && (
+                  {(user && !user.isAdmin || isNotAdminView) && (
                     <IconButton component={Link} to="/cart" style={{ color: 'inherit' }}>
                       <ShoppingCart />
                     </IconButton>
