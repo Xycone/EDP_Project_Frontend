@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import http from '../http';
-import { IconButton, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Box, Typography, Checkbox, Button, Grid, Paper, Card, CardContent } from '@mui/material';
+import { IconButton, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Box, Typography, Checkbox, Button, Grid, Paper, Card, CardContent, Divider } from '@mui/material';
 import { Edit, Delete } from '@mui/icons-material';
 
 function TestCart() {
@@ -150,13 +150,14 @@ function TestCart() {
                                 </TableContainer>
                             </Box>
                         </CardContent>
-                        <Box sx={{ display: 'flex', alignItems: 'center', mb: 2, mr: 3 }}>
+                        <Divider />
+                        <Box sx={{ display: 'flex', alignItems: 'center', padding: 2}}>
                             <Box sx={{ flexGrow: 1 }} />
-                            <Typography sx={{ mr: 2 }}>
+                            <Typography sx={{ mr: 4 }}>
                                 Total Price: $2000
                             </Typography>
                             <Button variant="contained" onClick={checkoutSelectedItems}>
-                                Payment
+                                Check out
                             </Button>
                         </Box>
                     </Card>
