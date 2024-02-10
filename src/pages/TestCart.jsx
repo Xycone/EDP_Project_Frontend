@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import http from '../http';
 import { IconButton, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Box, Typography, Checkbox, Button, Grid, Paper, Card, CardContent, Divider } from '@mui/material';
-import { Edit, Delete } from '@mui/icons-material';
+import { Delete, Remove, Add } from '@mui/icons-material';
 
 function TestCart() {
     // Items
@@ -65,7 +65,7 @@ function TestCart() {
     };
 
     // Delete items selected in cart
-    const handleDeleteItemSelected = async() => {
+    const handleDeleteItemSelected = async () => {
         try {
             await Promise.all(selectedItems.map(async (itemId) => {
                 await http.delete(`/cartitem/${itemId}`);
@@ -85,11 +85,15 @@ function TestCart() {
         setSelectedVoucherId(selectedVoucherId === voucherId ? null : voucherId);
     };
 
+    // Logic for updating quantity in cart
+
+
     // Test button
     const checkoutSelectedItems = () => {
         alert("Selected items: " + selectedItems.join(", "));
         alert("Applied vouchers: " + selectedVoucherId);
     }
+
 
     useEffect(() => {
         getCart();
@@ -134,9 +138,6 @@ function TestCart() {
                                                 <TableCell>Item Price</TableCell>
                                                 <TableCell>Quantity</TableCell>
                                                 <TableCell>
-                                                    <IconButton onClick={handleDeleteItemSelected} variant="outlined" color="error" size="small">
-                                                        <Delete />
-                                                    </IconButton>
                                                 </TableCell>
                                             </TableRow>
                                         </TableHead>
@@ -157,6 +158,16 @@ function TestCart() {
                                                     <TableCell sx={{ fontSize: '0.8rem' }}>{cart.name}</TableCell>
                                                     <TableCell sx={{ fontSize: '0.8rem' }}>${cart.price}</TableCell>
                                                     <TableCell sx={{ fontSize: '0.8rem' }}>
+                                                        {/* <Box style={{ display: 'flex', alignItems: 'center' }}>
+                                                            <IconButton onClick={() => handleQuantityChange(cart.quantity, -1)}>
+                                                                <Remove sx={{ fontSize: '0.8rem' }} />
+                                                            </IconButton>
+                                                            {cart.quantity}
+                                                            <IconButton onClick={() => handleQuantityChange(cart.quantity, 1)}>
+                                                                <Add sx={{ fontSize: '0.8rem' }} />
+                                                            </IconButton>
+                                                        </Box> */}
+
                                                         {cart.quantity}
                                                     </TableCell>
                                                     <TableCell sx={{ fontSize: '0.8rem' }}>
@@ -174,6 +185,15 @@ function TestCart() {
                         </CardContent>
                         <Divider />
                         <Box sx={{ display: 'flex', alignItems: 'center', padding: 2 }}>
+                            <Typography sx={{ mr: 4, fontSize: '1rem' }}>
+                                ({selectedItems.length}) selected
+                            </Typography>
+                            <Typography sx={{ mr: 4, fontSize: '1rem' }}>
+                                <Link to="#" onClick={handleDeleteItemSelected} style={{ textDecoration: 'none', color: 'red', cursor: 'pointer' }}>
+                                    Delete
+                                </Link>
+                            </Typography>
+
                             <Box sx={{ flexGrow: 1 }} />
                             <Typography sx={{ mr: 4, fontSize: '1rem' }}>
                                 Total Price: $2000
