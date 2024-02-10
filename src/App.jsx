@@ -41,6 +41,7 @@ import Listings from './pages/Listings'
 import Listing from './pages/Listing'
 import Activities from './pages/Activities'
 import ChangePassword from './pages/ChangePassword';
+import TestCart from './pages/TestCart';
 
 const drawerWidth = 240;
 
@@ -60,7 +61,6 @@ function App() {
       });
 
       http.get('/user/profile-picture').then((res) => {
-        console.log(res.data.imageFile)
         setImageFile(res.data.imageFile);
       });
     }
@@ -139,7 +139,7 @@ function App() {
               {user && (
                 <Box sx={{ display: 'flex', alignItems: 'center' }}>
                   {(user && !user.isAdmin || isNotAdminView) && (
-                    <IconButton component={Link} to="/cart" style={{ color: 'inherit' }}>
+                    <IconButton component={Link} to="/testCart" style={{ color: 'inherit' }}>
                       <ShoppingCart />
                     </IconButton>
                   )}
@@ -332,6 +332,7 @@ function App() {
                   <Route path={"/loyaltydiscount"} element={<LoyaltyDiscount />} />
                   <Route path={"/myAccount"} element={<AccountPage />} />
                   <Route path={"/changePassword"} element={<ChangePassword />} />
+                  <Route path={"/testCart"} element={<TestCart />} />
 
                   {/* Joseph's Routes */}
                   <Route path={"/cart"} element={<Cart />} />
