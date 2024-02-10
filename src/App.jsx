@@ -144,7 +144,7 @@ function App() {
               {user && (
                 <Box sx={{ display: 'flex', alignItems: 'center' }}>
                   {(user && !user.isAdmin || isNotAdminView) && (
-                    <IconButton component={Link} to="/Cart" style={{ color: 'inherit' }}>
+                    <IconButton component={Link} to="/testCart" style={{ color: 'inherit' }}>
                       <ShoppingCart />
                     </IconButton>
                   )}

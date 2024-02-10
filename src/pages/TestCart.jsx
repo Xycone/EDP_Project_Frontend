@@ -22,7 +22,6 @@ function TestCart() {
     // Retrieves all of user's non expired vouchers
     const getVouchers = () => {
         http.get('/voucher/getMine').then((res) => {
-            console.log(res.data);
             setVoucherList(res.data);
         });
     }
@@ -100,6 +99,39 @@ function TestCart() {
         getVouchers();
     }, []);
 
+    // Scuffed front end total price calculation pls do not use this. Implement a backend calculation instead
+    const getTotalPrice = () => {
+        let totalPrice = 0;
+
+        // Iterate over cart items
+        selectedItems.forEach(selectedItemId => {
+            const selectedItem = cartList.find(item => item.id === selectedItemId);
+
+            if (selectedItem) {
+                // Calculate price after discount
+                let discountedPrice = selectedItem.price * selectedItem.quantity;
+
+                // Apply voucher discount if applicable
+                if (selectedVoucherId !== null) {
+                    const voucher = voucherList.find(voucher => voucher.id === selectedVoucherId);
+                    if (voucher) {
+                        if (voucher.fixedDiscount) {
+                            discountedPrice -= voucher.fixedDiscount;
+                        } else if (voucher.percentageDiscount) {
+                            discountedPrice -= selectedItem.price * selectedItem.quantity * (voucher.percentageDiscount / 100);
+                        }
+                    }
+                }
+
+                // Add to total price
+                totalPrice += discountedPrice;
+            }
+        });
+
+        return totalPrice.toFixed(2);
+    };
+
+
     return (
         <Box sx={{ my: 2 }}>
             <Typography variant="h6" sx={{ mb: 2, mr: 1 }}>
@@ -137,6 +169,7 @@ function TestCart() {
                                                 <TableCell>Name</TableCell>
                                                 <TableCell>Item Price</TableCell>
                                                 <TableCell>Quantity</TableCell>
+                                                <TableCell>Total Price</TableCell>
                                                 <TableCell>
                                                 </TableCell>
                                             </TableRow>
@@ -160,6 +193,7 @@ function TestCart() {
                                                     <TableCell sx={{ fontSize: '0.8rem' }}>
                                                         {cart.quantity}
                                                     </TableCell>
+                                                    <TableCell sx={{ fontSize: '0.8rem' }}>${cart.price * cart.quantity}</TableCell>
                                                     <TableCell sx={{ fontSize: '0.8rem' }}>
                                                         <Link to="#" onClick={() => handleDelete(cart.id)} style={{ textDecoration: 'none', color: 'red', cursor: 'pointer' }}>
                                                             Delete
@@ -186,7 +220,7 @@ function TestCart() {
 
                             <Box sx={{ flexGrow: 1 }} />
                             <Typography sx={{ mr: 4, fontSize: '1rem' }}>
-                                Total Price: $2000
+                                Total Price: ${getTotalPrice()}
                             </Typography>
                             <Button variant="contained" onClick={checkoutSelectedItems}>
                                 Check out
