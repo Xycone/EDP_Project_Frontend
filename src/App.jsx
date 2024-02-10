@@ -46,6 +46,7 @@ import AddListing from './pages/AddListing';
 import EditListing from './pages/EditListing';
 import AddActivity from './pages/AddActivity';
 import EditActivity from './pages/EditActivity';
+import Success from './pages/Success';
 
 const drawerWidth = 240;
 
@@ -143,7 +144,7 @@ function App() {
               {user && (
                 <Box sx={{ display: 'flex', alignItems: 'center' }}>
                   {(user && !user.isAdmin || isNotAdminView) && (
-                    <IconButton component={Link} to="/testCart" style={{ color: 'inherit' }}>
+                    <IconButton component={Link} to="/Cart" style={{ color: 'inherit' }}>
                       <ShoppingCart />
                     </IconButton>
                   )}
@@ -337,6 +338,8 @@ function App() {
                   <Route path={"/myAccount"} element={<AccountPage />} />
                   <Route path={"/changePassword"} element={<ChangePassword />} />
                   <Route path={"/testCart"} element={<TestCart />} />
+                  <Route path={"/Cart"} element={<Cart />} />
+                  <Route path={"/Success"} element ={<Success/>} />
 
                   {/* Joseph's Routes */}
                   <Route path={"/cart"} element={<Cart />} />
