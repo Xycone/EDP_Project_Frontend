@@ -87,85 +87,78 @@ function TestCart() {
             <Grid container spacing={4}>
                 <Grid item xs={12} lg={7}>
                     <Card>
-                        <Grid container spacing={2}>
 
-                            <Grid item xs={12} md={12} lg={12}>
-                                <CardContent sx={{ backgroundColor: 'primary.main', color: 'primary.contrastText' }}>
-                                    <Typography sx={{ my: 1, mt: 2, fontSize: '1rem' }}>
-                                        Cart Items
-                                    </Typography>
-                                </CardContent>
-                            </Grid>
+                        <CardContent sx={{ backgroundColor: 'primary.main', color: 'primary.contrastText' }}>
+                            <Typography sx={{ my: 1, mt: 2, fontSize: '1rem' }}>
+                                Cart Items
+                            </Typography>
+                        </CardContent>
 
-                            <Grid item xs={12} md={12} lg={12}>
-                                <CardContent>
-                                    <Box style={{ height: 400, width: '100%' }}>
-                                        <TableContainer>
-                                            <Table stickyHeader>
-                                                <TableHead>
-                                                    <TableRow>
-                                                        <TableCell sx={{
-                                                            padding: 0.5,
-                                                            '& .MuiTableCell-root': {
-                                                                fontSize: '0.8rem',
-                                                            }
-                                                        }}>
-                                                            <Checkbox
-                                                                checked={selectedItems.length === cartList.length && selectedItems.length != 0}
-                                                                indeterminate={selectedItems.length > 0 && selectedItems.length < cartList.length}
-                                                                onChange={handleSelectAllToggle}
-                                                            />
-                                                        </TableCell>
-                                                        <TableCell>Name</TableCell>
-                                                        <TableCell>Item Price</TableCell>
-                                                        <TableCell>Quantity</TableCell>
-                                                        <TableCell></TableCell>
-                                                    </TableRow>
-                                                </TableHead>
-                                                <TableBody>
-                                                    {cartList.map((cart) => (
-                                                        <TableRow key={cart.id}>
-                                                            <TableCell sx={{
-                                                                padding: 0.5,
-                                                                '& .MuiTableCell-root': {
-                                                                    fontSize: '0.8rem',
-                                                                }
-                                                            }}>
-                                                                <Checkbox
-                                                                    checked={selectedItems.includes(cart.id)}
-                                                                    onChange={() => handleItemToggle(cart.id)}
-                                                                />
-                                                            </TableCell>
-                                                            <TableCell sx={{ fontSize: '0.8rem' }}>{cart.name}</TableCell>
-                                                            <TableCell sx={{ fontSize: '0.8rem' }}>${cart.price}</TableCell>
-                                                            <TableCell sx={{ fontSize: '0.8rem' }}>
-                                                                {cart.quantity}
-                                                            </TableCell>
-                                                            <TableCell sx={{ fontSize: '0.8rem' }}>
-                                                                <Link to="#" onClick={() => handleDelete(cart.id)} style={{ textDecoration: 'none', color: 'red', cursor: 'pointer' }}>
-                                                                    Delete
-                                                                </Link>
-                                                            </TableCell>
-                                                        </TableRow>
-                                                    ))}
-                                                </TableBody>
+                        <CardContent>
+                            <Box style={{ height: 400, width: '100%' }}>
+                                <TableContainer>
+                                    <Table stickyHeader>
+                                        <TableHead>
+                                            <TableRow>
+                                                <TableCell sx={{
+                                                    padding: 0.5,
+                                                    '& .MuiTableCell-root': {
+                                                        fontSize: '0.8rem',
+                                                    }
+                                                }}>
+                                                    <Checkbox
+                                                        checked={selectedItems.length === cartList.length && selectedItems.length != 0}
+                                                        indeterminate={selectedItems.length > 0 && selectedItems.length < cartList.length}
+                                                        onChange={handleSelectAllToggle}
+                                                    />
+                                                </TableCell>
+                                                <TableCell>Name</TableCell>
+                                                <TableCell>Item Price</TableCell>
+                                                <TableCell>Quantity</TableCell>
+                                                <TableCell></TableCell>
+                                            </TableRow>
+                                        </TableHead>
+                                        <TableBody>
+                                            {cartList.map((cart) => (
+                                                <TableRow key={cart.id}>
+                                                    <TableCell sx={{
+                                                        padding: 0.5,
+                                                        '& .MuiTableCell-root': {
+                                                            fontSize: '0.8rem',
+                                                        }
+                                                    }}>
+                                                        <Checkbox
+                                                            checked={selectedItems.includes(cart.id)}
+                                                            onChange={() => handleItemToggle(cart.id)}
+                                                        />
+                                                    </TableCell>
+                                                    <TableCell sx={{ fontSize: '0.8rem' }}>{cart.name}</TableCell>
+                                                    <TableCell sx={{ fontSize: '0.8rem' }}>${cart.price}</TableCell>
+                                                    <TableCell sx={{ fontSize: '0.8rem' }}>
+                                                        {cart.quantity}
+                                                    </TableCell>
+                                                    <TableCell sx={{ fontSize: '0.8rem' }}>
+                                                        <Link to="#" onClick={() => handleDelete(cart.id)} style={{ textDecoration: 'none', color: 'red', cursor: 'pointer' }}>
+                                                            Delete
+                                                        </Link>
+                                                    </TableCell>
+                                                </TableRow>
+                                            ))}
+                                        </TableBody>
 
-                                            </Table>
-                                        </TableContainer>
-                                    </Box>
-                                </CardContent>
-                                <Box sx={{ display: 'flex', alignItems: 'center', mb: 2, mr: 3 }}>
-                                    <Box sx={{ flexGrow: 1 }} />
-                                    <Typography sx={{ mr: 2 }}>
-                                        Total Price: $2000
-                                    </Typography>
-                                    <Button variant="contained" onClick={checkoutSelectedItems}>
-                                        Payment
-                                    </Button>
-                                </Box>
-                            </Grid>
-
-                        </Grid>
+                                    </Table>
+                                </TableContainer>
+                            </Box>
+                        </CardContent>
+                        <Box sx={{ display: 'flex', alignItems: 'center', mb: 2, mr: 3 }}>
+                            <Box sx={{ flexGrow: 1 }} />
+                            <Typography sx={{ mr: 2 }}>
+                                Total Price: $2000
+                            </Typography>
+                            <Button variant="contained" onClick={checkoutSelectedItems}>
+                                Payment
+                            </Button>
+                        </Box>
                     </Card>
                 </Grid>
 
