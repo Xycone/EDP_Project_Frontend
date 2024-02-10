@@ -1,15 +1,15 @@
-import { clear } from 'console';
+// import { clear } from 'console';
 import React from 'react';
 
 function Success() {
-    const clearCart = async () => {
-        try {
-            await http.delete('/cartitem');
-            getCart();
-        } catch (error) {
-            console.error('Error clearing cart', error);
-        }
-    };
+    // const clearCart = async () => {
+    //     try {
+    //         await http.delete('/cartitem');
+    //         getCart();
+    //     } catch (error) {
+    //         console.error('Error clearing cart', error);
+    //     }
+    // };
     // const createOrder = async (data) => {
     //     try {
     //         http.post("/order", data)
@@ -20,9 +20,9 @@ function Success() {
     //         console.error('Error adding orders', error);
     //     }
     // };
-    useEffect(() => {
-        clearCart()
-    });
+    // useEffect(() => {
+    //     clearCart()
+    // });
     return (
         <div>
             <h1>Payment Successful!</h1>
