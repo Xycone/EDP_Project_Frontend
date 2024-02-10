@@ -55,10 +55,28 @@ function TestCart() {
         }
     }
 
-    // Delete
+    // Delete item from cart
     const handleDelete = async (id) => {
         await http.delete(`/cartitem/${id}`);
+
         getCart();
+
+        setSelectedItems(selectedItems.filter(itemId => itemId !== id));
+    };
+
+    // Delete items selected in cart
+    const handleDeleteItemSelected = async() => {
+        try {
+            await Promise.all(selectedItems.map(async (itemId) => {
+                await http.delete(`/cartitem/${itemId}`);
+            }));
+
+            getCart();
+
+            setSelectedItems([]);
+        } catch (error) {
+            console.error('Error deleting selected items:', error);
+        }
     };
 
 
@@ -115,7 +133,11 @@ function TestCart() {
                                                 <TableCell>Name</TableCell>
                                                 <TableCell>Item Price</TableCell>
                                                 <TableCell>Quantity</TableCell>
-                                                <TableCell></TableCell>
+                                                <TableCell>
+                                                    <IconButton onClick={handleDeleteItemSelected} variant="outlined" color="error" size="small">
+                                                        <Delete />
+                                                    </IconButton>
+                                                </TableCell>
                                             </TableRow>
                                         </TableHead>
                                         <TableBody>
@@ -151,9 +173,9 @@ function TestCart() {
                             </Box>
                         </CardContent>
                         <Divider />
-                        <Box sx={{ display: 'flex', alignItems: 'center', padding: 2}}>
+                        <Box sx={{ display: 'flex', alignItems: 'center', padding: 2 }}>
                             <Box sx={{ flexGrow: 1 }} />
-                            <Typography sx={{ mr: 4 }}>
+                            <Typography sx={{ mr: 4, fontSize: '1rem' }}>
                                 Total Price: $2000
                             </Typography>
                             <Button variant="contained" onClick={checkoutSelectedItems}>
