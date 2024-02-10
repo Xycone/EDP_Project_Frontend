@@ -42,6 +42,10 @@ import Listing from './pages/Listing'
 import Activities from './pages/Activities'
 import ChangePassword from './pages/ChangePassword';
 import TestCart from './pages/TestCart';
+import AddListing from './pages/AddListing';
+import EditListing from './pages/EditListing';
+import AddActivity from './pages/AddActivity';
+import EditActivity from './pages/EditActivity';
 
 const drawerWidth = 240;
 
@@ -371,6 +375,10 @@ function App() {
                   <Route path={"/addtier"} element={<AddTier />} />
                   <Route path={"/edittier/:id"} element={<EditTier />} />
                   <Route path={"/tierperks/:id"} element={<TierPerks />} />
+                  <Route path={"/editactivity/:id"} element={<EditActivity />} />
+                  <Route path={"/addactivity/:id"} element={<AddActivity />} />
+                  <Route path={"/editlisting/:id"} element={<EditListing />} />
+                  <Route path={"/addlisting"} element={<AddListing />} />
                 </>
               )}
             </Routes>

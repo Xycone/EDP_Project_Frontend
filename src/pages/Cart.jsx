@@ -5,14 +5,12 @@ import { Box, Typography, IconButton, Button } from '@mui/material';
 import { Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions } from '@mui/material';
 import { Delete, Edit } from '@mui/icons-material';
 import { DataGrid } from '@mui/x-data-grid';
-import dayjs from 'dayjs';
-import global from '../global';
-import CheckoutForm from './CheckoutForm';
+import { loadStripe } from "@stripe/stripe-js"; // Import Stripe package
 
 function Cart() {
     const [cartList, setCartList] = useState([]);
     const [open, setOpen] = useState(false);
-
+    const stripePromise = loadStripe("pk_test_51OdgVvEFMXlO8edaWWiNQmz7HT1mpULItw5vAF3BskfSB161pfYyHAm2WZ5rAqlCXKzUXFn7RbmNzpFOErGX0OZw00X9KvgJMJ"); // Replace YourPublicKey with your actual Stripe public key
     const handleOpen = () => {
         setOpen(true);
     };
@@ -27,6 +25,32 @@ function Cart() {
             setCartList(res.data);
         });
     };
+
+    const handleCheckout = async () => {
+        const stripe = await stripePromise;
+    
+        // Convert cartList to an array of cart items
+        const formattedCartList = cartList.map(cartItem => ({
+            name: cartItem.name,
+            quantity: cartItem.quantity,
+            price: cartItem.price, // No need to multiply by 100, as Stripe expects amount in cents only for the unit amount
+        }));
+    
+        try {
+            console.log(formattedCartList);
+            // Make POST request to backend endpoint with the cartList data
+            const response = await http.post('/stripepayment/api/create-checkout-session', formattedCartList);
+    
+            // Redirect to Stripe checkout page using the session ID returned from the backend
+            await stripe.redirectToCheckout({
+                sessionId: response.data.sessionId, // Assuming the backend returns the session ID in the response
+            });
+        } catch (error) {
+            console.error('Error creating checkout session:', error);
+            // Handle error
+        }
+    };
+    
 
     const handleDelete = async (id) => {
         const confirmDelete = window.confirm('Are you sure you want to delete this item?');
@@ -119,11 +143,9 @@ function Cart() {
             </Box>
 
             <Box sx={{ width: '90%', display: 'flex', justifyContent: 'flex-end', marginTop: '20px' }}>
-                <Link to="/checkout" style={{ textDecoration: 'none' }}>
-                    <Button variant="contained" fullWidth>
-                        Checkout
-                    </Button>
-                </Link>
+                <Button variant="contained" color="primary" onClick={handleCheckout}>
+                    Checkout
+                </Button>
             </Box>
 
             <Dialog open={open} onClose={handleClose}>
