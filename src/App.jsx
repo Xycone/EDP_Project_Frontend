@@ -318,39 +318,45 @@ function App() {
           <Container>
             <Routes>
               <>
-                {/* Idk who's routes */}
-                <Route path={"/form"} element={<MyForm />} />
 
-                {/* Sean's Routes */}
                 <Route path={"/register"} element={<Register />} />
                 <Route path={"/login"} element={<Login />} />
-                <Route path={"/loyaltydiscount"} element={<LoyaltyDiscount />} />
-                <Route path={"/myAccount"} element={<AccountPage />} />
-                <Route path={"/changePassword"} element={<ChangePassword />} />
 
-                {/* Joseph's Routes */}
-                <Route path={"/cart"} element={<Cart />} />
-                <Route path={"/addcartitem"} element={<AddCartItem />} />
-                <Route path={"/editcartitem/:id"} element={<EditCartItem />} />
-                <Route path={"/checkout"} element={<Checkout />} />
-                <Route path={"/edit-order/:id"} element={<EditOrder />} />
-                <Route path={"/checkoutform"} element={<CheckoutForm />} />
-
-                {/* Raye's Routes */}
-                <Route path={"/reviews"} element={<Reviews />} />
-                <Route path={"/addreviews"} element={<AddReviews />} />
-                <Route path={"/editreviews/:id"} element={<EditReviews />} />
-                <Route path={"/delreviews/:id"} element={<DelReviews />} />
-
-                {/* Wayne's Routes */}
-                <Route path={"/ticketspage"} element={<TicketsPage />} />
-                <Route path={"/addtickets"} element={<AddTickets />} />
-
-                {/* An Qi's Routes */}
-                <Route path={"/listings"} element={<Listings />} />
-                <Route path={"/activities/:id"} element={<Activities />} />
-                <Route path={"/listing/:id"} element={<Listing />} />
+                {/* Idk who's routes */}
+                <Route path={"/form"} element={<MyForm />} />
               </>
+
+              {(user && !user.isAdmin || isNotAdminView) && (
+                <>
+                  {/* Sean's Routes */}
+                  <Route path={"/loyaltydiscount"} element={<LoyaltyDiscount />} />
+                  <Route path={"/myAccount"} element={<AccountPage />} />
+                  <Route path={"/changePassword"} element={<ChangePassword />} />
+
+                  {/* Joseph's Routes */}
+                  <Route path={"/cart"} element={<Cart />} />
+                  <Route path={"/addcartitem"} element={<AddCartItem />} />
+                  <Route path={"/editcartitem/:id"} element={<EditCartItem />} />
+                  <Route path={"/checkout"} element={<Checkout />} />
+                  <Route path={"/edit-order/:id"} element={<EditOrder />} />
+                  <Route path={"/checkoutform"} element={<CheckoutForm />} />
+
+                  {/* Raye's Routes */}
+                  <Route path={"/reviews"} element={<Reviews />} />
+                  <Route path={"/addreviews"} element={<AddReviews />} />
+                  <Route path={"/editreviews/:id"} element={<EditReviews />} />
+                  <Route path={"/delreviews/:id"} element={<DelReviews />} />
+
+                  {/* Wayne's Routes */}
+                  <Route path={"/ticketspage"} element={<TicketsPage />} />
+                  <Route path={"/addtickets"} element={<AddTickets />} />
+
+                  {/* An Qi's Routes */}
+                  <Route path={"/listings"} element={<Listings />} />
+                  <Route path={"/activities/:id"} element={<Activities />} />
+                  <Route path={"/listing/:id"} element={<Listing />} />
+                </>
+              )}
 
               {/* Admin only pages*/}
               {user && user.isAdmin && !isNotAdminView && (
