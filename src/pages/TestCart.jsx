@@ -94,7 +94,7 @@ function TestCart() {
     const checkoutSelectedItems = () => {
         alert("Selected items: " + selectedItems.join(", "));
         alert("Applied vouchers: " + selectedVoucherId);
-        
+
         // Reset selectedItems to an empty array
         setSelectedItems([]);
 
@@ -226,19 +226,12 @@ function TestCart() {
                             <Typography sx={{ mr: 4, fontSize: '1rem' }}>
                                 ({selectedItems.length}) selected
                             </Typography>
+                            <Box sx={{ flexGrow: 1 }} />
                             <Typography sx={{ mr: 4, fontSize: '1rem' }}>
                                 <Link to="#" onClick={handleDeleteItemSelected} style={{ textDecoration: 'none', color: 'red', cursor: 'pointer' }}>
                                     Delete
                                 </Link>
                             </Typography>
-
-                            <Box sx={{ flexGrow: 1 }} />
-                            <Typography sx={{ mr: 4, fontSize: '1rem' }}>
-                                Total Price: ${getTotalPrice()}
-                            </Typography>
-                            <Button variant="contained" onClick={checkoutSelectedItems}>
-                                Check out
-                            </Button>
                         </Box>
                     </Card>
                 </Grid>
@@ -308,6 +301,20 @@ function TestCart() {
                             </Grid>
                         </CardContent>
                     </Card>
+                    <Grid item xs={12} lg={12} sx={{ mt: 2 }}>
+                        <Card>
+                            <CardContent sx={{ backgroundColor: 'white', color: 'black' }}>
+                                <Box sx={{ display: 'flex', justifyContent: 'flex-end', flexDirection: 'column', alignItems: 'flex-end' }}>
+                                    <Typography sx={{ mb: 2, fontSize: '1rem' }}>
+                                        Total Price: ${getTotalPrice()}
+                                    </Typography>
+                                    <Button variant="contained" onClick={checkoutSelectedItems}>
+                                        Check out
+                                    </Button>
+                                </Box>
+                            </CardContent>
+                        </Card>
+                    </Grid>
                 </Grid>
 
             </Grid>
