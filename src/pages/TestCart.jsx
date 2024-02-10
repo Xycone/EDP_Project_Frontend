@@ -173,7 +173,7 @@ function TestCart() {
                     <Card sx={{ backgroundColor: 'primary.main', color: 'primary.contrastText' }}>
                         <CardContent>
                             <Typography sx={{ my: 1, mt: 2, fontSize: '1rem' }}>
-                                Apply Vouchers
+                                Your Vouchers
                             </Typography>
                         </CardContent>
 
