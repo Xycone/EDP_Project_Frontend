@@ -158,16 +158,6 @@ function TestCart() {
                                                     <TableCell sx={{ fontSize: '0.8rem' }}>{cart.name}</TableCell>
                                                     <TableCell sx={{ fontSize: '0.8rem' }}>${cart.price}</TableCell>
                                                     <TableCell sx={{ fontSize: '0.8rem' }}>
-                                                        {/* <Box style={{ display: 'flex', alignItems: 'center' }}>
-                                                            <IconButton onClick={() => handleQuantityChange(cart.quantity, -1)}>
-                                                                <Remove sx={{ fontSize: '0.8rem' }} />
-                                                            </IconButton>
-                                                            {cart.quantity}
-                                                            <IconButton onClick={() => handleQuantityChange(cart.quantity, 1)}>
-                                                                <Add sx={{ fontSize: '0.8rem' }} />
-                                                            </IconButton>
-                                                        </Box> */}
-
                                                         {cart.quantity}
                                                     </TableCell>
                                                     <TableCell sx={{ fontSize: '0.8rem' }}>
