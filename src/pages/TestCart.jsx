@@ -41,16 +41,19 @@ function TestCart() {
             newSelected.splice(selectedIndex, 1);
         }
         setSelectedItems(newSelected);
+        setSelectedVoucherId(null);
     }
 
     // Handle select all checkbox toggle
     const handleSelectAllToggle = (event) => {
         if (selectedItems.length > 0) {
             setSelectedItems([]);
+            setSelectedVoucherId(null);
         }
         else {
             const unselectedItems = cartList.filter(cart => !selectedItems.includes(cart.id));
             setSelectedItems([...selectedItems, ...unselectedItems.map(cart => cart.id)]);
+            setSelectedVoucherId(null);
         }
     }
 
@@ -91,6 +94,12 @@ function TestCart() {
     const checkoutSelectedItems = () => {
         alert("Selected items: " + selectedItems.join(", "));
         alert("Applied vouchers: " + selectedVoucherId);
+        
+        // Reset selectedItems to an empty array
+        setSelectedItems([]);
+
+        // Reset selectedVoucherId to null
+        setSelectedVoucherId(null);
     }
 
 
@@ -99,36 +108,41 @@ function TestCart() {
         getVouchers();
     }, []);
 
-    // Scuffed front end total price calculation pls do not use this. Implement a backend calculation instead
+    // Scuffed front end total price calculation.
     const getTotalPrice = () => {
         let totalPrice = 0;
 
-        // Iterate over cart items
         selectedItems.forEach(selectedItemId => {
             const selectedItem = cartList.find(item => item.id === selectedItemId);
 
             if (selectedItem) {
-                // Calculate price after discount
-                let discountedPrice = selectedItem.price * selectedItem.quantity;
-
-                // Apply voucher discount if applicable
-                if (selectedVoucherId !== null) {
-                    const voucher = voucherList.find(voucher => voucher.id === selectedVoucherId);
-                    if (voucher) {
-                        if (voucher.fixedDiscount) {
-                            discountedPrice -= voucher.fixedDiscount;
-                        } else if (voucher.percentageDiscount) {
-                            discountedPrice -= selectedItem.price * selectedItem.quantity * (voucher.percentageDiscount / 100);
-                        }
-                    }
-                }
+                // Calculate price before discount
+                let priceBeforeDiscount = selectedItem.price * selectedItem.quantity;
 
                 // Add to total price
-                totalPrice += discountedPrice;
+                totalPrice += priceBeforeDiscount;
             }
         });
 
+        // Apply voucher discount if applicable
+        if (selectedVoucherId !== null) {
+            const voucher = voucherList.find(voucher => voucher.id === selectedVoucherId);
+            if (voucher) {
+                console.log(voucher);
+                if (voucher.percentageDiscount === 0) {
+                    totalPrice -= voucher.fixedDiscount;
+                } else if (voucher.fixedDiscount === 0) {
+                    totalPrice *= (1 - voucher.percentageDiscount / 100);
+                }
+            }
+        }
+
         return totalPrice.toFixed(2);
+    };
+
+    const isVoucherActive = (voucher) => {
+        const totalPrice = getTotalPrice();
+        return totalPrice >= voucher.minSpend;
     };
 
 
@@ -241,7 +255,7 @@ function TestCart() {
                             <Grid container spacing={2}>
                                 {voucherList.map((voucher, index) => (
                                     <Grid item xs={12} md={6} lg={12} key={index}>
-                                        <Card sx={{ my: 1, boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)', background: '#fff', border: '1px solid #ddd' }}>
+                                        <Card sx={{ my: 1, boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)', backgroundColor: isVoucherActive(voucher) ? '#fff' : '#f5f5f5', border: '1px solid #ddd', opacity: isVoucherActive(voucher) ? 1 : 0.5 }}>
                                             <Grid container>
                                                 <Grid item xs={4} lg={4} sx={{ color: 'white', backgroundColor: '#E8533F', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                                                     {voucher.minGroupSize < 2 &&
@@ -276,14 +290,15 @@ function TestCart() {
                                                             {voucher.minGroupSize >= 2 &&
                                                                 <Typography sx={{ fontSize: '0.7rem' }}>Grp Size: {voucher.minGroupSize}</Typography>
                                                             }
-                                                            <Typography sx={{ fontSize: '0.7rem' }}>Voucher Quantity: {voucher.voucherQuantity}</Typography>
                                                         </Box>
                                                     </CardContent>
                                                 </Grid>
                                                 <Grid item xs={2} lg={2} sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+
                                                     <Checkbox
                                                         checked={voucher.id === selectedVoucherId}
                                                         onChange={() => handleVoucherSelection(voucher.id)}
+                                                        disabled={!isVoucherActive(voucher)}
                                                     />
                                                 </Grid>
                                             </Grid>
