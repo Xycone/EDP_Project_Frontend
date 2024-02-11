@@ -1,7 +1,24 @@
 // import { clear } from 'console';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 
 function Success() {
+    const [appliedVoucher, setAppliedVoucher] = useState(null);
+    const [cartItems, setCartItems] = useState([]);
+
+    useEffect(() => {
+        // Extract URL parameters
+        const urlParams = new URLSearchParams(window.location.search);
+        const appliedVoucherParam = urlParams.get('appliedVoucher');
+        const cartItemsParam = urlParams.get('cartItems');
+
+        // Parse cart items JSON string
+        const parsedCartItems = JSON.parse(decodeURIComponent(cartItemsParam));
+
+        // Update state with extracted data
+        setAppliedVoucher(appliedVoucherParam);
+        setCartItems(parsedCartItems);
+    }, []);
+
     // const clearCart = async () => {
     //     try {
     //         await http.delete('/cartitem');
@@ -27,6 +44,14 @@ function Success() {
         <div>
             <h1>Payment Successful!</h1>
             <p>Thank you for your purchase. Your order has been successfully processed.</p>
+            {/* Display applied voucher */}
+            <p>Applied Voucher: {appliedVoucher}</p>
+            {/* Display cart items */}
+            <ul>
+                {cartItems.map((item, index) => (
+                    <li key={index}>{item.Name} - Quantity: {item.Quantity}</li>
+                ))}
+            </ul>
             {/* You can add additional information or links here */}
         </div>
     );
