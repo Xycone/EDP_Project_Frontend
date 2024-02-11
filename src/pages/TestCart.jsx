@@ -125,7 +125,7 @@ function TestCart() {
     }, []);
 
     // Scuffed front end total price calculation.
-    const getTotalPrice = () => {
+    const setTotalPrice = () => {
         let totalPrice = 0;
 
         selectedItems.forEach(selectedItemId => {
@@ -163,7 +163,7 @@ function TestCart() {
             const selectedItem = cartList.find(item => item.id === selectedItemId);
 
             if (selectedItem) {
-                // Add to total price
+                // Add to total qty
                 totalQty += selectedItem.quantity;
             }
         });
@@ -171,9 +171,31 @@ function TestCart() {
         return totalQty;
     };
 
+    const getTotalPrice = () => {
+        let totalPrice = 0;
+
+        selectedItems.forEach(selectedItemId => {
+            const selectedItem = cartList.find(item => item.id === selectedItemId);
+
+            if (selectedItem) {
+                // Calculate price before discount
+                let priceBeforeDiscount = selectedItem.price * selectedItem.quantity;
+
+                // Add to total price
+                totalPrice += priceBeforeDiscount;
+            }
+        });
+
+        return totalPrice;
+    };
+
     const isVoucherActive = (voucher) => {
         const totalPrice = getTotalPrice();
         const totalQty = getTotalQty();
+        console.log("Total Price:" + totalPrice);
+        console.log("Total Qty:" + totalQty);
+        console.log("Voucher Min Spend:" + voucher.minSpend);
+        console.log("Voucher Min Grp Size:" + voucher.minGroupSize);
         return totalPrice >= voucher.minSpend && totalQty >= voucher.minGroupSize;
     };
 
@@ -347,7 +369,7 @@ function TestCart() {
                             </Typography>
                             <Box sx={{ flexGrow: 1 }} />
                             <Typography sx={{ mr: 4 }}>
-                                Total Price: ${getTotalPrice()}
+                                Total Price: ${setTotalPrice()}
                             </Typography>
                             <Button variant="contained" onClick={handleCheckout}>
                                 Check out
