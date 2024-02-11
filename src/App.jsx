@@ -375,10 +375,12 @@ function App() {
                   <Route path={"/addtier"} element={<AddTier />} />
                   <Route path={"/edittier/:id"} element={<EditTier />} />
                   <Route path={"/tierperks/:id"} element={<TierPerks />} />
+                  {/* An Qi's Routes */}
                   <Route path={"/editactivity/:id"} element={<EditActivity />} />
                   <Route path={"/addactivity/:id"} element={<AddActivity />} />
                   <Route path={"/editlisting/:id"} element={<EditListing />} />
                   <Route path={"/listings"} element={<Listings />} />
+                  <Route path={"/listing/:id"} element={<Listing />} />
                 </>
               )}
             </Routes>

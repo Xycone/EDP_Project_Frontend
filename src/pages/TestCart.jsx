@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import http from '../http';
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Box, Typography, Checkbox, Button, Grid, Card, CardContent, Divider } from '@mui/material';
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Box, Typography, Checkbox, Button, Grid, Card, CardContent, Divider,Dialog, DialogTitle, DialogContent, DialogActions } from '@mui/material';
 import { loadStripe } from "@stripe/stripe-js";
+import AddIcon from '@mui/icons-material/Add';
+import RemoveIcon from '@mui/icons-material/Remove';
 
 function TestCart() {
     // Items
@@ -10,6 +12,8 @@ function TestCart() {
     const [voucherList, setVoucherList] = useState([]);
     const [selectedItems, setSelectedItems] = useState([]);
     const [selectedVoucherId, setSelectedVoucherId] = useState(null);
+    const [showDialog, setShowDialog] = useState(false);
+    const [itemIdToRemove, setItemIdToRemove] = useState(null);
 
     // Stripe
     const stripePromise = loadStripe("pk_test_51OdgVvEFMXlO8edaWWiNQmz7HT1mpULItw5vAF3BskfSB161pfYyHAm2WZ5rAqlCXKzUXFn7RbmNzpFOErGX0OZw00X9KvgJMJ");
@@ -124,6 +128,10 @@ function TestCart() {
         getVouchers();
     }, []);
 
+    // useEffect(() => {
+    //     getCart();
+    // }, [cartList]);
+
     // Scuffed front end total price calculation.
     const setTotalPrice = () => {
         let totalPrice = 0;
@@ -194,6 +202,65 @@ function TestCart() {
         const totalQty = getTotalQty();
         return totalPrice >= voucher.minSpend && totalQty >= voucher.minGroupSize;
     };
+
+    const handleRemoveQuantity = (id, name, amount, price) => {
+        amount -= 1;
+        if (amount === 0) {
+            setItemIdToRemove(id);
+            setShowDialog(true);
+        } else {
+            const data = { name, quantity: amount, price };
+            http.put(`/cartitem/${id}`, data)
+                .then(() => {
+                    // Update the cartList state with the updated quantity
+                    setCartList(prevCartList => {
+                        return prevCartList.map(item => {
+                            if (item.id === id) {
+                                return { ...item, quantity: amount };
+                            } else {
+                                return item;
+                            }
+                        });
+                    });
+                })
+                .catch(error => {
+                    console.error('Error updating quantity:', error);
+                    // Handle error
+                });
+        }
+    };
+
+    const handleConfirmRemove = () => {
+        handleDelete(itemIdToRemove);
+        setShowDialog(false); // Hide dialog box after removal
+    };
+
+    const handleCancelRemove = () => {
+        setShowDialog(false); // Hide dialog box
+    };
+
+    const handleAddQuantity = (id, name, amount, price) => {
+        amount += 1;
+        const data = { name, quantity: amount, price };
+        http.put(`/cartitem/${id}`, data)
+            .then(() => {
+                // Update the cartList state with the updated quantity
+                setCartList(prevCartList => {
+                    return prevCartList.map(item => {
+                        if (item.id === id) {
+                            return { ...item, quantity: amount };
+                        } else {
+                            return item;
+                        }
+                    });
+                });
+            })
+            .catch(error => {
+                console.error('Error updating quantity:', error);
+                // Handle error
+            });
+    };
+
 
 
     return (
@@ -314,10 +381,10 @@ function TestCart() {
                                                 </TableCell>
                                                 <TableCell>Name</TableCell>
                                                 <TableCell>Item Price</TableCell>
+                                                <TableCell></TableCell>
                                                 <TableCell>Quantity</TableCell>
+                                                <TableCell></TableCell>
                                                 <TableCell>Total Price</TableCell>
-                                                <TableCell>
-                                                </TableCell>
                                             </TableRow>
                                         </TableHead>
                                         <TableBody>
@@ -336,15 +403,20 @@ function TestCart() {
                                                     </TableCell>
                                                     <TableCell sx={{ fontSize: '0.8rem' }}>{cart.name}</TableCell>
                                                     <TableCell sx={{ fontSize: '0.8rem' }}>${cart.price}</TableCell>
-                                                    <TableCell sx={{ fontSize: '0.8rem' }}>
+                                                    <TableCell>
+                                                        <Button onClick={() => handleRemoveQuantity(cart.id, cart.name, cart.quantity, cart.price)}>
+                                                            <RemoveIcon />
+                                                        </Button>
+                                                    </TableCell>
+                                                    <TableCell sx={{ fontSize: '0.8rem', textAlign: 'center' }}>
                                                         {cart.quantity}
                                                     </TableCell>
-                                                    <TableCell sx={{ fontSize: '0.8rem' }}>${cart.price * cart.quantity}</TableCell>
-                                                    <TableCell sx={{ fontSize: '0.8rem' }}>
-                                                        <Link to="#" onClick={() => handleDelete(cart.id)} style={{ textDecoration: 'none', color: 'red', cursor: 'pointer' }}>
-                                                            Delete
-                                                        </Link>
+                                                    <TableCell>
+                                                        <Button onClick={() => handleAddQuantity(cart.id, cart.name, cart.quantity, cart.price)}>
+                                                            <AddIcon />
+                                                        </Button>
                                                     </TableCell>
+                                                    <TableCell sx={{ fontSize: '0.8rem' }}>${cart.price * cart.quantity}</TableCell>
                                                 </TableRow>
                                             ))}
                                         </TableBody>
@@ -375,8 +447,17 @@ function TestCart() {
                 </Grid>
 
             </Grid>
-
-
+            {/* Dialog box */}
+            <Dialog open={showDialog} onClose={handleCancelRemove}>
+                <DialogTitle>Remove Item</DialogTitle>
+                <DialogContent>
+                    Are you sure you want to remove this item from your cart?
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={handleCancelRemove}>Cancel</Button>
+                    <Button onClick={handleConfirmRemove} autoFocus>Remove</Button>
+                </DialogActions>
+            </Dialog>
         </Box>
     )
 }
