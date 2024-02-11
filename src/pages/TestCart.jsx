@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import http from '../http';
-import { IconButton, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Box, Typography, Checkbox, Button, Grid, Paper, Card, CardContent, Divider } from '@mui/material';
-import { Delete, Remove, Add } from '@mui/icons-material';
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Box, Typography, Checkbox, Button, Grid, Card, CardContent, Divider } from '@mui/material';
+import { loadStripe } from "@stripe/stripe-js";
 
 function TestCart() {
     // Items
@@ -10,6 +10,9 @@ function TestCart() {
     const [voucherList, setVoucherList] = useState([]);
     const [selectedItems, setSelectedItems] = useState([]);
     const [selectedVoucherId, setSelectedVoucherId] = useState(null);
+
+    // Stripe
+    const stripePromise = loadStripe("pk_test_51OdgVvEFMXlO8edaWWiNQmz7HT1mpULItw5vAF3BskfSB161pfYyHAm2WZ5rAqlCXKzUXFn7RbmNzpFOErGX0OZw00X9KvgJMJ");
 
     // API Calls
     // Retrieves Cart items
@@ -87,20 +90,33 @@ function TestCart() {
         setSelectedVoucherId(selectedVoucherId === voucherId ? null : voucherId);
     };
 
-    // Logic for updating quantity in cart
+    // Stripe
+    const handleCheckout = async () => {
+        const stripe = await stripePromise;
 
+        // Filter cartList based on selectedItems array
+        const selectedCartItems = cartList.filter(cartItem => selectedItems.includes(cartItem.id));
 
-    // Test button
-    const checkoutSelectedItems = () => {
-        alert("Selected items: " + selectedItems.join(", "));
-        alert("Applied vouchers: " + selectedVoucherId);
+        try {
+            console.log("Selected voucher ID:", selectedVoucherId);
+            console.log("Voucher list:", voucherList);
+            const requestData = {
+                selectedCartItems: selectedCartItems,
+                selectedVoucherId: selectedVoucherId
+            };
+            console.log(requestData);
+            // Make POST request to backend endpoint with the cartList data
+            const response = await http.post('/stripepayment/api/create-checkout-session', requestData);
 
-        // Reset selectedItems to an empty array
-        setSelectedItems([]);
-
-        // Reset selectedVoucherId to null
-        setSelectedVoucherId(null);
-    }
+            // Redirect to Stripe checkout page using the session ID returned from the backend
+            await stripe.redirectToCheckout({
+                sessionId: response.data.sessionId, // Assuming the backend returns the session ID in the response
+            });
+        } catch (error) {
+            console.error('Error creating checkout session:', error);
+            // Handle error
+        }
+    };
 
 
     useEffect(() => {
@@ -140,9 +156,25 @@ function TestCart() {
         return totalPrice.toFixed(2);
     };
 
+    const getTotalQty = () => {
+        let totalQty = 0;
+
+        selectedItems.forEach(selectedItemId => {
+            const selectedItem = cartList.find(item => item.id === selectedItemId);
+
+            if (selectedItem) {
+                // Add to total price
+                totalQty += selectedItem.quantity;
+            }
+        });
+
+        return totalQty;
+    };
+
     const isVoucherActive = (voucher) => {
         const totalPrice = getTotalPrice();
-        return totalPrice >= voucher.minSpend;
+        const totalQty = getTotalQty();
+        return totalPrice >= voucher.minSpend && totalQty >= voucher.minGroupSize;
     };
 
 
@@ -153,6 +185,88 @@ function TestCart() {
             </Typography>
 
             <Grid container spacing={4}>
+
+                <Grid item xs={12} lg={5}>
+                    <Card sx={{ backgroundColor: 'primary.main', color: 'primary.contrastText' }}>
+                        <CardContent>
+                            <Typography sx={{ my: 1, mt: 2, fontSize: '1rem' }}>
+                                Your Vouchers
+                            </Typography>
+                        </CardContent>
+
+                        <CardContent sx={{ backgroundColor: 'white', color: 'black' }}>
+                            <Grid container spacing={2}>
+                                {voucherList.map((voucher, index) => (
+                                    <Grid item xs={12} md={6} lg={12} key={index}>
+                                        <Card sx={{ my: 1, boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)', backgroundColor: isVoucherActive(voucher) ? '#fff' : '#f5f5f5', border: '1px solid #ddd', opacity: isVoucherActive(voucher) ? 1 : 0.5 }}>
+                                            <Grid container>
+                                                <Grid item xs={4} lg={4} sx={{ color: 'white', backgroundColor: '#E8533F', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                                    {voucher.minGroupSize < 2 &&
+                                                        <Typography sx={{ padding: "3px", fontSize: "0.9rem", textAlign: "center" }}>
+                                                            Gift Voucher
+                                                        </Typography>
+                                                    }
+                                                    {voucher.minGroupSize >= 2 &&
+                                                        <Typography sx={{ padding: "3px", fontSize: "0.9rem", textAlign: "center" }}>
+                                                            Group Voucher
+                                                        </Typography>
+                                                    }
+
+                                                </Grid>
+                                                <Grid item xs={6} lg={6} sx={{ display: 'flex' }}>
+                                                    <CardContent>
+                                                        <Box sx={{ ml: "65px", padding: "3px" }}>
+                                                            {voucher.percentageDiscount === 0 &&
+                                                                <Typography sx={{ fontSize: '1rem' }}>${voucher.fixedDiscount} off</Typography>
+                                                            }
+                                                            {voucher.fixedDiscount === 0 &&
+                                                                <Typography sx={{ fontSize: '1rem' }}>{voucher.percentageDiscount}% off</Typography>
+                                                            }
+
+                                                            <Typography sx={{ fontSize: '0.7rem' }}>Min Spend: ${voucher.minSpend}</Typography>
+
+                                                            {voucher.minGroupSize < 2 &&
+                                                                <Typography sx={{ fontSize: '0.7rem' }}>
+                                                                    Grp Size: N/A
+                                                                </Typography>
+                                                            }
+                                                            {voucher.minGroupSize >= 2 &&
+                                                                <Typography sx={{ fontSize: '0.7rem' }}>Grp Size: {voucher.minGroupSize}</Typography>
+                                                            }
+                                                        </Box>
+                                                    </CardContent>
+                                                </Grid>
+                                                <Grid item xs={2} lg={2} sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+
+                                                    <Checkbox
+                                                        checked={voucher.id === selectedVoucherId}
+                                                        onChange={() => handleVoucherSelection(voucher.id)}
+                                                        disabled={!isVoucherActive(voucher)}
+                                                    />
+                                                </Grid>
+                                            </Grid>
+                                        </Card>
+                                    </Grid>
+                                ))}
+                            </Grid>
+                        </CardContent>
+                    </Card>
+                    {/* <Grid item xs={12} lg={12} sx={{ mt: 2 }}>
+                        <Card>
+                            <CardContent sx={{ backgroundColor: 'white', color: 'black' }}>
+                                <Box sx={{ display: 'flex', justifyContent: 'flex-end', flexDirection: 'column', alignItems: 'flex-end' }}>
+                                    <Typography sx={{ mb: 2, fontSize: '1rem' }}>
+                                        Total Price: ${getTotalPrice()}
+                                    </Typography>
+                                    <Button variant="contained" onClick={checkoutSelectedItems}>
+                                        Check out
+                                    </Button>
+                                </Box>
+                            </CardContent>
+                        </Card>
+                    </Grid> */}
+                </Grid>
+
                 <Grid item xs={12} lg={7}>
                     <Card>
 
@@ -226,95 +340,20 @@ function TestCart() {
                             <Typography sx={{ mr: 4, fontSize: '1rem' }}>
                                 ({selectedItems.length}) selected
                             </Typography>
-                            <Box sx={{ flexGrow: 1 }} />
                             <Typography sx={{ mr: 4, fontSize: '1rem' }}>
                                 <Link to="#" onClick={handleDeleteItemSelected} style={{ textDecoration: 'none', color: 'red', cursor: 'pointer' }}>
                                     Delete
                                 </Link>
                             </Typography>
+                            <Box sx={{ flexGrow: 1 }} />
+                            <Typography sx={{ mr: 4 }}>
+                                Total Price: ${getTotalPrice()}
+                            </Typography>
+                            <Button variant="contained" onClick={handleCheckout}>
+                                Check out
+                            </Button>
                         </Box>
                     </Card>
-                </Grid>
-
-                <Grid item xs={12} lg={5}>
-                    <Card sx={{ backgroundColor: 'primary.main', color: 'primary.contrastText' }}>
-                        <CardContent>
-                            <Typography sx={{ my: 1, mt: 2, fontSize: '1rem' }}>
-                                Your Vouchers
-                            </Typography>
-                        </CardContent>
-
-                        <CardContent sx={{ backgroundColor: 'white', color: 'black' }}>
-                            <Grid container spacing={2}>
-                                {voucherList.map((voucher, index) => (
-                                    <Grid item xs={12} md={6} lg={12} key={index}>
-                                        <Card sx={{ my: 1, boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)', backgroundColor: isVoucherActive(voucher) ? '#fff' : '#f5f5f5', border: '1px solid #ddd', opacity: isVoucherActive(voucher) ? 1 : 0.5 }}>
-                                            <Grid container>
-                                                <Grid item xs={4} lg={4} sx={{ color: 'white', backgroundColor: '#E8533F', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                                                    {voucher.minGroupSize < 2 &&
-                                                        <Typography sx={{ padding: "3px", fontSize: "0.9rem", textAlign: "center" }}>
-                                                            Gift Voucher
-                                                        </Typography>
-                                                    }
-                                                    {voucher.minGroupSize >= 2 &&
-                                                        <Typography sx={{ padding: "3px", fontSize: "0.9rem", textAlign: "center" }}>
-                                                            Group Voucher
-                                                        </Typography>
-                                                    }
-
-                                                </Grid>
-                                                <Grid item xs={6} lg={6} sx={{ display: 'flex' }}>
-                                                    <CardContent>
-                                                        <Box sx={{ ml: "65px", padding: "3px" }}>
-                                                            {voucher.percentageDiscount === 0 &&
-                                                                <Typography sx={{ fontSize: '1rem' }}>${voucher.fixedDiscount} off</Typography>
-                                                            }
-                                                            {voucher.fixedDiscount === 0 &&
-                                                                <Typography sx={{ fontSize: '1rem' }}>{voucher.percentageDiscount}% off</Typography>
-                                                            }
-
-                                                            <Typography sx={{ fontSize: '0.7rem' }}>Min Spend: ${voucher.minSpend}</Typography>
-
-                                                            {voucher.minGroupSize < 2 &&
-                                                                <Typography sx={{ fontSize: '0.7rem' }}>
-                                                                    Grp Size: N/A
-                                                                </Typography>
-                                                            }
-                                                            {voucher.minGroupSize >= 2 &&
-                                                                <Typography sx={{ fontSize: '0.7rem' }}>Grp Size: {voucher.minGroupSize}</Typography>
-                                                            }
-                                                        </Box>
-                                                    </CardContent>
-                                                </Grid>
-                                                <Grid item xs={2} lg={2} sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-
-                                                    <Checkbox
-                                                        checked={voucher.id === selectedVoucherId}
-                                                        onChange={() => handleVoucherSelection(voucher.id)}
-                                                        disabled={!isVoucherActive(voucher)}
-                                                    />
-                                                </Grid>
-                                            </Grid>
-                                        </Card>
-                                    </Grid>
-                                ))}
-                            </Grid>
-                        </CardContent>
-                    </Card>
-                    <Grid item xs={12} lg={12} sx={{ mt: 2 }}>
-                        <Card>
-                            <CardContent sx={{ backgroundColor: 'white', color: 'black' }}>
-                                <Box sx={{ display: 'flex', justifyContent: 'flex-end', flexDirection: 'column', alignItems: 'flex-end' }}>
-                                    <Typography sx={{ mb: 2, fontSize: '1rem' }}>
-                                        Total Price: ${getTotalPrice()}
-                                    </Typography>
-                                    <Button variant="contained" onClick={checkoutSelectedItems}>
-                                        Check out
-                                    </Button>
-                                </Box>
-                            </CardContent>
-                        </Card>
-                    </Grid>
                 </Grid>
 
             </Grid>
