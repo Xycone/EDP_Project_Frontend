@@ -192,10 +192,6 @@ function TestCart() {
     const isVoucherActive = (voucher) => {
         const totalPrice = getTotalPrice();
         const totalQty = getTotalQty();
-        console.log("Total Price:" + totalPrice);
-        console.log("Total Qty:" + totalQty);
-        console.log("Voucher Min Spend:" + voucher.minSpend);
-        console.log("Voucher Min Grp Size:" + voucher.minGroupSize);
         return totalPrice >= voucher.minSpend && totalQty >= voucher.minGroupSize;
     };
 
