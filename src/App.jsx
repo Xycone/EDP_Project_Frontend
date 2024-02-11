@@ -303,7 +303,7 @@ function App() {
                   <Route path={"/editactivity/:id"} element={<EditActivity />} />
                   <Route path={"/addactivity/:id"} element={<AddActivity />} />
                   <Route path={"/editlisting/:id"} element={<EditListing />} />
-                  <Route path={"/addlisting"} element={<AddListing />} />
+                  <Route path={"/addlisting"} element={<AddListing />} />                                  
                   
                 </>
               )}

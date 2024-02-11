@@ -11,6 +11,7 @@ import {
   CardContent,
   Button,
   TextField,
+  MenuItem
 } from "@mui/material";
 import {
   Dialog,
@@ -40,6 +41,13 @@ function EditListing() {
     capacity: "",
   });
   const [loading, setLoading] = useState(true);
+  const categories = [
+    { value: "Wine & Dine", label: "Wine & Dine" },
+    { value: "Family Bonding", label: "Family Bonding" },
+    { value: "Hobbies & Wellness", label: "Hobbies & Wellness" },
+    { value: "Sports & Adventure", label: "Sports & Adventure" },
+    { value: "Travel", label: "Travel" },
+  ];
 
   useEffect(() => {
     http.get(`/activitylisting/${id}`).then((res) => {
@@ -85,16 +93,6 @@ function EditListing() {
         .min(3, "Description must be at least 3 characters")
         .max(500, "Description must be at most 500 characters")
         .required("Description is required"),
-      gprice: yup
-        .number()
-        .min(0, "Gprice must be at least 0")
-        .max(500, "Gprice must be at most 500")
-        .required("Gprice is required"),
-      uprice: yup
-        .number()
-        .min(0, "Uprice must be at least 0")
-        .max(500, "Uprice must be at most 500")
-        .required("Uprice is required"),
       nprice: yup
         .number()
         .min(0, "Nprice must be at least 0")
@@ -111,8 +109,6 @@ function EditListing() {
       data.address = data.address.trim();
       data.category = data.category.trim();
       data.description = data.description.trim();
-      data.gprice = data.gprice;
-      data.uprice = data.uprice;
       data.nprice = data.nprice;
       data.capacity = data.capacity;
       http.put(`/activitylisting/${id}`, data).then((res) => {
@@ -200,6 +196,7 @@ function EditListing() {
               </div>
               <div>
                 <TextField
+                  select
                   margin="dense"
                   autoComplete="off"
                   label="Category"
@@ -212,7 +209,13 @@ function EditListing() {
                   }
                   helperText={formik.touched.category && formik.errors.category}
                   sx={{ width: "300px" }}
-                />
+                >
+                  {categories.map((option) => (
+                    <MenuItem key={option.value} value={option.value}>
+                      {option.label}
+                    </MenuItem>
+                  ))}
+                </TextField>
               </div>
               <div>
                 <TextField
@@ -233,36 +236,6 @@ function EditListing() {
                     formik.touched.description && formik.errors.description
                   }
                   sx={{ width: "500px" }}
-                />
-              </div>
-              <div>
-                <TextField
-                  margin="dense"
-                  autoComplete="off"
-                  type="number"
-                  label="Gprice"
-                  name="gprice"
-                  value={formik.values.gprice}
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
-                  error={formik.touched.gprice && Boolean(formik.errors.gprice)}
-                  helperText={formik.touched.gprice && formik.errors.gprice}
-                  sx={{ width: "300px" }}
-                />
-              </div>
-              <div>
-                <TextField
-                  margin="dense"
-                  autoComplete="off"
-                  type="number"
-                  label="Uprice"
-                  name="uprice"
-                  value={formik.values.uprice}
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
-                  error={formik.touched.uprice && Boolean(formik.errors.uprice)}
-                  helperText={formik.touched.uprice && formik.errors.uprice}
-                  sx={{ width: "300px" }}
                 />
               </div>
               <div>
@@ -321,10 +294,17 @@ function EditListing() {
         </Box>
         <Box sx={{ flex: 1, marginLeft: 2 }}>
           <Box sx={{ display: "flex", my: 2 }}>
-          <Typography variant="h5" sx={{ my: 2 }}>
-          Available Booking Dates:
+            <Typography variant="h5" sx={{ my: 2 }}>
+              Available Booking Dates:
             </Typography>
-            <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 2, paddingLeft: 4 }}>
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "flex-end",
+                mt: 2,
+                paddingLeft: 4,
+              }}
+            >
               <Link
                 to={`/addactivity/${id}`}
                 style={{ textDecoration: "none" }}
@@ -346,7 +326,7 @@ function EditListing() {
                         Date: {activity.date}
                       </Typography>
                       <Typography sx={{ whiteSpace: "pre-wrap" }}>
-                      Available spots left: {activity.availSpots}
+                        Available spots left: {activity.availSpots}
                       </Typography>
                       <Link
                         component={RouterLink}

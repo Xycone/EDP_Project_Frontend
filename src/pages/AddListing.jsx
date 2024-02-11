@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { Box, Typography, TextField, Button } from "@mui/material";
+import { Box, Typography, TextField, Button, MenuItem } from "@mui/material";
 import {
   Dialog,
   DialogTitle,
@@ -20,11 +20,17 @@ function AddListing() {
     address: "",
     category: "",
     description: "",
-    gprice: "",
-    uprice: "",
     nprice: "",
     capacity: "",
   });
+
+  const categories = [
+    { value: "Wine & Dine", label: "Wine & Dine" },
+    { value: "Family Bonding", label: "Family Bonding" },
+    { value: "Hobbies & Wellness", label: "Hobbies & Wellness" },
+    { value: "Sports & Adventure", label: "Sports & Adventure" },
+    { value: "Travel", label: "Travel" },
+  ];
 
   const formik = useFormik({
     initialValues: listing,
@@ -54,16 +60,6 @@ function AddListing() {
         .min(3, "Description must be at least 3 characters")
         .max(500, "Description must be at most 500 characters")
         .required("Description is required"),
-      gprice: yup
-        .number()
-        .min(0, "Gprice must be at least 0")
-        .max(500, "Gprice must be at most 500")
-        .required("Gprice is required"),
-      uprice: yup
-        .number()
-        .min(0, "Uprice must be at least 0")
-        .max(500, "Uprice must be at most 500")
-        .required("Uprice is required"),
       nprice: yup
         .number()
         .min(0, "Nprice must be at least 0")
@@ -80,8 +76,6 @@ function AddListing() {
       data.address = data.address.trim();
       data.category = data.category.trim();
       data.description = data.description.trim();
-      data.gprice = data.gprice;
-      data.uprice = data.uprice;
       data.nprice = data.nprice;
       data.capacity = data.capacity;
       http.post(`/activitylisting`, data).then((res) => {
@@ -126,18 +120,25 @@ function AddListing() {
           />
         </div>
         <div>
-          <TextField
-            margin="dense"
-            autoComplete="off"
-            label="Category"
-            name="category"
-            value={formik.values.category}
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            error={formik.touched.category && Boolean(formik.errors.category)}
-            helperText={formik.touched.category && formik.errors.category}
-            sx={{ width: "300px" }}
-          />
+        <TextField
+        select
+        margin="dense"
+        autoComplete="off"
+        label="Category"
+        name="category"
+        value={formik.values.category}
+        onChange={formik.handleChange}
+        onBlur={formik.handleBlur}
+        error={formik.touched.category && Boolean(formik.errors.category)}
+        helperText={formik.touched.category && formik.errors.category}
+        sx={{ width: "300px" }}
+      >
+        {categories.map((option) => (
+          <MenuItem key={option.value} value={option.value}>
+            {option.label}
+          </MenuItem>
+        ))}
+      </TextField>
         </div>
         <div>
           <TextField
@@ -155,36 +156,6 @@ function AddListing() {
             }
             helperText={formik.touched.description && formik.errors.description}
             sx={{ width: "600px" }}
-          />
-        </div>
-        <div>
-          <TextField
-            margin="dense"
-            autoComplete="off"
-            type="number"
-            label="Gprice"
-            name="gprice"
-            value={formik.values.gprice}
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            error={formik.touched.gprice && Boolean(formik.errors.gprice)}
-            helperText={formik.touched.gprice && formik.errors.gprice}
-            sx={{ width: "300px" }}
-          />
-        </div>
-        <div>
-          <TextField
-            margin="dense"
-            autoComplete="off"
-            type="number"
-            label="Uprice"
-            name="uprice"
-            value={formik.values.uprice}
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            error={formik.touched.uprice && Boolean(formik.errors.uprice)}
-            helperText={formik.touched.uprice && formik.errors.uprice}
-            sx={{ width: "300px" }}
           />
         </div>
         <div>

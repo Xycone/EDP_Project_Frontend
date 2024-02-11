@@ -87,6 +87,19 @@ function Listings() {
                     <Typography sx={{ whiteSpace: "pre-wrap" }}>
                       Available spots left: {activity.availSpots}
                     </Typography>
+                    <Box sx={{ textAlign: "center" }}>
+                      <Link component={RouterLink} to="/adaddcartitem">
+                        <Button
+                          variant="contained"
+                          color="primary"
+                          sx={{ mt: 2, height: 40 }}
+                        >
+                          <Typography sx={{ fontSize: 12 }}>
+                            Add to Cart
+                          </Typography>
+                        </Button>
+                      </Link>
+                    </Box>
                   </CardContent>
                 </Card>
               </Grid>
