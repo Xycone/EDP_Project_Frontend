@@ -19,10 +19,25 @@ function ManageLoyaltyDiscount() {
 
 
   // (DataGrid)
-  const columns = [   
+  const columns = [
     { field: 'tierName', headerName: 'Tier Name', flex: 0.7 },
     { field: 'tierBookings', headerName: 'Bookings', flex: 0.6 },
-    { field: 'tierSpendings', headerName: 'Spendings', flex: 0.6 },
+    {
+      field: 'tierSpendings',
+      headerName: 'Spendings',
+      flex: 0.6,
+      renderCell: (params) => (
+        <Box>
+          {/* Format 'tierSpendings' here */}
+          <Typography
+            sx={{
+              fontSize: '0.8rem',
+            }}>
+            {`$${params.row.tierSpendings.toFixed(2)}`}
+          </Typography>
+        </Box>
+      )
+    },
     { field: 'tierPosition', headerName: 'Position', flex: 0.4 },
     {
       field: 'updatedAt',
@@ -31,7 +46,7 @@ function ManageLoyaltyDiscount() {
       valueGetter: (params) => dayjs(params.row.updatedAt && params.row.updatedAt > params.row.createdAt ? params.row.updatedAt : params.row.createdAt).format(global.datetimeFormat),
       renderCell: (params) => (
         <Box style={{ display: 'flex', alignItems: 'center' }}>
-          <AccessTime sx={{ mr: 1, fontSize: '0.8rem'  }} />
+          <AccessTime sx={{ mr: 1, fontSize: '0.8rem' }} />
           {dayjs(params.row.updatedAt && params.row.updatedAt > params.row.createdAt ? params.row.updatedAt : params.row.createdAt).format(global.datetimeFormat)}
         </Box>
       ),
