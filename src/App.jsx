@@ -313,6 +313,9 @@ function App() {
                 <ListItem button component={Link} to="/orders" onClick={handleDrawerClose} sx={{ fontSize: '1rem' }}>
                   <ListItemText primary="Manage Orders" />
                 </ListItem>
+                <ListItem button component={Link} to="/listings" onClick={handleDrawerClose} sx={{ fontSize: '1rem' }}>
+                  <ListItemText primary="Manage Listings" />
+                </ListItem>
               </List>
             </Drawer>
           )}
@@ -366,6 +369,7 @@ function App() {
               {/* Admin only pages*/}
               {user && user.isAdmin && !isNotAdminView && (
                 <>
+                  {/* Raye's Routes */}
                   <Route path="/orders" element={<Orders />} />
                   <Route path="/create-order" element={<CreateOrders />} />
 
@@ -381,6 +385,7 @@ function App() {
                   <Route path={"/editlisting/:id"} element={<EditListing />} />
                   <Route path={"/listings"} element={<Listings />} />
                   <Route path={"/listing/:id"} element={<Listing />} />
+                  <Route path={"/addlisting"} element={<AddListing />} />
                 </>
               )}
             </Routes>

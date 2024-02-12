@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import http from '../http';
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Box, Typography, Checkbox, Button, Grid, Card, CardContent, Divider,Dialog, DialogTitle, DialogContent, DialogActions } from '@mui/material';
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Box, Typography, Checkbox, Button, Grid, Card, CardContent, Divider, Dialog, DialogTitle, DialogContent, DialogActions } from '@mui/material';
 import { loadStripe } from "@stripe/stripe-js";
 import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
+import { Snackbar } from '@mui/material';
 
 function TestCart() {
     // Items
@@ -239,32 +240,70 @@ function TestCart() {
         setShowDialog(false); // Hide dialog box
     };
 
-    const handleAddQuantity = (id, name, amount, price) => {
-        amount += 1;
-        const data = { name, quantity: amount, price };
-        http.put(`/cartitem/${id}`, data)
-            .then(() => {
-                // Update the cartList state with the updated quantity
-                setCartList(prevCartList => {
-                    return prevCartList.map(item => {
-                        if (item.id === id) {
-                            return { ...item, quantity: amount };
-                        } else {
-                            return item;
-                        }
-                    });
-                });
+    // Define state for controlling the popup
+    const [showNotification, setShowNotification] = useState(false);
+
+    // Define a function to handle closing the popup
+    const handleCloseNotification = () => {
+        setShowNotification(false);
+    };
+
+    const handleAddQuantity = (id, name, amount, price, activityId) => {
+        // Fetch activity information to get availspots
+        http.get(`/activity/${activityId}`)
+            .then(response => {
+                // Check if the response data is not null and contains the availSpots property
+                if (response.data && response.data.availSpots !== undefined) {
+                    const availspots = response.data.availSpots;
+                    // Check if the updated quantity will exceed availspots
+                    console.log(availspots);
+                    if (amount < availspots) {
+                        amount += 1;
+                        const data = { name, quantity: amount, price };
+                        http.put(`/cartitem/${id}`, data)
+                            .then(() => {
+                                // Update the cartList state with the updated quantity
+                                setCartList(prevCartList => {
+                                    return prevCartList.map(item => {
+                                        if (item.id === id) {
+                                            return { ...item, quantity: amount };
+                                        } else {
+                                            return item;
+                                        }
+                                    });
+                                });
+                            })
+                            .catch(error => {
+                                console.error('Error updating quantity:', error);
+                                // Handle error
+                            });
+                    } else {
+                        // Notify user that quantity cannot be increased above availspots
+                        setShowNotification(true);
+                    }
+                } else {
+                    console.error('Error: Invalid response data or missing availSpots property');
+                    // Handle error or notify user about missing data
+                }
             })
             .catch(error => {
-                console.error('Error updating quantity:', error);
+                console.error('Error fetching activity information:', error);
                 // Handle error
             });
     };
 
 
 
+
     return (
         <Box sx={{ my: 2 }}>
+            {/* Popup notification */}
+            <Snackbar
+                open={showNotification}
+                autoHideDuration={6000} // Adjust the duration as needed
+                onClose={handleCloseNotification}
+                message="Quantity cannot be increased above available spots."
+            />
             <Typography variant="h6" sx={{ mb: 2, mr: 1 }}>
                 My Cart
             </Typography>
@@ -412,7 +451,7 @@ function TestCart() {
                                                         {cart.quantity}
                                                     </TableCell>
                                                     <TableCell>
-                                                        <Button onClick={() => handleAddQuantity(cart.id, cart.name, cart.quantity, cart.price)}>
+                                                        <Button onClick={() => handleAddQuantity(cart.id, cart.name, cart.quantity, cart.price, cart.activityId)}>
                                                             <AddIcon />
                                                         </Button>
                                                     </TableCell>

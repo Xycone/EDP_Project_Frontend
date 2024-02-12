@@ -37,9 +37,6 @@ function Success() {
     //         console.error('Error adding orders', error);
     //     }
     // };
-    useEffect(() => {
-        clearCart(); // Assuming clearCart is a function that clears the cart
-    }, []);
     return (
         <div>
             <h1>Payment Successful!</h1>
