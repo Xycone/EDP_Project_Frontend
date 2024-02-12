@@ -47,7 +47,7 @@ function AddCartItem() {
         .post('/cartitem/addcartitems', data)
         .then((res) => {
           console.log(res.data);
-          navigate('/cart'); // Update the route if needed
+          navigate('/testCart'); // Update the route if needed
         })
         .catch((error) => {
             console.error('Error adding cart item:', error);

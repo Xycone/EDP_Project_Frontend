@@ -1,8 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import http from '../http';
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Box, Typography, Checkbox, Button, Grid, Card, CardContent, Divider } from '@mui/material';
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Box, Typography, Checkbox, Button, Grid, Card, CardContent, Divider, Dialog, DialogTitle, DialogContent, DialogActions } from '@mui/material';
 import { loadStripe } from "@stripe/stripe-js";
+import AddIcon from '@mui/icons-material/Add';
+import RemoveIcon from '@mui/icons-material/Remove';
+import { Snackbar } from '@mui/material';
+import dayjs from 'dayjs';
+import global from '../global';
+
 
 function TestCart() {
     // Items
@@ -10,6 +16,8 @@ function TestCart() {
     const [voucherList, setVoucherList] = useState([]);
     const [selectedItems, setSelectedItems] = useState([]);
     const [selectedVoucherId, setSelectedVoucherId] = useState(null);
+    const [showDialog, setShowDialog] = useState(false);
+    const [itemIdToRemove, setItemIdToRemove] = useState(null);
 
     // Stripe
     const stripePromise = loadStripe("pk_test_51OdgVvEFMXlO8edaWWiNQmz7HT1mpULItw5vAF3BskfSB161pfYyHAm2WZ5rAqlCXKzUXFn7RbmNzpFOErGX0OZw00X9KvgJMJ");
@@ -99,7 +107,7 @@ function TestCart() {
 
         try {
             console.log("Selected voucher ID:", selectedVoucherId);
-            console.log("Voucher list:", voucherList);
+            console.log("Cart items:", selectedCartItems);
             const requestData = {
                 selectedCartItems: selectedCartItems,
                 selectedVoucherId: selectedVoucherId
@@ -123,6 +131,10 @@ function TestCart() {
         getCart();
         getVouchers();
     }, []);
+
+    // useEffect(() => {
+    //     getCart();
+    // }, [cartList]);
 
     // Scuffed front end total price calculation.
     const setTotalPrice = () => {
@@ -195,9 +207,106 @@ function TestCart() {
         return totalPrice >= voucher.minSpend && totalQty >= voucher.minGroupSize;
     };
 
+    const handleRemoveQuantity = (id, name, amount, price) => {
+        amount -= 1;
+        if (amount === 0) {
+            setItemIdToRemove(id);
+            setShowDialog(true);
+        } else {
+            const data = { name, quantity: amount, price };
+            http.put(`/cartitem/${id}`, data)
+                .then(() => {
+                    // Update the cartList state with the updated quantity
+                    setCartList(prevCartList => {
+                        return prevCartList.map(item => {
+                            if (item.id === id) {
+                                return { ...item, quantity: amount };
+                            } else {
+                                return item;
+                            }
+                        });
+                    });
+                })
+                .catch(error => {
+                    console.error('Error updating quantity:', error);
+                    // Handle error
+                });
+        }
+    };
+
+    const handleConfirmRemove = () => {
+        handleDelete(itemIdToRemove);
+        setShowDialog(false); // Hide dialog box after removal
+    };
+
+    const handleCancelRemove = () => {
+        setShowDialog(false); // Hide dialog box
+    };
+
+    // Define state for controlling the popup
+    const [showNotification, setShowNotification] = useState(false);
+
+    // Define a function to handle closing the popup
+    const handleCloseNotification = () => {
+        setShowNotification(false);
+    };
+
+    const handleAddQuantity = (id, name, amount, price, activityId) => {
+        // Fetch activity information to get availspots
+        http.get(`/activity/${activityId}`)
+            .then(response => {
+                // Check if the response data is not null and contains the availSpots property
+                if (response.data && response.data.availSpots !== undefined) {
+                    const availspots = response.data.availSpots;
+                    // Check if the updated quantity will exceed availspots
+                    console.log(availspots);
+                    if (amount < availspots) {
+                        amount += 1;
+                        const data = { name, quantity: amount, price };
+                        http.put(`/cartitem/${id}`, data)
+                            .then(() => {
+                                // Update the cartList state with the updated quantity
+                                setCartList(prevCartList => {
+                                    return prevCartList.map(item => {
+                                        if (item.id === id) {
+                                            return { ...item, quantity: amount };
+                                        } else {
+                                            return item;
+                                        }
+                                    });
+                                });
+                            })
+                            .catch(error => {
+                                console.error('Error updating quantity:', error);
+                                // Handle error
+                            });
+                    } else {
+                        // Notify user that quantity cannot be increased above availspots
+                        setShowNotification(true);
+                    }
+                } else {
+                    console.error('Error: Invalid response data or missing availSpots property');
+                    // Handle error or notify user about missing data
+                }
+            })
+            .catch(error => {
+                console.error('Error fetching activity information:', error);
+                // Handle error
+            });
+    };
+
+
+
 
     return (
         <Box sx={{ my: 2 }}>
+            {/* Popup notification */}
+            <Snackbar
+                open={showNotification}
+                autoHideDuration={6000} // Adjust the duration as needed
+                onClose={handleCloseNotification}
+                message="Quantity cannot be increased above available spots."
+            />
             <Typography variant="h6" sx={{ mb: 2, mr: 1 }}>
                 My Cart
             </Typography>
@@ -251,6 +360,10 @@ function TestCart() {
                                                             {voucher.minGroupSize >= 2 &&
                                                                 <Typography sx={{ fontSize: '0.7rem' }}>Grp Size: {voucher.minGroupSize}</Typography>
                                                             }
+
+                                                            <Typography sx={{ fontSize: '0.7rem', mt: 3}}>
+                                                                Use by: <u>{dayjs(voucher.discountExpiry).format('DD/MM/YYYY')}</u>
+                                                            </Typography>
                                                         </Box>
                                                     </CardContent>
                                                 </Grid>
@@ -314,10 +427,10 @@ function TestCart() {
                                                 </TableCell>
                                                 <TableCell>Name</TableCell>
                                                 <TableCell>Item Price</TableCell>
+                                                <TableCell></TableCell>
                                                 <TableCell>Quantity</TableCell>
+                                                <TableCell></TableCell>
                                                 <TableCell>Total Price</TableCell>
-                                                <TableCell>
-                                                </TableCell>
                                             </TableRow>
                                         </TableHead>
                                         <TableBody>
@@ -336,15 +449,20 @@ function TestCart() {
                                                     </TableCell>
                                                     <TableCell sx={{ fontSize: '0.8rem' }}>{cart.name}</TableCell>
                                                     <TableCell sx={{ fontSize: '0.8rem' }}>${cart.price}</TableCell>
-                                                    <TableCell sx={{ fontSize: '0.8rem' }}>
+                                                    <TableCell>
+                                                        <Button onClick={() => handleRemoveQuantity(cart.id, cart.name, cart.quantity, cart.price)}>
+                                                            <RemoveIcon />
+                                                        </Button>
+                                                    </TableCell>
+                                                    <TableCell sx={{ fontSize: '0.8rem', textAlign: 'center' }}>
                                                         {cart.quantity}
                                                     </TableCell>
-                                                    <TableCell sx={{ fontSize: '0.8rem' }}>${cart.price * cart.quantity}</TableCell>
-                                                    <TableCell sx={{ fontSize: '0.8rem' }}>
-                                                        <Link to="#" onClick={() => handleDelete(cart.id)} style={{ textDecoration: 'none', color: 'red', cursor: 'pointer' }}>
-                                                            Delete
-                                                        </Link>
+                                                    <TableCell>
+                                                        <Button onClick={() => handleAddQuantity(cart.id, cart.name, cart.quantity, cart.price, cart.activityId)}>
+                                                            <AddIcon />
+                                                        </Button>
                                                     </TableCell>
+                                                    <TableCell sx={{ fontSize: '0.8rem' }}>${cart.price * cart.quantity}</TableCell>
                                                 </TableRow>
                                             ))}
                                         </TableBody>
@@ -375,8 +493,17 @@ function TestCart() {
                 </Grid>
 
             </Grid>
-
-
+            {/* Dialog box */}
+            <Dialog open={showDialog} onClose={handleCancelRemove}>
+                <DialogTitle>Remove Item</DialogTitle>
+                <DialogContent>
+                    Are you sure you want to remove this item from your cart?
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={handleCancelRemove}>Cancel</Button>
+                    <Button onClick={handleConfirmRemove} autoFocus>Remove</Button>
+                </DialogActions>
+            </Dialog>
         </Box>
     )
 }

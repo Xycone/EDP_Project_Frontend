@@ -1,60 +1,75 @@
-import React from 'react'
+import React from 'react';
 import { Box, Typography, TextField, Button, Rating } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { useFormik } from 'formik';
+import UserContext from '../contexts/UserContext';
 import * as yup from 'yup';
 import http from '../http';
-import { format } from 'date-fns';
+import dayjs from 'dayjs';
 import global from '../global';
 
 function AddReviews() {
   const navigate = useNavigate();
+  const user = ''
+
   const formik = useFormik({
     initialValues: {
-        activityid: 0,
-        starRating: 0,
-        desc: "",
-
+      activityid: 1,
+      starRating: 0,
+      desc: "",
     },
     validationSchema: yup.object({
-      // starRating: yup
-      // .number()
-      // .integer('Star Rating must be an integer')
-      // .min(1, 'Star Rating must be at least 1')
-      // .max(5, 'Star Rating must be at most 5')
-      // .required('Star Rating is required'),
-      desc: yup.string()
+      activityid: yup
+        .number('Activity ID must be a number')
+        .integer('Activity ID must be an integer')
+        .required('Activity ID is required'),
+      desc: yup
+        .string()
         .trim()
         .min(3, 'Description must be at least 3 characters')
         .max(500, 'Description must be at most 500 characters')
         .required('Description is required'),
     }),
-
     onSubmit: (data) => {
-      //data.starRating = parseInt(data.starRating, 10);
       data.desc = data.desc.trim();
-      data.userId = 1
-      data.userName = "Admin"
-      const currentDate = new Date();
-      data.date = format(currentDate, global.datetimeFormat2);
-      console.log("this happend")
+      // uses user stuff if there, if not default values
+      data.userId = user?.id ?? 1;
+      data.userName = user?.username ?? "testuser";
+      
+      const currentDate = dayjs(); // Get current date and time
+      data.date = currentDate
+
+      console.log("Review stuff is packaged", data);
+
       http.post("/review", data)
         .then((res) => {
+          console.log("getting to backend...");
           console.log(res.data);
-          navigate("/reviews");  
+          console.log("on the way to backend");
+          navigate("/reviews");
         });
-    }
+    },
   });
-  
-  
+
   return (
     <Box>
       <Typography variant="h5" sx={{ my: 2 }}>
         Add Reviews
       </Typography>
       <Box component="form" onSubmit={formik.handleSubmit}>
+        <TextField
+          margin="normal"
+          label="Which Activity Would you like to commend?"
+          name="activityid"
+          type="number"
+          value={formik.values.activityid}
+          onChange={formik.handleChange}
+          error={formik.touched.activityid && Boolean(formik.errors.activityid)}
+          helperText={formik.touched.activityid && formik.errors.activityid}
+        />
         <Box sx={{ my: 2 }}>
           {/* Use Rating component for starRating */}
+          <Typography variant="body1">how would you rate this activity?</Typography>
           <Rating
             name="starRating"
             value={formik.values.starRating}
@@ -63,9 +78,6 @@ function AddReviews() {
             }}
             className={formik.touched.starRating && formik.errors.starRating ? 'error' : ''}
           />
-
-
-
         </Box>
 
         <TextField
@@ -74,12 +86,12 @@ function AddReviews() {
           autoComplete="off"
           multiline
           minRows={2}
-          label="Description"
+          label="Tell us more"
           name="desc"
-          value={formik.values.des}
+          value={formik.values.desc}
           onChange={formik.handleChange}
-          error={formik.touched.des && Boolean(formik.errors.des)}
-          helperText={formik.touched.des && formik.errors.des}
+          error={formik.touched.desc && Boolean(formik.errors.desc)}
+          helperText={formik.touched.desc && formik.errors.desc}
         />
         <Box sx={{ mt: 2 }}>
           <Button variant="contained" type="submit">

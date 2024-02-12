@@ -1,19 +1,19 @@
 import React from 'react';
-import { Box, Typography, TextField, Button } from '@mui/material';
+import { Box, Typography, TextField, Button, MenuItem, Select, FormControl, InputLabel } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
 import http from '../http';
-import { format } from 'date-fns';
+import dayjs from 'dayjs'; // Import dayjs for date formatting
 import global from '../global'; // Import the global file with datetimeFormat
 
 function AddTickets() {
   const navigate = useNavigate();
 
   // Get current date and time
-  const currentDate = new Date();
+  const currentDate = dayjs();
   // Format the current date and time using the global datetime format
-  const currentDateTimeFormatted = format(currentDate, global.datetimeFormat2);
+  const currentDateTimeFormatted = currentDate.format(global.datetimeFormat);
 
   // Formik configuration
   const formik = useFormik({
@@ -24,7 +24,7 @@ function AddTickets() {
       contact: '',
     },
     validationSchema: yup.object({
-      date: yup.date().required('Date is required'),
+      date: yup.string().required('Date is required'), // Change to string validation
       issueType: yup.string().required('Issue type is required'),
       complaint: yup.string().required('Complaint is required'),
       contact: yup.string().email('Invalid email format').required('Contact is required'),
@@ -48,7 +48,6 @@ function AddTickets() {
       </Typography>
       <Box component="form" onSubmit={formik.handleSubmit}>
         <TextField
-          fullWidth
           margin="normal"
           autoComplete="off"
           label="Date"
@@ -59,17 +58,22 @@ function AddTickets() {
           error={formik.touched.date && Boolean(formik.errors.date)}
           helperText={formik.touched.date && formik.errors.date}
         />
-        <TextField
-          fullWidth
-          margin="normal"
-          autoComplete="off"
-          label="Issue Type"
-          name="issueType"
-          value={formik.values.issueType}
-          onChange={formik.handleChange}
-          error={formik.touched.issueType && Boolean(formik.errors.issueType)}
-          helperText={formik.touched.issueType && formik.errors.issueType}
-        />
+     <FormControl fullWidth margin="normal">
+          <InputLabel id="issueType-label">Issue Type</InputLabel>
+          <Select
+            labelId="issueType-label"
+            id="issueType"
+            name="issueType"
+            value={formik.values.issueType}
+            onChange={formik.handleChange}
+            error={formik.touched.issueType && Boolean(formik.errors.issueType)}
+          >
+            <MenuItem value="">Select Issue Type</MenuItem>
+            <MenuItem value="Account Issue">Account Issue</MenuItem>
+            <MenuItem value="Review Issue">Review Issue</MenuItem>
+            <MenuItem value="Other">Other</MenuItem>
+          </Select>
+        </FormControl>
         <TextField
           fullWidth
           margin="normal"
@@ -96,7 +100,7 @@ function AddTickets() {
         />
         <Box sx={{ mt: 2 }}>
           <Button variant="contained" type="submit">
-            Add
+            Submit
           </Button>
         </Box>
       </Box>

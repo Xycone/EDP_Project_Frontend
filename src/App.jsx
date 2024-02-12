@@ -12,7 +12,7 @@ import http from './http';
 import UserContext from './contexts/UserContext';
 
 import MyForm from './pages/MyForm';
-
+import CustServiceDropDown from './pages/CustServiceDropDown';
 import Register from './pages/Register';
 import Login from './pages/Login';
 import LoyaltyDiscount from './pages/LoyaltyDiscount';
@@ -47,6 +47,9 @@ import EditListing from './pages/EditListing';
 import AddActivity from './pages/AddActivity';
 import EditActivity from './pages/EditActivity';
 import Success from './pages/Success';
+import Report from './pages/Report';
+import OrdersTable from './pages/OrdersTable';
+import PurchaseHistory from './pages/PurchaseHistory'
 import ListingTable from './pages/ListingTable';
 
 const drawerWidth = 240;
@@ -129,6 +132,9 @@ function App() {
               </Link>
               <Box sx={{ flexGrow: 1 }} />
 
+              <CustServiceDropDown />
+
+
               <Box sx={{ flexGrow: 1 }} />
               {/* User logged in */}
               {user && (
@@ -167,7 +173,6 @@ function App() {
                             }}
                           />
                         )
-
                       }
                       {
                         // Default profile picture if user did not set anything
@@ -247,6 +252,18 @@ function App() {
                             </Typography>
                           </MenuItem>
                         </Link>
+
+                        <Link to={"/purchasehistory"} style={{ textDecoration: 'none', color: 'inherit' }}>
+                          <MenuItem
+                            variant="contained"
+                            color="primary"
+                            sx={{ marginLeft: '4px' }}
+                          >
+                            <Typography variant="caption" sx={{ marginLeft: 1 }}>
+                              Purchase history
+                            </Typography>
+                          </MenuItem>
+                        </Link>
                       </Box>
                     )}
 
@@ -306,8 +323,14 @@ function App() {
                 <ListItem button component={Link} to="/orders" onClick={handleDrawerClose} sx={{ fontSize: '1rem' }}>
                   <ListItemText primary="Manage Orders" />
                 </ListItem>
-                <ListItem button component={Link} to="/listingtable" onClick={handleDrawerClose} sx={{ fontSize: '1rem' }}>
+                <ListItem button component={Link} to="/listings" onClick={handleDrawerClose} sx={{ fontSize: '1rem' }}>
                   <ListItemText primary="Manage Listings" />
+                </ListItem>
+                <ListItem button component={Link} to="/ticketspage" onClick={handleDrawerClose} sx={{ fontSize: '1rem' }}>
+                  <ListItemText primary="Manage tickets" />
+                </ListItem>
+                <ListItem button component={Link} to="/reviews" onClick={handleDrawerClose} sx={{ fontSize: '1rem' }}>
+                  <ListItemText primary="Manage reviews" />
                 </ListItem>
               </List>
             </Drawer>
@@ -332,7 +355,7 @@ function App() {
                   <Route path={"/changePassword"} element={<ChangePassword />} />
                   <Route path={"/testCart"} element={<TestCart />} />
                   <Route path={"/Cart"} element={<Cart />} />
-                  <Route path={"/Success"} element ={<Success/>} />
+                  <Route path={"/Success"} element={<Success />} />
 
                   {/* Joseph's Routes */}
                   <Route path={"/cart"} element={<Cart />} />
@@ -343,10 +366,15 @@ function App() {
                   <Route path={"/checkoutform"} element={<CheckoutForm />} />
 
                   {/* Raye's Routes */}
+                  <Route path={"/purchasehistory"} element={<PurchaseHistory />} />
+                  {/* <Route path={"/reviews"} element={<Reviews />} />
+
+                  {/* Wayne's Routes */}
                   <Route path={"/reviews"} element={<Reviews />} />
                   <Route path={"/addreviews"} element={<AddReviews />} />
                   <Route path={"/editreviews/:id"} element={<EditReviews />} />
                   <Route path={"/delreviews/:id"} element={<DelReviews />} />
+
 
                   {/* Wayne's Routes */}
                   <Route path={"/ticketspage"} element={<TicketsPage />} />
@@ -362,8 +390,9 @@ function App() {
               {/* Admin only pages*/}
               {user && user.isAdmin && !isNotAdminView && (
                 <>
-                  <Route path="/orders" element={<Orders />} />
-                  <Route path="/create-order" element={<CreateOrders />} />
+                  {/* Raye's Routes */}
+                  <Route path="/report" element={<Report />} />
+                  <Route path="/orders" element={<OrdersTable />} />
 
                   {/* Sean's Routes */}
                   <Route path={"/manageusers"} element={<ManageUsers />} />
@@ -379,6 +408,16 @@ function App() {
                   <Route path={"/listingtable"} element={<ListingTable />} />
                   <Route path={"/addlisting"} element={<AddListing/>}/>
                   <Route path={"/listing/:id"} element={<Listing />} />
+                  <Route path={"/addlisting"} element={<AddListing />} />
+
+                  {/* Wayne's Routes */}
+                  <Route path={"/reviews"} element={<Reviews />} />
+                  <Route path={"/addreviews"} element={<AddReviews />} />
+                  <Route path={"/editreviews/:id"} element={<EditReviews />} />
+                  <Route path={"/delreviews/:id"} element={<DelReviews />} />
+                  <Route path={"/ticketspage"} element={<TicketsPage />} />
+                  <Route path={"/addtickets"} element={<AddTickets />} />
+                  <Route path={"/deltickets/:id"} element={<DelTickets />} />
                 </>
               )}
             </Routes>

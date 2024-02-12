@@ -51,16 +51,33 @@ function LoyaltyDiscount() {
   useEffect(() => {
     getInfo();
   }, []);
+
+  const calculateSpendingProgress = () => {
+    const progress = tier.tierSpendings !== 0 ? (info.totalSpent / tier.tierSpendings) * 100 : 0;
+    console.log("Spending progress" + progress)
+    return Math.min(progress, 100);
+  };
+
+  const calculateBookingProgress = () => {
+    const progress = tier.tierBookings !== 0 ? (info.totalBookings / tier.tierBookings) * 100 : 0;
+    console.log("Booking progress" + progress)
+    return Math.min(progress, 100);
+  };
+
   useEffect(() => {
     getTier();
     getPerks();
-
-    const spendingProgress = tier.tierSpendings !== 0 ? (info.totalSpent / tier.tierSpendings) * 100 : 0;
-    const bookingProgress = tier.tierBookings !== 0 ? (info.totalBookings / tier.tierBookings) * 100 : 0;
-
-    setSpendingProgress(spendingProgress);
-    setBookingProgress(bookingProgress);
   }, [info]);
+
+  useEffect(() => {
+    if (info.totalSpent !== '' && tier.tierSpendings !== '') {
+      setSpendingProgress(calculateSpendingProgress());
+    }
+    if (info.totalBookings !== '' && tier.tierBookings !== '') {
+      setBookingProgress(calculateBookingProgress());
+    }
+  }, [info, tier]);
+
 
   return (
     <Box sx={{ my: 2 }}>
@@ -113,7 +130,7 @@ function LoyaltyDiscount() {
                   <Grid item xs={12} md={12} lg={6} key={index}>
                     <Card sx={{ my: 1, boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)', background: '#fff', border: '1px solid #ddd' }}>
                       <Grid container>
-                        <Grid item xs={4} lg={4} sx={{ color: 'white', backgroundColor: '#E8533F', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                        <Grid item xs={12} md={4} lg={4} sx={{ color: 'white', backgroundColor: '#E8533F', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                           {perk.minGroupSize < 2 &&
                             <Typography sx={{ padding: "3px", fontSize: "0.9rem", textAlign: "center" }}>
                               Gift Voucher
@@ -126,7 +143,7 @@ function LoyaltyDiscount() {
                           }
 
                         </Grid>
-                        <Grid item xs={8} lg={8} sx={{ display: 'flex' }}>
+                        <Grid item xs={12} md={8} lg={8} sx={{ display: 'flex' }}>
                           <CardContent>
                             <Box sx={{ ml: "65px", padding: "3px" }}>
                               {perk.percentageDiscount === 0 &&
