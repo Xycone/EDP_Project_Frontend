@@ -1,6 +1,6 @@
 import './App.css';
 import { useState, useEffect } from 'react';
-import { Container, AppBar, Toolbar, Typography, Box, Button, Drawer, List, ListItem, ListItemText, IconButton } from '@mui/material';
+import { Container, AppBar, Toolbar, Typography, Box, Button, Drawer, List, ListItem, ListItemText, IconButton, Badge } from '@mui/material';
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import { ThemeProvider, useTheme } from '@mui/material/styles';
 import Menu from '@mui/material/Menu';
@@ -8,6 +8,7 @@ import MenuItem from '@mui/material/MenuItem';
 import MyTheme from './themes/MyTheme';
 import { Person, AdminPanelSettings, Menu as MenuIcon, ShoppingCart } from '@mui/icons-material';
 import logo from './images/logo_uplay.png';
+import NotificationsIcon from '@mui/icons-material/Notifications';
 
 import http from './http';
 import UserContext from './contexts/UserContext';
@@ -52,6 +53,10 @@ import Report from './pages/Report';
 import OrdersTable from './pages/OrdersTable';
 import PurchaseHistory from './pages/PurchaseHistory'
 import ListingTable from './pages/ListingTable';
+import Notices from './pages/Notices';
+import AddNotice from './pages/AddNotice';
+import EditNotice from './pages/EditNotice';
+import ViewNotices from './pages/ViewNotices';
 
 const drawerWidth = 240;
 
@@ -63,6 +68,7 @@ function App() {
     localStorage.getItem('isAdminView') === 'true' // Read from local storage
   );
   const [open, setOpen] = useState(false);
+  const [notifications, setNotifications] = useState([]);
 
   useEffect(() => {
     if (localStorage.getItem('accessToken')) {
@@ -74,7 +80,42 @@ function App() {
         setImageFile(res.data.imageFile);
       });
     }
+    http
+      .get("/notice")
+      .then((res) => {
+        setNotifications(res.data);
+        console.log("Notifications:", res.data);
+      })
+      .catch((error) => {
+        console.error("Error fetching notices:", error);
+      });
   }, []);
+
+
+  const sortedNotifications = notifications.sort((a, b) => b.id - a.id);
+
+  // State for managing notifications dropdown
+  const [notificationAnchorEl, setNotificationAnchorEl] = useState(null);
+
+  // Event handler for opening notifications dropdown
+  const handleNotificationsOpen = (event) => {
+    // Mark all notifications as read
+    const markedNotifications = notifications.map(notification => ({
+      ...notification,
+      read: true,
+    }));
+    // Update notifications state with marked notifications
+    setNotifications(markedNotifications);
+
+    // Open notifications dropdown
+    setNotificationAnchorEl(event.currentTarget);
+  };
+
+
+  // Event handler for closing notifications dropdown
+  const handleNotificationsClose = () => {
+    setNotificationAnchorEl(null);
+  };
 
   const logout = () => {
     localStorage.clear();
@@ -126,15 +167,14 @@ function App() {
                   <Box sx={{ flexGrow: 0.1 }} />
                 </>
               )}
-              <Link to="/Listings">
-                <Typography variant="h6" noWrap component="div" >
-                  <img src={logo} alt="UPlay Logo" width="148" height="50" style={{ backgroundColor: 'white', borderRadius: '10px', padding: '10px', marginTop: '10px' }}/>
+              <Link to="/Listings" style={{ marginRight: 'auto' }}>
+                <Typography variant="h6" noWrap component="div">
+                  <img src={logo} alt="UPlay Logo" width="148" height="50" style={{ backgroundColor: 'white', borderRadius: '10px', padding: '10px', marginTop: '10px' }} />
                 </Typography>
               </Link>
               <Box sx={{ flexGrow: 1 }} />
-
-              <Box sx={{ display: 'flex', gap: 2 }}>
-                <Link to="/Listings">
+              <Box sx={{ display: 'flex', gap: 1 }}>
+                <Link to="/Listings" style={{ marginLeft: '0px', marginRight: '10px' }}>
                   <Typography component="div">
                     Activities
                   </Typography>
@@ -146,9 +186,62 @@ function App() {
               {user && (
                 <Box sx={{ display: 'flex', alignItems: 'center' }}>
                   {(user && !user.isAdmin || isNotAdminView) && (
-                    <IconButton component={Link} to="/Cart" style={{ color: 'inherit' }}>
-                      <ShoppingCart />
-                    </IconButton>
+                    <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                      {/* Notifications icon with badge */}
+                      <Box mr={2}>
+                        <IconButton onClick={handleNotificationsOpen} style={{ color: 'inherit' }}>
+                          <Badge badgeContent={notifications.length} color="error">
+                            <NotificationsIcon />
+                          </Badge>
+                        </IconButton>
+                      </Box>
+
+                      {/* Cart icon */}
+                      <IconButton component={Link} to="/Cart" style={{ color: 'inherit' }}>
+                        <ShoppingCart />
+                      </IconButton>
+
+                      {/* Notifications dropdown */}
+                      <Menu
+                        anchorEl={notificationAnchorEl}
+                        open={Boolean(notificationAnchorEl)}
+                        onClose={handleNotificationsClose}
+                        anchorOrigin={{
+                          vertical: 'bottom',
+                          horizontal: 'right',
+                        }}
+                        transformOrigin={{
+                          vertical: 'top',
+                          horizontal: 'right',
+                        }}
+                        getContentAnchorEl={null}
+                      >
+                        {/* Render up to 3 notifications */}
+                        {sortedNotifications.slice(0, 3).map((notification, index) => (
+                          <div key={notification.id}>
+                            <MenuItem
+                              sx={{
+                                display: 'flex',
+                                flexDirection: 'column',
+                              }}
+                            >
+                              <span style={{ fontWeight: 'bold', fontSize: '1.2rem' }}>
+                                {notification.name}
+                              </span>
+                              <span>{notification.description}</span>
+                            </MenuItem>
+                            {/* Add a horizontal line after each notification, except the last one */}
+                            {index < sortedNotifications.length - 1 && <hr style={{ margin: '0', color: 'grey' }} />}
+                          </div>
+                        ))}
+
+                        {/* Link to view all notices */}
+                        <MenuItem component={Link} to="/viewnotices" style={{ backgroundColor: '#000000', color: "white" }}>
+                          View All Notices
+                        </MenuItem>
+                      </Menu>
+                    </Box>
+
                   )}
                   <Button onClick={handleMenuOpen} style={{ color: 'white' }}>
                     <Box
@@ -344,6 +437,9 @@ function App() {
                 <ListItem button component={Link} to="/report" onClick={handleDrawerClose} sx={{ fontSize: '1rem' }}>
                   <ListItemText primary="View Report" />
                 </ListItem>
+                <ListItem button component={Link} to="/notices" onClick={handleDrawerClose} sx={{ fontSize: '1rem' }}>
+                  <ListItemText primary="Manage Notices" />
+                </ListItem>
               </List>
             </Drawer>
           )}
@@ -374,6 +470,7 @@ function App() {
                   <Route path={"/checkout"} element={<Checkout />} />
                   <Route path={"/edit-order/:id"} element={<EditOrder />} />
                   <Route path={"/checkoutform"} element={<CheckoutForm />} />
+                  <Route path={"/viewnotices"} element={<ViewNotices />} />
 
                   {/* Raye's Routes */}
                   <Route path={"/purchasehistory"} element={<PurchaseHistory />} />
@@ -416,13 +513,16 @@ function App() {
                   <Route path={"/addactivity/:id"} element={<AddActivity />} />
                   <Route path={"/editlisting/:id"} element={<EditListing />} />
                   <Route path={"/listingtable"} element={<ListingTable />} />
-                  <Route path={"/addlisting"} element={<AddListing/>}/>
+                  <Route path={"/addlisting"} element={<AddListing />} />
                   <Route path={"/listing/:id"} element={<Listing />} />
                   <Route path={"/addlisting"} element={<AddListing />} />
                   <Route path={"/listings"} element={<Listings />} />
 
                   {/* Joseph's Routes */}
                   <Route path={"/admincart"} element={<AdminCart />} />
+                  <Route path={"/notices"} element={<Notices />} />
+                  <Route path={"/addnotice"} element={<AddNotice />} />
+                  <Route path={"/editnotice/:id"} element={<EditNotice />} />
 
                   {/* Wayne's Routes */}
                   <Route path={"/reviews"} element={<Reviews />} />
