@@ -16,13 +16,16 @@ function CustServiceDropDown() {
   return (
     <Box sx={{ display: 'flex', gap: 2 }}>
       <Button
+        style={{ textTransform: 'none' }}
         id="cust-service-dropdown"
         aria-controls="cust-service-menu"
         aria-haspopup="true"
         aria-expanded={anchorEl ? 'true' : undefined}
         onClick={handleClick}
       >
-        Contact Us
+        <Typography>
+          Contact Us
+        </Typography>
       </Button>
       <Menu
         id="cust-service-menu"
