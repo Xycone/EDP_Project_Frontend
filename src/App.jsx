@@ -12,7 +12,7 @@ import http from './http';
 import UserContext from './contexts/UserContext';
 
 import MyForm from './pages/MyForm';
-import CustServiceDropDown from './pages/CustServiceDropDown'; 
+import CustServiceDropDown from './pages/CustServiceDropDown';
 import Register from './pages/Register';
 import Login from './pages/Login';
 import LoyaltyDiscount from './pages/LoyaltyDiscount';
@@ -49,6 +49,7 @@ import EditActivity from './pages/EditActivity';
 import Success from './pages/Success';
 import Report from './pages/Report';
 import OrdersTable from './pages/OrdersTable';
+import PurchaseHistory from './pages/PurchaseHistory'
 
 const drawerWidth = 240;
 
@@ -137,8 +138,8 @@ function App() {
                   </Typography>
                 </Link>
               </Box>
-              <CustServiceDropDown />  
-                
+              <CustServiceDropDown />
+
 
               <Box sx={{ flexGrow: 1 }} />
               {/* User logged in */}
@@ -257,6 +258,18 @@ function App() {
                             </Typography>
                           </MenuItem>
                         </Link>
+
+                        <Link to={"/purchasehistory"} style={{ textDecoration: 'none', color: 'inherit' }}>
+                          <MenuItem
+                            variant="contained"
+                            color="primary"
+                            sx={{ marginLeft: '4px' }}
+                          >
+                            <Typography variant="caption" sx={{ marginLeft: 1 }}>
+                              Purchase history
+                            </Typography>
+                          </MenuItem>
+                        </Link>
                       </Box>
                     )}
 
@@ -358,11 +371,19 @@ function App() {
                   <Route path={"/edit-order/:id"} element={<EditOrder />} />
                   <Route path={"/checkoutform"} element={<CheckoutForm />} />
 
+                  {/* Raye's Routes */}
+                  <Route path={"/purchasehistory"} element={<PurchaseHistory />} />
+                  {/* <Route path={"/reviews"} element={<Reviews />} />
 
                   {/* Wayne's Routes */}
                   <Route path={"/reviews"} element={<Reviews />} />
                   <Route path={"/addreviews"} element={<AddReviews />} />
                   <Route path={"/editreviews/:id"} element={<EditReviews />} />
+                  <Route path={"/delreviews/:id"} element={<DelReviews />} />
+
+
+                  {/* Wayne's Routes */}
+                  <Route path={"/ticketspage"} element={<TicketsPage />} />
                   <Route path={"/addtickets"} element={<AddTickets />} />
 
                   {/* An Qi's Routes */}
@@ -376,7 +397,6 @@ function App() {
               {user && user.isAdmin && !isNotAdminView && (
                 <>
                   {/* Raye's Routes */}
-                  <Route path="/create-order" element={<CreateOrders />} />
                   <Route path="/report" element={<Report />} />
                   <Route path="/orders" element={<OrdersTable />} />
 

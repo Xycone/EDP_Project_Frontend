@@ -46,7 +46,9 @@ function OrdersTable() {
     const columns = [
         { field: 'id', headerName: 'Order ID', flex: 0.5 },
         { field: 'userId', headerName: 'User ID', flex: 0.5 },
+        { field: 'activityName', headerName: 'Activity Name', flex: 1 },
         { field: 'orderDate', headerName: 'Order Date', flex: 0.8 },
+        { field: 'quantity', headerName: 'Quantity', flex: 0.5 },
         { field: 'totalPrice', headerName: 'Total Price', flex: 0.7 },
 
     ];
