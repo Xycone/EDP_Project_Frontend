@@ -6,6 +6,9 @@ import { loadStripe } from "@stripe/stripe-js";
 import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
 import { Snackbar } from '@mui/material';
+import dayjs from 'dayjs';
+import global from '../global';
+
 
 function TestCart() {
     // Items
@@ -357,6 +360,10 @@ function TestCart() {
                                                             {voucher.minGroupSize >= 2 &&
                                                                 <Typography sx={{ fontSize: '0.7rem' }}>Grp Size: {voucher.minGroupSize}</Typography>
                                                             }
+
+                                                            <Typography sx={{ fontSize: '0.7rem', mt: 3}}>
+                                                                Use by: <u>{dayjs(voucher.discountExpiry).format('DD/MM/YYYY')}</u>
+                                                            </Typography>
                                                         </Box>
                                                     </CardContent>
                                                 </Grid>
