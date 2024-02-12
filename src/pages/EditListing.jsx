@@ -29,6 +29,7 @@ function EditListing() {
   const { id } = useParams();
   const navigate = useNavigate();
   const [activityList, setActivityList] = useState([]);
+  const [cartList, setCartList] = useState([]);
   const [imageFile, setImageFile] = useState(null);
 
   const onFileChange = (e) => {
@@ -89,6 +90,9 @@ function EditListing() {
       .catch((error) => {
         console.error("Error fetching listings:", error); // Log any errors
       });
+    http.get('/cartitem/getallcartitems').then((res) => {
+      setCartList(res.data);
+    });
   }, []);
 
   const formik = useFormik({
@@ -169,6 +173,15 @@ function EditListing() {
       .catch((error) => {
         console.error("Error fetching listings:", error); // Log any errors
       });
+      for (let i = 0; i < activityList.length; i++) {
+        const event = activityList[i];
+        for ( let j = 0; j < cartList.length; j++) {
+          const item = cartList[j]
+          if (event.Id === item.activityId){
+            http.delete(`/cartitem/${item.Id}`);
+          }
+        }
+      }
   };
 
   const viewActivities = () => {

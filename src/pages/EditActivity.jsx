@@ -28,7 +28,7 @@ import * as yup from "yup";
 function EditActivity() {
   const { id } = useParams();
   const navigate = useNavigate();
-
+  const [cartList, setCartList] = useState([]);
   const [activity, setActivity] = useState({
     date: "",
      availSpots: "",
@@ -44,6 +44,9 @@ function EditActivity() {
       })
       .catch((error) => {
         console.error(error);
+      });
+      http.get('/cartitem/getallcartitems').then((res) => {
+        setCartList(res.data);
       });
   }, []);
 
@@ -83,6 +86,12 @@ function EditActivity() {
       console.log(res.data);
       navigate(-1);
     });
+    for (let i = 0; i < cartList.length; i++) {
+      var item = cartList[i]
+      if(item.activityId === id){
+        http.delete(`/cartitem/${item.Id}`);
+      }
+    }
   };
 
   return (

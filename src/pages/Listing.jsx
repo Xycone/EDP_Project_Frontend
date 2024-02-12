@@ -1,15 +1,20 @@
 import {
   Link,
+  IconButton,
+  Box,
   Typography,
-  TextField,
   Grid,
   Card,
   CardContent,
   Button,
+  TextField,
 } from "@mui/material";
 import { useParams, useNavigate } from "react-router-dom";
+import { Link as RouterLink } from "react-router-dom";
 import React, { useEffect, useState } from "react";
 import http from "../http";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 function Listings() {
   const { id } = useParams();
@@ -20,11 +25,15 @@ function Listings() {
   const [loading, setLoading] = useState(true);
   const [quantity, setQuantity] = useState(1); // Initialize quantity state with a default value of 1
   const [cartItems, setCartItems] = useState([]);
+  const [userId, setUserId] = useState(null);
   const handleChange = (event) => {
     // Retrieve the value from the event target and update the quantity state
     setQuantity(parseInt(event.target.value));
   };
   useEffect(() => {
+    http.get('/user/auth').then((res) => {
+      setUserId(res.data.user);
+    }); // Replace this with your actual code to get the current user ID
     http.get('/cartitem/getcartitems').then((res) => {
       setCartItems(res.data);
     });
@@ -35,53 +44,57 @@ function Listings() {
     http
       .get(`/activity/activities-by-listing/${id}`)
       .then((res) => {
+        console.log("Response data:", res.data); // Log response data
         setActivityList(res.data);
       })
       .catch((error) => {
-        console.error("Error fetching listings:", error);
+        console.error("Error fetching listings:", error); // Log any errors
       });
   }, []);
-  const checkActivityId = (cartList, activityId) => {
+  const checkActivityId = (cartList, activityId, userId) => {
     for (let i = 0; i < cartList.length; i++) {
       const item = cartList[i];
       console.log(item.activityId);
       console.log(activityId);
-      // Check if current item's activityID matches the new activityID
-      if (item.activityId === activityId) {
-        console.log(item.activityId);
-        return true; // Exit the loop as item found
+      if (item.userId === userId) {
+        if (item.activityId === activityId) {
+          return true; // Exit the loop as item found
+        }
       }
-      console.log(item.activityId.activityId);
     }
     return false;
   };
-  const handleAddToCart = (name, quantity, price, activityId, availspot) => {
-
-    if (checkActivityId(cartItems, activityId)) {
+  const handleAddToCart = (name, quantity, price, activityId, availspot, userId) => {
+    if (checkActivityId(cartItems, activityId, userId)) {
       var updateid = 0
       var updatequantity = 0
       for (let i = 0; i < cartItems.length; i++) {
         const item = cartItems[i];
         // Check if current item's activityID matches the new activityID
-        if (item.activityId === activityId) {
+        if (item.activityId === activityId && item.userId === userId) {
           updateid = item.id;
           updatequantity = item.quantity + quantity;
           if (updatequantity > availspot) {
-            updatequantity = availspot
+            toast.error('Cannot add to cart more than available spots');
+          }
+          else if (quantity <= 0) {
+            toast.error('Cannot add nothing and negative items to cart');
+          }
+          else {
+            const data = { name, quantity: updatequantity, price };
+            console.log(data);
+            http.put(`/cartitem/${updateid}`, data)
+              .then((res) => {
+                console.log('Cart item updated successfully:', res.data);
+                navigate('/Cart');
+              })
+              .catch((error) => {
+                console.error('Error updating cart item:', error);
+                // Handle error
+              });
           }
         }
       }
-      const data = { name, quantity : updatequantity, price};
-      console.log(data);
-      http.put(`/cartitem/${updateid}`, data)
-        .then((res) => {
-          console.log('Cart item updated successfully:', res.data);
-          navigate('/testCart');
-        })
-        .catch((error) => {
-          console.error('Error updating cart item:', error);
-          // Handle error
-        });
     } else {
       // If the activity is not in the cart, add it as a new cart item
       const data = { name, quantity, price, activityId }; // Create data object for POST request
@@ -89,7 +102,7 @@ function Listings() {
         .post("/cartitem/addcartitems", data)
         .then((res) => {
           console.log(res.data);
-          navigate('/testCart'); // Navigate to the cart page after successful addition
+          navigate('/Cart'); // Navigate to the cart page after successful addition
         })
         .catch((error) => {
           console.error("Error adding cart item:", error);
@@ -173,17 +186,25 @@ function Listings() {
                         Available slots: {activity.availSpots}
                       </Typography>
                       <Box sx={{ textAlign: "center" }}>
-                        <Link component={RouterLink} to="/adaddcartitem">
-                          <Button
-                            variant="contained"
-                            color="primary"
-                            sx={{ mt: 2, height: 40 }}
-                          >
-                            <Typography sx={{ fontSize: 12 }}>
-                              Add to Cart
-                            </Typography>
-                          </Button>
-                        </Link>
+                        <TextField
+                          type="number"
+                          label="Quantity"
+                          inputProps={{
+                            min: 1,
+                            max: activity.availSpots,
+                            step: 1,
+                          }}
+                          value={quantity}
+                          onChange={handleChange}
+                          sx={{ marginBottom: 1 }}
+                        />
+                        <Button
+                          variant="contained"
+                          color="primary"
+                          onClick={() => handleAddToCart(listing.name + " \n" + activity.date, quantity, listing.nprice, activity.id, activity.availSpots, userId['id'])}
+                        >
+                          Add to Cart
+                        </Button>
                       </Box>
                     </CardContent>
                   </Card>

@@ -7,6 +7,7 @@ import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import MyTheme from './themes/MyTheme';
 import { Person, AdminPanelSettings, Menu as MenuIcon, ShoppingCart } from '@mui/icons-material';
+import logo from './images/logo_uplay.png';
 
 import http from './http';
 import UserContext from './contexts/UserContext';
@@ -23,7 +24,6 @@ import ManageUsers from './pages/ManageUsers';
 import ManageLoyaltyDiscount from './pages/ManageLoyaltyDiscount';
 import AddTier from './pages/AddTier';
 import EditTier from './pages/EditTier';
-import Cart from './pages/Cart';
 import AddCartItem from './pages/AddCartItem';
 import EditCartItem from './pages/EditCartItem';
 import Checkout from './pages/Checkout';
@@ -41,12 +41,13 @@ import Listings from './pages/Listings'
 import Listing from './pages/Listing'
 import Activities from './pages/Activities'
 import ChangePassword from './pages/ChangePassword';
-import TestCart from './pages/TestCart';
+import Cart from './pages/Cart';
 import AddListing from './pages/AddListing';
 import EditListing from './pages/EditListing';
 import AddActivity from './pages/AddActivity';
 import EditActivity from './pages/EditActivity';
 import Success from './pages/Success';
+import AdminCart from './pages/AdminCart';
 import Report from './pages/Report';
 import OrdersTable from './pages/OrdersTable';
 import PurchaseHistory from './pages/PurchaseHistory'
@@ -126,21 +127,26 @@ function App() {
                 </>
               )}
               <Link to="/Listings">
-                <Typography variant="h6" noWrap component="div">
-                  UPlay
+                <Typography variant="h6" noWrap component="div" >
+                  <img src={logo} alt="UPlay Logo" width="148" height="50" style={{ backgroundColor: 'white', borderRadius: '10px', padding: '10px', marginTop: '10px' }}/>
                 </Typography>
               </Link>
               <Box sx={{ flexGrow: 1 }} />
 
-              <CustServiceDropDown />
-
+              <Box sx={{ display: 'flex', gap: 2 }}>
+                <Link to="/Listings">
+                  <Typography component="div">
+                    Activities
+                  </Typography>
+                </Link>
+              </Box>
 
               <Box sx={{ flexGrow: 1 }} />
               {/* User logged in */}
               {user && (
                 <Box sx={{ display: 'flex', alignItems: 'center' }}>
                   {(user && !user.isAdmin || isNotAdminView) && (
-                    <IconButton component={Link} to="/testCart" style={{ color: 'inherit' }}>
+                    <IconButton component={Link} to="/Cart" style={{ color: 'inherit' }}>
                       <ShoppingCart />
                     </IconButton>
                   )}
@@ -326,6 +332,9 @@ function App() {
                 <ListItem button component={Link} to="/listings" onClick={handleDrawerClose} sx={{ fontSize: '1rem' }}>
                   <ListItemText primary="Manage Listings" />
                 </ListItem>
+                <ListItem button component={Link} to="/admincart" onClick={handleDrawerClose} sx={{ fontSize: '1rem' }}>
+                  <ListItemText primary="View Cart Data" />
+                </ListItem>
                 <ListItem button component={Link} to="/ticketspage" onClick={handleDrawerClose} sx={{ fontSize: '1rem' }}>
                   <ListItemText primary="Manage tickets" />
                 </ListItem>
@@ -356,8 +365,6 @@ function App() {
                   <Route path={"/loyaltydiscount"} element={<LoyaltyDiscount />} />
                   <Route path={"/myAccount"} element={<AccountPage />} />
                   <Route path={"/changePassword"} element={<ChangePassword />} />
-                  <Route path={"/testCart"} element={<TestCart />} />
-                  <Route path={"/Cart"} element={<Cart />} />
                   <Route path={"/Success"} element={<Success />} />
 
                   {/* Joseph's Routes */}
@@ -412,6 +419,8 @@ function App() {
                   <Route path={"/addlisting"} element={<AddListing/>}/>
                   <Route path={"/listing/:id"} element={<Listing />} />
                   <Route path={"/addlisting"} element={<AddListing />} />
+                  {/* Joseph's Routes */}
+                  <Route path={"/admincart"} element={<AdminCart />} />
 
                   {/* Wayne's Routes */}
                   <Route path={"/reviews"} element={<Reviews />} />

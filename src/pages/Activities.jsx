@@ -14,6 +14,7 @@ import { Edit } from "@mui/icons-material";
 import React, { useEffect, useState } from "react";
 import http from "../http";
 
+
 function Activities() {
   const [activityList, setActivityList] = useState([]);
   const { id } = useParams();

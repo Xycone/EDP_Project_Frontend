@@ -18,6 +18,7 @@ import { Link as RouterLink } from "react-router-dom";
 import { Edit } from "@mui/icons-material";
 import http from "../http";
 import UserContext from "../contexts/UserContext";
+import backgroundImage from '../images/lazy.jpg'; //Happy family on outdoor picnic with ukulele by David Pereiras
 
 function Listings() {
   const [user, setUser] = useState(null);
@@ -97,6 +98,30 @@ function Listings() {
   return (
     <UserContext.Provider value={{ user, setUser }}>
       <Box>
+        <div style={{
+          backgroundImage: `url(${backgroundImage})`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          height: '50vh',
+          width: '100%',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          color: 'white', // Adjust text color to ensure readability
+          textAlign: 'center',
+        }}>
+          <div>
+            <h1 style={{
+              WebkitTextStroke: '1px black', // Apply text stroke for WebKit browsers
+              color: 'white', // Specify text color
+              textShadow: '2px 2px 4px rgba(0,0,0,0.5)',
+              fontSize: '3rem' // Add a shadow for better visibility
+
+            }}>
+              You Play, We'll Do The Rest
+            </h1>
+          </div>
+        </div>
         <Box
           sx={{
             display: "flex",
