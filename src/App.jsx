@@ -332,6 +332,9 @@ function App() {
                 <ListItem button component={Link} to="/reviews" onClick={handleDrawerClose} sx={{ fontSize: '1rem' }}>
                   <ListItemText primary="Manage reviews" />
                 </ListItem>
+                <ListItem button component={Link} to="/report" onClick={handleDrawerClose} sx={{ fontSize: '1rem' }}>
+                  <ListItemText primary="View Report" />
+                </ListItem>
               </List>
             </Drawer>
           )}
@@ -367,7 +370,7 @@ function App() {
 
                   {/* Raye's Routes */}
                   <Route path={"/purchasehistory"} element={<PurchaseHistory />} />
-                  {/* <Route path={"/reviews"} element={<Reviews />} />
+
 
                   {/* Wayne's Routes */}
                   <Route path={"/reviews"} element={<Reviews />} />
