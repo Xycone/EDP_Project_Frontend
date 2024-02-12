@@ -1,5 +1,5 @@
+// import { clear } from 'console';
 import React, { useEffect, useState } from 'react';
-import http from '../http';
 
 function Success() {
     const [appliedVoucher, setAppliedVoucher] = useState(null);
@@ -37,6 +37,9 @@ function Success() {
     //         console.error('Error adding orders', error);
     //     }
     // };
+    // useEffect(() => {
+    //     clearCart()
+    // });
     return (
         <div>
             <h1>Payment Successful!</h1>
