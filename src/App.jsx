@@ -319,6 +319,12 @@ function App() {
                 <ListItem button component={Link} to="/listings" onClick={handleDrawerClose} sx={{ fontSize: '1rem' }}>
                   <ListItemText primary="Manage Listings" />
                 </ListItem>
+                <ListItem button component={Link} to="/ticketspage" onClick={handleDrawerClose} sx={{ fontSize: '1rem' }}>
+                  <ListItemText primary="Manage tickets" />
+                </ListItem>
+                <ListItem button component={Link} to="/reviews" onClick={handleDrawerClose} sx={{ fontSize: '1rem' }}>
+                  <ListItemText primary="Manage reviews" />
+                </ListItem>
               </List>
             </Drawer>
           )}
