@@ -104,7 +104,7 @@ function TestCart() {
 
         try {
             console.log("Selected voucher ID:", selectedVoucherId);
-            console.log("Voucher list:", voucherList);
+            console.log("Cart items:", selectedCartItems);
             const requestData = {
                 selectedCartItems: selectedCartItems,
                 selectedVoucherId: selectedVoucherId
