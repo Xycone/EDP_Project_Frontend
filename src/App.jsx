@@ -128,8 +128,6 @@ function App() {
               </Link>
               <Box sx={{ flexGrow: 1 }} />
 
-              {/* User navbar items */}
-              {(user && !user.isAdmin || isNotAdminView) && (
                 <Box sx={{ display: 'flex', gap: 2 }}>
                   <Link to="/Listings">
                     <Typography component="div">
@@ -137,7 +135,6 @@ function App() {
                     </Typography>
                   </Link>
                 </Box>
-              )}
 
               <Box sx={{ flexGrow: 1 }} />
               {/* User logged in */}
@@ -378,10 +375,12 @@ function App() {
                   <Route path={"/addtier"} element={<AddTier />} />
                   <Route path={"/edittier/:id"} element={<EditTier />} />
                   <Route path={"/tierperks/:id"} element={<TierPerks />} />
+                  {/* An Qi's Routes */}
                   <Route path={"/editactivity/:id"} element={<EditActivity />} />
                   <Route path={"/addactivity/:id"} element={<AddActivity />} />
                   <Route path={"/editlisting/:id"} element={<EditListing />} />
-                  <Route path={"/addlisting"} element={<AddListing />} />
+                  <Route path={"/listings"} element={<Listings />} />
+                  <Route path={"/listing/:id"} element={<Listing />} />
                 </>
               )}
             </Routes>

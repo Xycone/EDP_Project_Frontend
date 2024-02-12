@@ -32,14 +32,6 @@ function Listings() {
   const [categories, setCategories] = useState([]);
 
   useEffect(() => {
-    // Fetch categories from API or use predefined categories
-    // For example:
-    // setCategories([
-    //   { value: "category1", label: "Wine & Dine" },
-    //   { value: "category2", label: "Family Bonding" },
-    //   ...
-    // ]);
-    // For now, using the predefined categories directly
     setCategories([
       { value: "Wine & Dine", label: "Wine & Dine" },
       { value: "Family Bonding", label: "Family Bonding" },
@@ -70,28 +62,28 @@ function Listings() {
 
   const handleFilter = () => {
     let filteredListings = listingList;
-  
+
     // Filter by name
     if (filterName) {
       filteredListings = filteredListings.filter((listing) =>
         listing.name.toLowerCase().includes(filterName.toLowerCase())
       );
     }
-  
+
     // Filter by category
     if (filterCategory) {
       filteredListings = filteredListings.filter((listing) =>
         listing.category.toLowerCase().includes(filterCategory.toLowerCase())
       );
     }
-  
+
     // Sort by nprice
     if (filterNPrice === "lowest") {
       filteredListings.sort((a, b) => a.nprice - b.nprice);
     } else if (filterNPrice === "highest") {
       filteredListings.sort((a, b) => b.nprice - a.nprice);
     }
-  
+
     setFilteredListingList(filteredListings);
   };
 
@@ -124,37 +116,43 @@ function Listings() {
               sx={{ mb: 2, mr: 1, width: 200, height: 40 }}
             />
             <Select
-              placeholder="Filter by Categories"
-              variant="outlined"
               value={filterCategory}
               onChange={(e) => setFilterCategory(e.target.value)}
               fullWidth
+              displayEmpty
+              inputProps={{ "aria-label": "Select category" }}
               sx={{ mb: 2, mr: 1, width: 200, height: 40 }}
+              renderValue={(selected) =>
+                selected === "" ? "Filter by Categories" : selected
+              }
             >
-              <MenuItem value="">All Categories</MenuItem>
               {categories.map((category) => (
                 <MenuItem key={category.value} value={category.value}>
                   {category.label}
                 </MenuItem>
               ))}
             </Select>
+
             <Select
-              label="Filter by nprice"
-              variant="outlined"
               value={filterNPrice}
               onChange={(e) => setFilterNPrice(e.target.value)}
               fullWidth
-              sx={{ mb: 2, mr: 1, width: 200, height: 40 }}
+              displayEmpty
+              inputProps={{ "aria-label": "Select price filter" }}
+              sx={{ mb: 2, width: 200, height: 40 }}
+              renderValue={(selected) =>
+                selected === "" ? "Filter by Price" : selected
+              }
             >
-              <MenuItem value="">All Prices</MenuItem>
-              <MenuItem value="lowest">Lowest to Highest</MenuItem>
-              <MenuItem value="highest">Highest to Lowest</MenuItem>
+              <MenuItem value="Lowest">Lowest to Highest</MenuItem>
+              <MenuItem value="Highest">Highest to Lowest</MenuItem>
             </Select>
+
             <Button
               variant="contained"
               color="primary"
               onClick={handleFilter}
-              sx={{ mb: 2, mr: 2, height: 40 }}
+              sx={{ mb: 2, mr: 2, ml: 2, height: 40 }}
             >
               Filter
             </Button>
@@ -172,7 +170,7 @@ function Listings() {
               <Button
                 variant="contained"
                 color="primary"
-                sx={{ mb: 2, mr: 2, height: 40 }}
+                sx={{ mb: 2, height: 40 }}
               >
                 <Typography>Add Listings</Typography>
               </Button>
