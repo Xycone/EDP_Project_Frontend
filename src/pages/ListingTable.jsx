@@ -4,22 +4,25 @@ import {
   IconButton,
   Box,
   Typography,
-  Grid,
-  Card,
-  CardContent,
+  Table,
+  TableHead,
+  TableBody,
+  TableRow,
+  TableCell,
+  TablePagination,
   Button,
   TextField,
   Input,
   MenuItem,
   Select,
-  InputLabel,
+  Avatar
 } from "@mui/material";
 import { Link as RouterLink } from "react-router-dom";
 import { Edit } from "@mui/icons-material";
 import http from "../http";
 import UserContext from "../contexts/UserContext";
 
-function Listings() {
+function ListingTable() {
   const [user, setUser] = useState(null);
   const [listingList, setListingList] = useState([]);
   const [filteredListingList, setFilteredListingList] = useState([]);
@@ -27,9 +30,11 @@ function Listings() {
   const [filterCategory, setFilterCategory] = useState("");
   const [filterNPrice, setFilterNPrice] = useState("");
   const [isNotAdminView, setIsNotAdminView] = useState(
-    localStorage.getItem("isAdminView") === "true" // Read from local storage
+    localStorage.getItem("isAdminView") === "true"
   );
   const [categories, setCategories] = useState([]);
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
 
   useEffect(() => {
     setCategories([
@@ -39,7 +44,7 @@ function Listings() {
       { value: "Sports & Adventure", label: "Sports & Adventure" },
       { value: "Travel", label: "Travel" },
     ]);
-    setFilterCategory(""); // Set default category filter to ""
+    setFilterCategory("");
   }, []);
 
   useEffect(() => {
@@ -51,7 +56,6 @@ function Listings() {
     http
       .get("/activitylisting/listings")
       .then((res) => {
-        console.log("Response data:", res.data);
         setListingList(res.data);
         setFilteredListingList(res.data);
       })
@@ -63,21 +67,18 @@ function Listings() {
   const handleFilter = () => {
     let filteredListings = listingList;
 
-    // Filter by name
     if (filterName) {
       filteredListings = filteredListings.filter((listing) =>
         listing.name.toLowerCase().includes(filterName.toLowerCase())
       );
     }
 
-    // Filter by category
     if (filterCategory) {
       filteredListings = filteredListings.filter((listing) =>
         listing.category.toLowerCase().includes(filterCategory.toLowerCase())
       );
     }
 
-    // Sort by nprice
     if (filterNPrice === "lowest") {
       filteredListings.sort((a, b) => a.nprice - b.nprice);
     } else if (filterNPrice === "highest") {
@@ -92,6 +93,15 @@ function Listings() {
     setFilterCategory("");
     setFilterNPrice("");
     setFilteredListingList(listingList);
+  };
+
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
   };
 
   return (
@@ -144,8 +154,8 @@ function Listings() {
                 selected === "" ? "Filter by Price" : selected
               }
             >
-              <MenuItem value="Lowest">Lowest to Highest</MenuItem>
-              <MenuItem value="Highest">Highest to Lowest</MenuItem>
+              <MenuItem value="lowest">Lowest to Highest</MenuItem>
+              <MenuItem value="highest">Highest to Lowest</MenuItem>
             </Select>
 
             <Button
@@ -177,57 +187,64 @@ function Listings() {
             </Link>
           )}
         </Box>
-        <Grid container spacing={2}>
-          {filteredListingList.map((listing, i) => {
-            return (
-              <Grid item xs={12} md={6} lg={4} key={listing.id}>
-                <Link
-                  component={RouterLink}
-                  to={`/listing/${listing.id}`}
-                  onClick={() =>
-                    console.log(`Redirecting to /listing/${listing.id}`)
-                  }
-                >
-                  <Card sx={{ position: 'relative', borderRadius: 5 }}>
-                    <CardContent>
-                      <img
-                        src={`${import.meta.env.VITE_FILE_BASE_URL}${
-                          listing.imageFile
-                        }`}
-                        alt="Your Image"
-                        style={{
-                          width: '100%',
-                          height: '200px',
-                          borderRadius: 10,
-                        }}
-                      />
-                      <Typography variant="h6" sx={{ mb: 1, fontWeight: "bold" }}>
-                        {listing.name}
-                      </Typography>
-                      <Typography sx={{ whiteSpace: "pre-wrap" }}>
-                        ${listing.nprice}
-                      </Typography>
-                      {user && user.isAdmin && !isNotAdminView && (
-                        <Link
-                          component={RouterLink}
-                          to={`/editlisting/${listing.id}`}
-                          onClick={() => console.log(`Editing ${listing.id}`)}
-                        >
-                          <IconButton color="primary" sx={{ padding: "4px" }}>
-                            <Edit />
-                          </IconButton>
-                        </Link>
-                      )}
-                    </CardContent>
-                  </Card>
-                </Link>
-              </Grid>
-            );
-          })}
-        </Grid>
+        <Table sx={{ boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)' }}>
+          <TableHead>
+            <TableRow>
+              <TableCell>ID</TableCell>
+              <TableCell>Name</TableCell>
+              <TableCell>Category</TableCell>
+              <TableCell>Price</TableCell>
+              <TableCell>Image</TableCell> {/* Add table cell for the image */}
+              <TableCell></TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {filteredListingList
+              .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+              .map((listing, i) => (
+                <TableRow key={listing.id}>
+                  <TableCell>{listing.id}</TableCell>
+                  <TableCell>{listing.name}</TableCell>
+                  <TableCell>{listing.category}</TableCell>
+                  <TableCell>${listing.nprice}</TableCell>
+                  <TableCell>
+                    <Avatar
+                      alt={listing.name}
+                      src={`${import.meta.env.VITE_FILE_BASE_URL}${
+                        listing.imageFile
+                      }`}
+                    />{" "}
+                    {/* Render the image using Avatar component */}
+                  </TableCell>
+                  <TableCell>
+                    {user && user.isAdmin && !isNotAdminView && (
+                      <Link
+                        component={RouterLink}
+                        to={`/editlisting/${listing.id}`}
+                        onClick={() => console.log(`Editing ${listing.id}`)}
+                      >
+                        <IconButton color="primary" sx={{ padding: "4px" }}>
+                          <Edit />
+                        </IconButton>
+                      </Link>
+                    )}
+                  </TableCell>
+                </TableRow>
+              ))}
+          </TableBody>
+        </Table>
+        <TablePagination
+          rowsPerPageOptions={[5, 10, 25]}
+          component="div"
+          count={filteredListingList.length}
+          rowsPerPage={rowsPerPage}
+          page={page}
+          onPageChange={handleChangePage}
+          onRowsPerPageChange={handleChangeRowsPerPage}
+        />
       </Box>
     </UserContext.Provider>
   );
 }
 
-export default Listings;
+export default ListingTable;

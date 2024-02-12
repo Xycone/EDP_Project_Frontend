@@ -11,7 +11,7 @@ import {
   CardContent,
   Button,
   TextField,
-  MenuItem
+  MenuItem,
 } from "@mui/material";
 import {
   Dialog,
@@ -29,6 +29,31 @@ function EditListing() {
   const { id } = useParams();
   const navigate = useNavigate();
   const [activityList, setActivityList] = useState([]);
+  const [imageFile, setImageFile] = useState(null);
+
+  const onFileChange = (e) => {
+    let file = e.target.files[0];
+    if (file) {
+      if (file.size > 1024 * 1024) {
+        toast.error("Maximum file size is 1MB");
+        return;
+      }
+      let formData = new FormData();
+      formData.append("file", file);
+      http
+        .post("/file/upload", formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        })
+        .then((res) => {
+          setImageFile(res.data.filename);
+        })
+        .catch(function (error) {
+          console.log(error.response);
+        });
+    }
+  };
 
   const [listing, setListing] = useState({
     name: "",
@@ -52,6 +77,7 @@ function EditListing() {
   useEffect(() => {
     http.get(`/activitylisting/${id}`).then((res) => {
       setListing(res.data);
+      setImageFile(res.data.imageFile);
       setLoading(false);
     });
     http
@@ -111,6 +137,7 @@ function EditListing() {
       data.description = data.description.trim();
       data.nprice = data.nprice;
       data.capacity = data.capacity;
+      data.imageFile = imageFile;
       http.put(`/activitylisting/${id}`, data).then((res) => {
         console.log(res.data);
         navigate("/listings");
@@ -162,8 +189,51 @@ function EditListing() {
           <Typography variant="h5" sx={{ my: 2 }}>
             Edit Listing
           </Typography>
+
           {!loading && (
             <Box component="form" onSubmit={formik.handleSubmit}>
+              <Box>
+                {
+                  // User set profile picture
+                  imageFile && (
+                    <img
+                      src={`${import.meta.env.VITE_FILE_BASE_URL}${imageFile}`}
+                      alt="Your Image"
+                      style={{
+                        width: "360px",
+                        height: "200px",
+                        marginBottom: 2,
+                      }}
+                    />
+                  )
+                }
+                {
+                  // Default profile picture if user did not set anything
+                  !imageFile && (
+                    <img
+                      alt="Placeholder"
+                      src={placeholder}
+                      style={{
+                        width: "360px",
+                        height: "200px",
+                        marginBottom: 2,
+                      }}
+                    />
+                  )
+                }
+              </Box>
+              <Box sx={{ mb: 2 }}>
+                <Button variant="contained" component="label">
+                  Upload Image
+                  <input
+                    hidden
+                    accept="image/*"
+                    multiple
+                    type="file"
+                    onChange={onFileChange}
+                  />
+                </Button>
+              </Box>
               <div>
                 <TextField
                   margin="dense"
@@ -243,7 +313,7 @@ function EditListing() {
                   margin="dense"
                   autoComplete="off"
                   type="number"
-                  label="Nprice"
+                  label="Price"
                   name="nprice"
                   value={formik.values.nprice}
                   onChange={formik.handleChange}
@@ -281,18 +351,11 @@ function EditListing() {
                 >
                   Delete
                 </Button>
-                <Button
-                  variant="contained"
-                  sx={{ ml: 2 }}
-                  onClick={viewActivities}
-                >
-                  Activities
-                </Button>
               </Box>
             </Box>
           )}
         </Box>
-        <Box sx={{ flex: 1, marginLeft: 2 }}>
+        <Box sx={{ flex: 1.5, marginLeft: 2 }}>
           <Box sx={{ display: "flex", my: 2 }}>
             <Typography variant="h5" sx={{ my: 2 }}>
               Available Booking Dates:
@@ -316,33 +379,44 @@ function EditListing() {
               </Link>
             </Box>
           </Box>
-          <Grid container spacing={2}>
-            {activityList.map((activity, i) => {
-              return (
-                <Grid item xs={12} md={6} lg={4} key={activity.id}>
-                  <Card>
-                    <CardContent>
-                      <Typography variant="h6" sx={{ mb: 1 }}>
-                        Date: {activity.date}
-                      </Typography>
-                      <Typography sx={{ whiteSpace: "pre-wrap" }}>
-                        Available spots left: {activity.availSpots}
-                      </Typography>
-                      <Link
-                        component={RouterLink}
-                        to={`/editactivity/${activity.id}`}
-                        onClick={() => console.log(`Editing ${activity.id}`)}
-                      >
-                        <IconButton color="primary" sx={{ padding: "4px" }}>
-                          <Edit />
-                        </IconButton>
-                      </Link>
-                    </CardContent>
-                  </Card>
-                </Grid>
-              );
-            })}
-          </Grid>
+          <Box sx={{ bgcolor: "#cccccc", padding: "25px", borderRadius: 5 }}>
+            <Grid container spacing={2}>
+              {activityList.map((activity, i) => {
+                return (
+                  <Grid item xs={12} md={6} lg={4} key={activity.id}>
+                    <Card>
+                      <CardContent>
+                        <Typography sx={{ mb: 1, fontSize: 17 }}>
+                          {new Intl.DateTimeFormat("en-US", {
+                            day: "2-digit",
+                            month: "long",
+                            year: "numeric",
+                            hour: "numeric",
+                            minute: "numeric",
+                            hour12: true,
+                            timeZone: "UTC",
+                          }).format(new Date(activity.date))}
+                        </Typography>
+
+                        <Typography sx={{ whiteSpace: "pre-wrap" }}>
+                          Available slots: {activity.availSpots}
+                        </Typography>
+                        <Link
+                          component={RouterLink}
+                          to={`/editactivity/${activity.id}`}
+                          onClick={() => console.log(`Editing ${activity.id}`)}
+                        >
+                          <IconButton color="primary" sx={{ padding: "4px" }}>
+                            <Edit />
+                          </IconButton>
+                        </Link>
+                      </CardContent>
+                    </Card>
+                  </Grid>
+                );
+              })}
+            </Grid>
+          </Box>
         </Box>
       </Box>
 

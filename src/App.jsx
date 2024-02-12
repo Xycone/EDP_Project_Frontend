@@ -47,6 +47,7 @@ import EditListing from './pages/EditListing';
 import AddActivity from './pages/AddActivity';
 import EditActivity from './pages/EditActivity';
 import Success from './pages/Success';
+import ListingTable from './pages/ListingTable';
 
 const drawerWidth = 240;
 
@@ -127,14 +128,6 @@ function App() {
                 </Typography>
               </Link>
               <Box sx={{ flexGrow: 1 }} />
-
-                <Box sx={{ display: 'flex', gap: 2 }}>
-                  <Link to="/Listings">
-                    <Typography component="div">
-                      Activities
-                    </Typography>
-                  </Link>
-                </Box>
 
               <Box sx={{ flexGrow: 1 }} />
               {/* User logged in */}
@@ -313,6 +306,9 @@ function App() {
                 <ListItem button component={Link} to="/orders" onClick={handleDrawerClose} sx={{ fontSize: '1rem' }}>
                   <ListItemText primary="Manage Orders" />
                 </ListItem>
+                <ListItem button component={Link} to="/listingtable" onClick={handleDrawerClose} sx={{ fontSize: '1rem' }}>
+                  <ListItemText primary="Manage Listings" />
+                </ListItem>
               </List>
             </Drawer>
           )}
@@ -375,10 +371,14 @@ function App() {
                   <Route path={"/addtier"} element={<AddTier />} />
                   <Route path={"/edittier/:id"} element={<EditTier />} />
                   <Route path={"/tierperks/:id"} element={<TierPerks />} />
+
+                  {/* An Qi's Routes */}
                   <Route path={"/editactivity/:id"} element={<EditActivity />} />
                   <Route path={"/addactivity/:id"} element={<AddActivity />} />
                   <Route path={"/editlisting/:id"} element={<EditListing />} />
-                  <Route path={"/listings"} element={<Listings />} />
+                  <Route path={"/listingtable"} element={<ListingTable />} />
+                  <Route path={"/addlisting"} element={<AddListing/>}/>
+                  <Route path={"/listing/:id"} element={<Listing />} />
                 </>
               )}
             </Routes>

@@ -16,7 +16,6 @@ import http from "../http";
 
 function Listings() {
   const { id } = useParams();
-  const [user, setUser] = useState(null);
   const [listing, setListing] = useState(null);
   const [activityList, setActivityList] = useState([]);
   const [isNotAdminView, setIsNotAdminView] = useState(
@@ -50,11 +49,26 @@ function Listings() {
           sx={{
             flex: 1,
             my: 2,
-            padding: "16px", // Optional: Add some padding to create space between the shadow and the content
-            boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.1)", // Adjust the values as needed
+            padding: "20px", // Optional: Add some padding to create space between the shadow and the content
+            boxShadow: "1px 6px 12px -6px rgba(0, 0, 0, 0.2)", // Adjust the values as needed
+            borderRadius: 10,
           }}
         >
-          <Typography variant="h5" sx={{ my: 2, fontSize: "2rem" }}>
+          <img
+            src={`${import.meta.env.VITE_FILE_BASE_URL}${listing.imageFile}`}
+            alt="Your Image"
+            style={{
+              width: "100%",
+              height: "250px",
+              marginBottom: 2,
+              borderRadius: 5,
+              marginTop: 2,
+            }}
+          />
+          <Typography
+            variant="h5"
+            sx={{ my: 2, fontSize: "2rem", fontWeight: "bold" }}
+          >
             {listing.title}
           </Typography>
           <Typography sx={{ whiteSpace: "pre-wrap", fontSize: "1.5rem" }}>
@@ -71,41 +85,51 @@ function Listings() {
           </Typography>
         </Box>
       )}
-      <Box sx={{ flex: 1, marginLeft: 2 }}>
-        <Typography variant="h5" sx={{ my: 2 }}>
+      <Box sx={{ flex: 1.5, marginLeft: 2 }}>
+        <Typography variant="h5" sx={{ my: 2, mt: 4.5 }}>
           Available Booking Dates:
         </Typography>
-        <Grid container spacing={2}>
-          {activityList.map((activity, i) => {
-            return (
-              <Grid item xs={12} md={6} lg={4} key={activity.id}>
-                <Card>
-                  <CardContent>
-                    <Typography variant="h6" sx={{ mb: 1 }}>
-                      Date: {activity.date}
-                    </Typography>
-                    <Typography sx={{ whiteSpace: "pre-wrap" }}>
-                      Available spots left: {activity.availSpots}
-                    </Typography>
-                    <Box sx={{ textAlign: "center" }}>
-                      <Link component={RouterLink} to="/adaddcartitem">
-                        <Button
-                          variant="contained"
-                          color="primary"
-                          sx={{ mt: 2, height: 40 }}
-                        >
-                          <Typography sx={{ fontSize: 12 }}>
-                            Add to Cart
-                          </Typography>
-                        </Button>
-                      </Link>
-                    </Box>
-                  </CardContent>
-                </Card>
-              </Grid>
-            );
-          })}
-        </Grid>
+        <Box sx={{ bgcolor: "#cccccc", padding: "25px", borderRadius: 5 }}>
+          <Grid container spacing={2}>
+            {activityList.map((activity, i) => {
+              return (
+                <Grid item xs={12} md={6} lg={4} key={activity.id}>
+                  <Card>
+                    <CardContent>
+                      <Typography variant="h6" sx={{ mb: 1 }}>
+                        {new Intl.DateTimeFormat("en-US", {
+                          year: "numeric",
+                          month: "long",
+                          day: "2-digit",
+                          hour: "numeric",
+                          minute: "numeric",
+                          hour12: true,
+                        }).format(new Date(activity.date))}
+                      </Typography>
+
+                      <Typography sx={{ whiteSpace: "pre-wrap" }}>
+                        Available slots: {activity.availSpots}
+                      </Typography>
+                      <Box sx={{ textAlign: "center" }}>
+                        <Link component={RouterLink} to="/adaddcartitem">
+                          <Button
+                            variant="contained"
+                            color="primary"
+                            sx={{ mt: 2, height: 40 }}
+                          >
+                            <Typography sx={{ fontSize: 12 }}>
+                              Add to Cart
+                            </Typography>
+                          </Button>
+                        </Link>
+                      </Box>
+                    </CardContent>
+                  </Card>
+                </Grid>
+              );
+            })}
+          </Grid>
+        </Box>
       </Box>
     </Box>
   );
