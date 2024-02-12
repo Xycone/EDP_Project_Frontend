@@ -419,6 +419,8 @@ function App() {
                   <Route path={"/addlisting"} element={<AddListing/>}/>
                   <Route path={"/listing/:id"} element={<Listing />} />
                   <Route path={"/addlisting"} element={<AddListing />} />
+                  <Route path={"/listings"} element={<Listings />} />
+
                   {/* Joseph's Routes */}
                   <Route path={"/admincart"} element={<AdminCart />} />
 
