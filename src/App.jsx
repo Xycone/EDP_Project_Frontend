@@ -47,6 +47,8 @@ import EditListing from './pages/EditListing';
 import AddActivity from './pages/AddActivity';
 import EditActivity from './pages/EditActivity';
 import Success from './pages/Success';
+import Report from './pages/Report';
+import OrdersTable from './pages/OrdersTable';
 
 const drawerWidth = 240;
 
@@ -128,13 +130,13 @@ function App() {
               </Link>
               <Box sx={{ flexGrow: 1 }} />
 
-                <Box sx={{ display: 'flex', gap: 2 }}>
-                  <Link to="/Listings">
-                    <Typography component="div">
-                      Activities
-                    </Typography>
-                  </Link>
-                </Box>
+              <Box sx={{ display: 'flex', gap: 2 }}>
+                <Link to="/Listings">
+                  <Typography component="div">
+                    Activities
+                  </Typography>
+                </Link>
+              </Box>
 
               <Box sx={{ flexGrow: 1 }} />
               {/* User logged in */}
@@ -174,7 +176,6 @@ function App() {
                             }}
                           />
                         )
-
                       }
                       {
                         // Default profile picture if user did not set anything
@@ -316,6 +317,9 @@ function App() {
                 <ListItem button component={Link} to="/listings" onClick={handleDrawerClose} sx={{ fontSize: '1rem' }}>
                   <ListItemText primary="Manage Listings" />
                 </ListItem>
+                <ListItem button component={Link} to="/report" onClick={handleDrawerClose} sx={{ fontSize: '1rem' }}>
+                  <ListItemText primary="View Report" />
+                </ListItem>
               </List>
             </Drawer>
           )}
@@ -339,7 +343,7 @@ function App() {
                   <Route path={"/changePassword"} element={<ChangePassword />} />
                   <Route path={"/testCart"} element={<TestCart />} />
                   <Route path={"/Cart"} element={<Cart />} />
-                  <Route path={"/Success"} element ={<Success/>} />
+                  <Route path={"/Success"} element={<Success />} />
 
                   {/* Joseph's Routes */}
                   <Route path={"/cart"} element={<Cart />} />
@@ -370,8 +374,9 @@ function App() {
               {user && user.isAdmin && !isNotAdminView && (
                 <>
                   {/* Raye's Routes */}
-                  <Route path="/orders" element={<Orders />} />
                   <Route path="/create-order" element={<CreateOrders />} />
+                  <Route path="/report" element={<Report />} />
+                  <Route path="/orders" element={<OrdersTable />} />
 
                   {/* Sean's Routes */}
                   <Route path={"/manageusers"} element={<ManageUsers />} />
