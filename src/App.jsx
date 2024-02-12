@@ -12,7 +12,7 @@ import http from './http';
 import UserContext from './contexts/UserContext';
 
 import MyForm from './pages/MyForm';
-
+import CustServiceDropDown from './pages/CustServiceDropDown'; 
 import Register from './pages/Register';
 import Login from './pages/Login';
 import LoyaltyDiscount from './pages/LoyaltyDiscount';
@@ -135,6 +135,8 @@ function App() {
                     </Typography>
                   </Link>
                 </Box>
+                <CustServiceDropDown />  
+                
 
               <Box sx={{ flexGrow: 1 }} />
               {/* User logged in */}
@@ -316,6 +318,13 @@ function App() {
                 <ListItem button component={Link} to="/listings" onClick={handleDrawerClose} sx={{ fontSize: '1rem' }}>
                   <ListItemText primary="Manage Listings" />
                 </ListItem>
+                <ListItem button component={Link} to="/reviews" onClick={handleDrawerClose} sx={{ fontSize: '1rem' }}>
+                  <ListItemText primary="Manage reviews" />
+                </ListItem>
+                <ListItem button component={Link} to="/ticketspage" onClick={handleDrawerClose} sx={{ fontSize: '1rem' }}>
+                  <ListItemText primary="Manage tickets" />
+                </ListItem>
+                
               </List>
             </Drawer>
           )}
@@ -349,14 +358,11 @@ function App() {
                   <Route path={"/edit-order/:id"} element={<EditOrder />} />
                   <Route path={"/checkoutform"} element={<CheckoutForm />} />
 
-                  {/* Raye's Routes */}
+
+                  {/* Wayne's Routes */}
                   <Route path={"/reviews"} element={<Reviews />} />
                   <Route path={"/addreviews"} element={<AddReviews />} />
                   <Route path={"/editreviews/:id"} element={<EditReviews />} />
-                  <Route path={"/delreviews/:id"} element={<DelReviews />} />
-
-                  {/* Wayne's Routes */}
-                  <Route path={"/ticketspage"} element={<TicketsPage />} />
                   <Route path={"/addtickets"} element={<AddTickets />} />
 
                   {/* An Qi's Routes */}
@@ -386,6 +392,15 @@ function App() {
                   <Route path={"/listings"} element={<Listings />} />
                   <Route path={"/listing/:id"} element={<Listing />} />
                   <Route path={"/addlisting"} element={<AddListing />} />
+
+                  {/* Wayne's Routes */}
+                  <Route path={"/reviews"} element={<Reviews />} />
+                  <Route path={"/addreviews"} element={<AddReviews />} />
+                  <Route path={"/editreviews/:id"} element={<EditReviews />} />
+                  <Route path={"/delreviews/:id"} element={<DelReviews />} />
+                  <Route path={"/ticketspage"} element={<TicketsPage />} />
+                  <Route path={"/addtickets"} element={<AddTickets />} />
+                  <Route path={"/deltickets/:id"} element={<DelTickets />} />
                 </>
               )}
             </Routes>

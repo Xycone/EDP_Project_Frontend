@@ -1,19 +1,18 @@
 import React, { useEffect, useState } from 'react';
-import { Box, Typography, TextField, Button } from '@mui/material';
+import { Box, Typography, TextField, Button, Rating } from '@mui/material';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
 import http from '../http';
-import { format } from 'date-fns';
+import dayjs from 'dayjs';
 import global from '../global';
 
 function EditReviews() {
-  const navigate = useNavigate();
   const { id } = useParams();
+  const navigate = useNavigate();
   const [review, setReview] = useState(null);
 
   useEffect(() => {
-    // Fetch the review data based on the id from the URL params
     const fetchReview = async () => {
       try {
         const response = await http.get(`/review/${id}`);
@@ -27,36 +26,39 @@ function EditReviews() {
   }, [id]);
 
   const formik = useFormik({
-    initialValues: review,
-    enableReinitialize: true,
+    initialValues: {
+      activityid: review?.activityid || 1,
+      starRating: review?.starRating || 0,
+      desc: review?.desc || "",
+    },
     validationSchema: yup.object({
-      desc: yup.string()
+      activityid: yup
+        .number('Activity ID must be a number')
+        .integer('Activity ID must be an integer')
+        .required('Activity ID is required'),
+      desc: yup
+        .string()
         .trim()
         .min(3, 'Description must be at least 3 characters')
         .max(500, 'Description must be at most 500 characters')
         .required('Description is required'),
     }),
-
     onSubmit: (data) => {
-      data.starRating = parseInt(data.starRating, 10);
       data.desc = data.desc.trim();
       
-      // Fetch current date and time
-      const currentDate = new Date();
-      
-      // Format the date according to the global datetime format
-      data.date = format(currentDate, global.datetimeFormat);
+      const currentDate = dayjs(); // Get current date and time
+      data.date = currentDate
+
+      console.log("Review stuff is packaged", data);
 
       http.put(`/review/${id}`, data)
         .then((res) => {
+          console.log("getting to backend...");
           console.log(res.data);
-          navigate("/reviews");  
-        })
-        .catch((error) => {
-          console.error('Error updating review:', error);
+          console.log("on the way to backend");
+          navigate("/reviews");
         });
-    }
-
+    },
   });
 
   if (!review) {
@@ -69,7 +71,20 @@ function EditReviews() {
         Edit Review
       </Typography>
       <Box component="form" onSubmit={formik.handleSubmit}>
-      <Rating
+        <TextField
+          margin="normal"
+          label="Which Activity Would you like to commend?"
+          name="activityid"
+          type="number"
+          value={formik.values.activityid}
+          onChange={formik.handleChange}
+          error={formik.touched.activityid && Boolean(formik.errors.activityid)}
+          helperText={formik.touched.activityid && formik.errors.activityid}
+        />
+        <Box sx={{ my: 2 }}>
+          {/* Use Rating component for starRating */}
+          <Typography variant="body1">how would you rate this activity?</Typography>
+          <Rating
             name="starRating"
             value={formik.values.starRating}
             onChange={(event, newValue) => {
@@ -77,7 +92,7 @@ function EditReviews() {
             }}
             className={formik.touched.starRating && formik.errors.starRating ? 'error' : ''}
           />
-
+        </Box>
 
         <TextField
           fullWidth
@@ -85,16 +100,16 @@ function EditReviews() {
           autoComplete="off"
           multiline
           minRows={2}
-          label="Description"
+          label="Tell us more"
           name="desc"
-          value={formik.values?.desc}
+          value={formik.values.desc}
           onChange={formik.handleChange}
           error={formik.touched.desc && Boolean(formik.errors.desc)}
           helperText={formik.touched.desc && formik.errors.desc}
         />
         <Box sx={{ mt: 2 }}>
           <Button variant="contained" type="submit">
-            Update
+            Save Changes
           </Button>
         </Box>
       </Box>
