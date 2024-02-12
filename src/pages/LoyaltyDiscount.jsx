@@ -51,16 +51,33 @@ function LoyaltyDiscount() {
   useEffect(() => {
     getInfo();
   }, []);
+
+  const calculateSpendingProgress = () => {
+    const progress = tier.tierSpendings !== 0 ? (info.totalSpent / tier.tierSpendings) * 100 : 0;
+    console.log("Spending progress" + progress)
+    return Math.min(progress, 100);
+  };
+
+  const calculateBookingProgress = () => {
+    const progress = tier.tierBookings !== 0 ? (info.totalBookings / tier.tierBookings) * 100 : 0;
+    console.log("Booking progress" + progress)
+    return Math.min(progress, 100);
+  };
+
   useEffect(() => {
     getTier();
     getPerks();
-
-    const spendingProgress = tier.tierSpendings !== 0 ? (info.totalSpent / tier.tierSpendings) * 100 : 0;
-    const bookingProgress = tier.tierBookings !== 0 ? (info.totalBookings / tier.tierBookings) * 100 : 0;
-
-    setSpendingProgress(spendingProgress);
-    setBookingProgress(bookingProgress);
   }, [info]);
+
+  useEffect(() => {
+    if (info.totalSpent !== '' && tier.tierSpendings !== '') {
+      setSpendingProgress(calculateSpendingProgress());
+    }
+    if (info.totalBookings !== '' && tier.tierBookings !== '') {
+      setBookingProgress(calculateBookingProgress());
+    }
+  }, [info, tier]);
+
 
   return (
     <Box sx={{ my: 2 }}>
