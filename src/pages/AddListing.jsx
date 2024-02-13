@@ -125,7 +125,7 @@ function AddListing() {
         .then((res) => {
           console.log("Listing added:", res.data);
           toast.success("Listing added successfully.")
-          navigate("/listings");
+          navigate("/listingtable");
         })
         .catch((error) => {
           console.error("Error adding listing:", error);
