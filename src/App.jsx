@@ -168,7 +168,7 @@ function App() {
               )}
               <Link to="/Listings" style={{ marginRight: 'auto' }}>
                 <Typography variant="h6" noWrap component="div">
-                  <img src={logo} alt="UPlay Logo" width="148" height="50" style={{ backgroundColor: 'white', borderRadius: '10px', padding: '10px', marginTop: '10px' }} />
+                  <img src={logo} alt="UPlay Logo" width="148" height="45" style={{ backgroundColor: 'white', borderRadius: '10px', padding: '10px', marginTop: '10px' }} />
                 </Typography>
               </Link>
               <Box sx={{ flexGrow: 1 }} />
@@ -390,7 +390,7 @@ function App() {
                 '& .MuiDrawer-paper': {
                   width: drawerWidth,
                   boxSizing: 'border-box',
-                  marginTop: '64px',
+                  marginTop: '84px',
                 },
               }}
               variant="persistent"
