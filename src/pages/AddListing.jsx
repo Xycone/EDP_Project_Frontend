@@ -115,8 +115,12 @@ function AddListing() {
       data.description = data.description.trim();
       data.nprice = data.nprice;
       data.capacity = data.capacity;
-      data.imageFile = imageFile
-      http
+      data.imageFile = imageFile;
+      if (imageFile == null){
+        toast.error("Please upload an image")
+      }
+      else{
+        http
         .post(`/activitylisting`, data)
         .then((res) => {
           console.log("Listing added:", res.data);
@@ -125,8 +129,9 @@ function AddListing() {
         })
         .catch((error) => {
           console.error("Error adding listing:", error);
-          toast.error("Failed to addd listing.")
+          toast.error("Failed to add listing.")
         });
+      }
     },
   });
 
