@@ -228,8 +228,8 @@ function App() {
                         ))}
 
                         {/* Link to view all notices */}
-                        <MenuItem component={Link} to="/viewnotices" style={{ backgroundColor: '#000000', color: "white" }}>
-                          View All Notices
+                        <MenuItem component={Link} to="/viewnotices" style={{ color: '#E8533F' }}>
+                          <u>View All Notices</u>
                         </MenuItem>
                       </Menu>
                     </Box>
