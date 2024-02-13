@@ -411,9 +411,6 @@ function App() {
                 <ListItem button component={Link} to="/manageloyalty" onClick={handleDrawerClose} sx={{ fontSize: '1rem' }}>
                   <ListItemText primary="Manage Loyalty Discount" />
                 </ListItem>
-                <ListItem button component={Link} to="/orders" onClick={handleDrawerClose} sx={{ fontSize: '1rem' }}>
-                  <ListItemText primary="Manage Orders" />
-                </ListItem>
                 <ListItem button component={Link} to="/listingtable" onClick={handleDrawerClose} sx={{ fontSize: '1rem' }}>
                   <ListItemText primary="Manage Listings" />
                 </ListItem>
