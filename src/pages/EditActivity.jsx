@@ -7,7 +7,7 @@ import {
   Card,
   CardContent,
   Button,
-  TextField
+  TextField,
 } from "@mui/material";
 import {
   Dialog,
@@ -23,7 +23,8 @@ import { useFormik } from "formik";
 import React, { useEffect, useState } from "react";
 import http from "../http";
 import * as yup from "yup";
-
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function EditActivity() {
   const { id } = useParams();
@@ -31,12 +32,14 @@ function EditActivity() {
   const [cartList, setCartList] = useState([]);
   const [activity, setActivity] = useState({
     date: "",
-     availSpots: "",
+    availSpots: "",
   });
   const [loading, setLoading] = useState(true);
+  const [listing, setListing] = useState(null);
 
   useEffect(() => {
-    http.get(`/activity/${id}`)
+    http
+      .get(`/activity/${id}`)
       .then((res) => {
         console.log("API Response:", res.data);
         setActivity(res.data);
@@ -45,29 +48,57 @@ function EditActivity() {
       .catch((error) => {
         console.error(error);
       });
-      http.get('/cartitem/getallcartitems').then((res) => {
-        setCartList(res.data);
-      });
+    http.get("/cartitem/getallcartitems").then((res) => {
+      setCartList(res.data);
+    });
   }, []);
+
+  useEffect(() => {
+    if (activity.activityListingId) {
+      http.get(`/activitylisting/${activity.activityListingId}`)
+        .then((res) => {
+          setListing(res.data);
+          console.log(res.data);
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+    }
+  }, [activity.activityListingId]);
 
   const formik = useFormik({
     initialValues: activity,
     enableReinitialize: true,
     validationSchema: yup.object({
       date: yup.date().required("Date is required"),
-       availSpots: yup
+      availSpots: yup
         .number()
-        .min(0, "Capacity must be at least 0")
-        .max(500, "Capacity must be at most 500")
-        .required("Capacity is required"),
+        .min(0, "Slots must be at least 0")
+        .max(500, "Slots must be at most 500")
+        .test(
+          "availSpots-check",
+          "Available slots cannot exceed the capacity set for activities under this listing.",
+          function (value) {
+            const defaultValue = listing.capacity; // Get the default value
+            return value <= defaultValue; // Check if the entered value is less than or equal to the default value
+          }
+        )
+        .required("Slots is required"),
     }),
     onSubmit: (data) => {
       data.date = data.date;
-      data. availSpots = data. availSpots;
-      http.put(`/activity/${id}`, data).then((res) => {
-        console.log(res.data);
-        navigate(-1);
-      });
+      data.availSpots = data.availSpots;
+      http
+        .put(`/activity/${id}`, data)
+        .then((res) => {
+          console.log(res.data);
+          navigate(-1);
+          toast.success("Activity updated successfully");
+        })
+        .catch((error) => {
+          console.error(error);
+          toast.error("Failed to update activity"); // Error notification
+        });
     },
   });
 
@@ -82,13 +113,21 @@ function EditActivity() {
   };
 
   const deleteActivity = () => {
-    http.delete(`/activity/${id}`).then((res) => {
-      console.log(res.data);
-      navigate(-1);
-    });
+    http
+      .delete(`/activity/${id}`)
+      .then((res) => {
+        console.log(res.data);
+        navigate(-1);
+        toast.success("Activity deleted successfully"); // Success notification
+      })
+      .catch((error) => {
+        console.error(error);
+        toast.error("Failed to delete activity"); // Error notification
+      });
+
     for (let i = 0; i < cartList.length; i++) {
-      var item = cartList[i]
-      if(item.activityId === id){
+      var item = cartList[i];
+      if (item.activityId === id) {
         http.delete(`/cartitem/${item.Id}`);
       }
     }
@@ -108,7 +147,7 @@ function EditActivity() {
               label="Date"
               type="datetime-local" // Use "datetime-local" for date and time input
               name="date"
-              value={formik.values.date } // Format the value for "datetime-local"
+              value={formik.values.date} // Format the value for "datetime-local"
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
               error={formik.touched.date && Boolean(formik.errors.date)}
@@ -120,14 +159,16 @@ function EditActivity() {
               fullWidth
               margin="dense"
               autoComplete="off"
-              label="Available Spots"
+              label="Available Slots"
               type="number"
-              name=" availSpots"
-              value={formik.values. availSpots}
+              name= "availSpots"
+              value={formik.values.availSpots}
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
-              error={formik.touched. availSpots && Boolean(formik.errors. availSpots)}
-              helperText={formik.touched. availSpots && formik.errors. availSpots}
+              error={
+                formik.touched.availSpots && Boolean(formik.errors.availSpots)
+              }
+              helperText={formik.touched.availSpots && formik.errors.availSpots}
             />
           </div>
           <Box sx={{ mt: 2 }}>
@@ -162,6 +203,7 @@ function EditActivity() {
           </Button>
         </DialogActions>
       </Dialog>
+      <ToastContainer />
     </Box>
   );
 }

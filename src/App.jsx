@@ -40,7 +40,6 @@ import AddTickets from './pages/AddTickets';
 import DelTickets from './pages/DelTickets';
 import Listings from './pages/Listings'
 import Listing from './pages/Listing'
-import Activities from './pages/Activities'
 import ChangePassword from './pages/ChangePassword';
 import Cart from './pages/Cart';
 import AddListing from './pages/AddListing';
@@ -173,13 +172,6 @@ function App() {
                 </Typography>
               </Link>
               <Box sx={{ flexGrow: 1 }} />
-              <Box sx={{ display: 'flex', gap: 1 }}>
-                <Link to="/Listings" style={{ marginLeft: '0px', marginRight: '10px' }}>
-                  <Typography component="div">
-                    Activities
-                  </Typography>
-                </Link>
-              </Box>
 
               <Box sx={{ flexGrow: 1 }} />
               {/* User logged in */}
@@ -422,7 +414,7 @@ function App() {
                 <ListItem button component={Link} to="/orders" onClick={handleDrawerClose} sx={{ fontSize: '1rem' }}>
                   <ListItemText primary="Manage Orders" />
                 </ListItem>
-                <ListItem button component={Link} to="/listings" onClick={handleDrawerClose} sx={{ fontSize: '1rem' }}>
+                <ListItem button component={Link} to="/listingtable" onClick={handleDrawerClose} sx={{ fontSize: '1rem' }}>
                   <ListItemText primary="Manage Listings" />
                 </ListItem>
                 <ListItem button component={Link} to="/admincart" onClick={handleDrawerClose} sx={{ fontSize: '1rem' }}>
@@ -489,7 +481,6 @@ function App() {
 
                   {/* An Qi's Routes */}
                   <Route path={"/listings"} element={<Listings />} />
-                  <Route path={"/activities/:id"} element={<Activities />} />
                   <Route path={"/listing/:id"} element={<Listing />} />
                 </>
               )}

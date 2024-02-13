@@ -4,6 +4,8 @@ import { Box, Typography, TextField, Button } from "@mui/material";
 import http from "../http";
 import { useFormik } from "formik";
 import * as yup from "yup";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function AddActivity() {
   const navigate = useNavigate();
@@ -26,9 +28,17 @@ function AddActivity() {
       date: yup.date().required("Date is required"),
       availSpots: yup
         .number()
-        .min(0, "Capacity must be at least 0")
-        .max(500, "Capacity must be at most 500")
-        .required("Capacity is required"),
+        .min(0, "Slots must be at least 0")
+        .max(500, "Slots must be at most 500")
+        .test(
+          "availSpots-check",
+          "Available slots cannot exceed the capacity set for activities under this listing.",
+          function (value) {
+            const defaultValue = listing.capacity; // Get the default value
+            return value <= defaultValue; // Check if the entered value is less than or equal to the default value
+          }
+        )
+        .required("Slots is required"),
     }),
     onSubmit: (data) => {
       data.date = data.date;
@@ -36,10 +46,12 @@ function AddActivity() {
       http.post(`/activity/${id}`, data)
         .then((res) => {
           console.log(res.data);
+          toast.success("Activity successfully added")
           navigate(-1);
         })
         .catch((error) => {
           console.error(error);
+          toast.error("Failed to add activity");
         });
     },
   });
@@ -85,6 +97,7 @@ function AddActivity() {
           </Button>
         </Box>
       </Box>
+      <ToastContainer /> {/* Toast container for displaying notifications */}
     </Box>
   );
 }

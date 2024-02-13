@@ -190,17 +190,6 @@ function Listings() {
               Reset
             </Button>
           </Box>
-          {user && user.isAdmin && !isNotAdminView && (
-            <Link component={RouterLink} to="/addlisting">
-              <Button
-                variant="contained"
-                color="primary"
-                sx={{ mb: 2, height: 40 }}
-              >
-                <Typography>Add Listings</Typography>
-              </Button>
-            </Link>
-          )}
         </Box>
         <Grid container spacing={2}>
           {filteredListingList.map((listing, i) => {
@@ -232,17 +221,6 @@ function Listings() {
                       <Typography sx={{ whiteSpace: "pre-wrap" }}>
                         ${listing.nprice}
                       </Typography>
-                      {user && user.isAdmin && !isNotAdminView && (
-                        <Link
-                          component={RouterLink}
-                          to={`/editlisting/${listing.id}`}
-                          onClick={() => console.log(`Editing ${listing.id}`)}
-                        >
-                          <IconButton color="primary" sx={{ padding: "4px" }}>
-                            <Edit />
-                          </IconButton>
-                        </Link>
-                      )}
                     </CardContent>
                   </Card>
                 </Link>

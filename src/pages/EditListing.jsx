@@ -24,6 +24,8 @@ import http from "../http";
 import { Edit } from "@mui/icons-material";
 import { useFormik } from "formik";
 import * as yup from "yup";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function EditListing() {
   const { id } = useParams();
@@ -144,7 +146,12 @@ function EditListing() {
       data.imageFile = imageFile;
       http.put(`/activitylisting/${id}`, data).then((res) => {
         console.log(res.data);
-        navigate("/listings");
+        navigate(-1);
+        toast.success("Listing updated successfully.")
+      })
+      .catch((error) => {
+        console.error(error);
+        toast.error("Failed to edit listing.");
       });
     },
   });
@@ -163,7 +170,12 @@ function EditListing() {
     http.delete(`/activitylisting/${id}`).then((res) => {
       console.log(res.data);
       navigate("/listings");
-    });
+      toast.success("Listing successfully deleted.")
+    })
+    .catch((error) => {
+      console.error("Error deletinglistings:", error); // Log any errors
+      toast.error("Failed to delete listing.")
+    });;
     http
       .get(`/activity/activities-by-listing/${id}`)
       .then((res) => {
@@ -449,6 +461,7 @@ function EditListing() {
           </Button>
         </DialogActions>
       </Dialog>
+      <ToastContainer />
     </Box>
   );
 }

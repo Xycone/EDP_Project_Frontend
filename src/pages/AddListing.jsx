@@ -120,10 +120,12 @@ function AddListing() {
         .post(`/activitylisting`, data)
         .then((res) => {
           console.log("Listing added:", res.data);
+          toast.success("Listing added successfully.")
           navigate("/listings");
         })
         .catch((error) => {
           console.error("Error adding listing:", error);
+          toast.error("Failed to addd listing.")
         });
     },
   });
