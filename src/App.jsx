@@ -398,7 +398,7 @@ function App() {
                 '& .MuiDrawer-paper': {
                   width: drawerWidth,
                   boxSizing: 'border-box',
-                  marginTop: '64px',
+                  marginTop: '84px',
                 },
               }}
               variant="persistent"
